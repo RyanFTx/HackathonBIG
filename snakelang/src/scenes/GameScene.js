@@ -200,6 +200,21 @@ export class GameScene {
       this.effectUI.showScoreGain(points);
     });
 
+    // Despawn orbs that have exceeded their lifetime
+    const now = Date.now();
+    const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
+    this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
+
+    // Ensure minimum number of normal orbs
+    const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
+    const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
+    if (normalOrbCount < minNormalOrbs) {
+      for (let i = normalOrbCount; i < minNormalOrbs; i++) {
+        const orb = this.orbSpawner.spawnOrb('normal');
+        if (orb) this.orbs.push(orb);
+      }
+    }
+
     // Update systems
     this.effectManager.update(16); // Assuming ~60fps
     this.effectUI.update();

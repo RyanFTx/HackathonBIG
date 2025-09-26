@@ -8,13 +8,13 @@ export const CONFIG = {
   SNAKE: {
     INITIAL_X: 750, // Center of canvas
     INITIAL_Y: 350, // Center of canvas
-    SIZE: 12,
+    SIZE: 30,
     SEGMENT_DISTANCE: 8,
     BASE_SPEED: 3,
     MAX_LENGTH: 100,
     GROWTH_SEGMENTS: 3,
     TURN_SPEED: 0.07,
-    MAX_SPEED: 6
+    MAX_SPEED: 15
   },
 
   WORLD: {
@@ -23,7 +23,7 @@ export const CONFIG = {
     CENTER_Y: 350,  // Center of canvas
     STARS: 500,
     PARALLAX_FACTOR: 0.2, //lower = slower movement
-    MIN_ORB_COUNT: 250
+    MIN_ORB_COUNT: 2000
   },
 
   CANVAS: {

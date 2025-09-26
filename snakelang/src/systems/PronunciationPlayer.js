@@ -6,7 +6,7 @@ export class PronunciationPlayer {
     if ('speechSynthesis' in window) {
       const utter = new window.SpeechSynthesisUtterance(word);
       utter.lang = 'zh-CN'; // Mandarin Chinese
-      utter.rate = 0.9;
+      utter.rate = 0.2; // slower than default
       window.speechSynthesis.speak(utter);
     } else {
       console.warn('Speech synthesis not supported');

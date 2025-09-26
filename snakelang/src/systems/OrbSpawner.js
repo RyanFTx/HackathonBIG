@@ -146,67 +146,71 @@ export class OrbSpawner {
     }
   }
 
+  _getRandomPositionInWorld() {
+    // Spawn within world circle
+    const r = CONFIG.WORLD.RADIUS - CONFIG.ORBS.SPAWN_MARGIN;
+    const theta = Math.random() * Math.PI * 2;
+    const dist = Math.sqrt(Math.random()) * r;
+    const x = CONFIG.WORLD.CENTER_X + dist * Math.cos(theta);
+    const y = CONFIG.WORLD.CENTER_Y + dist * Math.sin(theta);
+    return { x, y };
+  }
+
   spawnNormalOrb() {
-    // Pick randomly from level 1 or level 2
-    const allWords = [...this.wordsLevel1, ...this.wordsLevel2];
-    if (allWords.length === 0) return null;
-    const text = allWords[Math.floor(Math.random() * allWords.length)];
-    const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
+  // Pick randomly from level 1 or level 2
+  const allWords = [...this.wordsLevel1, ...this.wordsLevel2];
+  if (allWords.length === 0) return null;
+  const text = allWords[Math.floor(Math.random() * allWords.length)];
+  const { x, y } = this._getRandomPositionInWorld();
+  return new OrbNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   spawnSpeedOrb() {
     // Use level 3
-        if (!this.wordsLevel3 || this.wordsLevel3.length === 0) return null;
-        const text = this.wordsLevel3[Math.floor(Math.random() * this.wordsLevel3.length)];
-        const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        return new OrbSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
+  if (!this.wordsLevel3 || this.wordsLevel3.length === 0) return null;
+  const text = this.wordsLevel3[Math.floor(Math.random() * this.wordsLevel3.length)];
+  const { x, y } = this._getRandomPositionInWorld();
+  return new OrbSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   spawnExplosiveOrb() {
     // Pick from level 4 only
-    if (!this.wordsLevel4 || this.wordsLevel4.length === 0) return null;
-    const text = this.wordsLevel4[Math.floor(Math.random() * this.wordsLevel4.length)];
-    const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    // You need to implement OrbExplosive class for this to work
-    return new OrbExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
+  if (!this.wordsLevel4 || this.wordsLevel4.length === 0) return null;
+  const text = this.wordsLevel4[Math.floor(Math.random() * this.wordsLevel4.length)];
+  const { x, y } = this._getRandomPositionInWorld();
+  // You need to implement OrbExplosive class for this to work
+  return new OrbExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   //SHRINK ORBS
-   spawnShrinkNormalOrb() {
+  spawnShrinkNormalOrb() {
     // Pick randomly from level 1 or level 2
-    const allWords = [...this.wordsLevel1, ...this.wordsLevel2];
-    if (allWords.length === 0) return null;
-    const rand = Math.floor(Math.random() * allWords.length);
-    const text = allWords[rand];
-    const wrongText = allWords[(rand + 1) % allWords.length]; // Simple way to get a different word
-    const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbShrinkNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
+  const allWords = [...this.wordsLevel1, ...this.wordsLevel2];
+  if (allWords.length === 0) return null;
+  const rand = Math.floor(Math.random() * allWords.length);
+  const text = allWords[rand];
+  const wrongText = allWords[(rand + 1) % allWords.length];
+  const { x, y } = this._getRandomPositionInWorld();
+  return new OrbShrinkNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
   }
 
   spawnShrinkExplosiveOrb() {
     // Pick from level 4 only
-    if (!this.wordsLevel4 || this.wordsLevel4.length === 0) return null;
-    const rand = Math.floor(Math.random() * this.wordsLevel4.length);
-    const text = this.wordsLevel4[rand];
-    const wrongText = this.wordsLevel4[(rand + 1) % this.wordsLevel4.length];
-    const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbShrinkExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
+  if (!this.wordsLevel4 || this.wordsLevel4.length === 0) return null;
+  const rand = Math.floor(Math.random() * this.wordsLevel4.length);
+  const text = this.wordsLevel4[rand];
+  const wrongText = this.wordsLevel4[(rand + 1) % this.wordsLevel4.length];
+  const { x, y } = this._getRandomPositionInWorld();
+  return new OrbShrinkExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
   }
 
     spawnShrinkSpeedOrb() {
         // Pick randomly from level 3
-        if (!this.wordsLevel3 || this.wordsLevel3.length === 0) return null;
-        const text = this.wordsLevel3[Math.floor(Math.random() * this.wordsLevel3.length)];
-        const wrongText = this.wordsLevel3[(Math.floor(Math.random() * this.wordsLevel3.length) + 1) % this.wordsLevel3.length];
-        const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        return new OrbShrinkSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
+  if (!this.wordsLevel3 || this.wordsLevel3.length === 0) return null;
+  const text = this.wordsLevel3[Math.floor(Math.random() * this.wordsLevel3.length)];
+  const wrongText = this.wordsLevel3[(Math.floor(Math.random() * this.wordsLevel3.length) + 1) % this.wordsLevel3.length];
+  const { x, y } = this._getRandomPositionInWorld();
+  return new OrbShrinkSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english, this.difficulty);
   }
 
   spawnInitialOrbs(count = CONFIG.ORBS.INITIAL_COUNT) {

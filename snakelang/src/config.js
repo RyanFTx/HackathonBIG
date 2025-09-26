@@ -4,24 +4,29 @@
  */
 
 export const CONFIG = {
-  // Canvas settings
-  CANVAS: {
-    WIDTH: 1500,
-    HEIGHT: 700,
-    BACKGROUND_COLOR: '#1a1a1a'
-  },
-
   // Snake settings
   SNAKE: {
-    INITIAL_X: 400,
-    INITIAL_Y: 300,
+    INITIAL_X: 750, // Center of canvas
+    INITIAL_Y: 350, // Center of canvas
     SIZE: 12,
     SEGMENT_DISTANCE: 8,
     BASE_SPEED: 3,
-    MAX_SPEED: 5,
-    TURN_SPEED: 0.08,
+    MAX_LENGTH: 100,
     GROWTH_SEGMENTS: 3,
-    MAX_LENGTH: 1000
+    TURN_SPEED: 0.07,
+    MAX_SPEED: 6
+  },
+
+  WORLD: {
+    RADIUS: 1000, // Smaller radius to fit inside canvas
+    CENTER_X: 750, // Center of canvas
+    CENTER_Y: 350  // Center of canvas
+  },
+
+  CANVAS: {
+    WIDTH: 1500,
+    HEIGHT: 700,
+    BACKGROUND_COLOR: 'black'
   },
 
   // Orb settings

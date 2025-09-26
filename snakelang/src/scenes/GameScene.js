@@ -36,10 +36,14 @@ export class GameScene {
     this.isPlaying = false;
     this.keys = {};
 
-    // Mouse controls
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.mousePressed = false;
+  // Mouse controls
+  this.mouseX = 0;
+  this.mouseY = 0;
+  this.mousePressed = false;
+  this._lastScreenX = null;
+  this._lastScreenY = null;
+  // Camera
+  this.camera = { x: 0, y: 0, width: this.canvas.width, height: this.canvas.height };
 
     // Track wrong answers for game over popup
     this.wrongAnswers = [];
@@ -75,8 +79,15 @@ export class GameScene {
     // Mouse controls
     this.canvas.addEventListener('mousemove', (event) => {
       const rect = this.canvas.getBoundingClientRect();
-      this.mouseX = event.clientX - rect.left;
-      this.mouseY = event.clientY - rect.top;
+      // Mouse position in screen (canvas) coordinates
+      const screenX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+      const screenY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+      // Store last screen coordinates for camera-relative update
+      this._lastScreenX = screenX;
+      this._lastScreenY = screenY;
+      // Update world coordinates immediately for responsiveness
+      this.mouseX = screenX + this.camera.x - this.canvas.width / 2;
+      this.mouseY = screenY + this.camera.y - this.canvas.height / 2;
     });
 
     this.canvas.addEventListener('mousedown', (event) => {
@@ -164,7 +175,7 @@ export class GameScene {
   handleInput() {
     if (!this.isPlaying) return;
 
-    // Mouse controls: snake follows cursor
+    // Mouse controls: snake follows cursor (world coordinates)
     const head = this.snake.getHead();
     const dx = this.mouseX - head.x;
     const dy = this.mouseY - head.y;
@@ -211,10 +222,35 @@ export class GameScene {
   update() {
     if (!this.isPlaying) return;
 
+    // Recalculate mouse position in world coordinates if mouse has moved or camera has moved
+    if (this._lastScreenX !== null && this._lastScreenY !== null) {
+      this.mouseX = this._lastScreenX + this.camera.x - this.canvas.width / 2;
+      this.mouseY = this._lastScreenY + this.camera.y - this.canvas.height / 2;
+    }
     this.handleInput();
 
-    // Move snake
-    this.snake.move(this.canvas.width, this.canvas.height);
+    // Move snake in circular world
+    this.snake.move(); // No need to pass canvas size
+
+    // Camera tracking: center on snake head, clamp to world circle
+    const head = this.snake.getHead();
+    const r = CONFIG.WORLD.RADIUS;
+    const cx = CONFIG.WORLD.CENTER_X;
+    const cy = CONFIG.WORLD.CENTER_Y;
+    // Clamp camera center so viewport stays inside world circle
+    let camX = head.x;
+    let camY = head.y;
+    // Calculate distance from world center
+    const dist = Math.sqrt((camX - cx) ** 2 + (camY - cy) ** 2);
+    const maxDist = r - Math.max(this.camera.width, this.camera.height) / 2;
+    if (dist > maxDist) {
+      // Clamp camera to edge of world circle
+      const angle = Math.atan2(camY - cy, camX - cx);
+      camX = cx + maxDist * Math.cos(angle);
+      camY = cy + maxDist * Math.sin(angle);
+    }
+    this.camera.x = camX;
+    this.camera.y = camY;
 
     // Check orb collisions
     const collectedOrbs = this.collisionManager.checkOrbCollisions(this.snake, this.orbs);
@@ -323,13 +359,51 @@ export class GameScene {
     this.ctx.fillStyle = CONFIG.CANVAS.BACKGROUND_COLOR;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Draw orbs
-    this.orbs.forEach(orb => orb.draw(this.ctx));
+    // Debug: log camera and snake positions
+    if (this.snake && this.snake.body && this.snake.body.length > 0) {
+      const head = this.snake.getHead();
+      console.log('[DEBUG] Camera:', this.camera.x, this.camera.y, 'Snake head:', head.x, head.y);
+    }
 
-    // Draw snake
+    // Draw world border (circle)
+    this.ctx.save();
+    this.ctx.beginPath();
+    this.ctx.arc(
+      this.canvas.width / 2 + (CONFIG.WORLD.CENTER_X - this.camera.x),
+      this.canvas.height / 2 + (CONFIG.WORLD.CENTER_Y - this.camera.y),
+      CONFIG.WORLD.RADIUS,
+      0, Math.PI * 2
+    );
+    this.ctx.strokeStyle = CONFIG.COLORS.ORB_BORDER || '#E65100'; // Use orb border color for world border
+    this.ctx.lineWidth = 6;
+    this.ctx.stroke();
+    this.ctx.restore();
+
+    // Draw orbs (only those in world circle)
+    this.orbs.forEach(orb => {
+      const dx = orb.x - CONFIG.WORLD.CENTER_X;
+      const dy = orb.y - CONFIG.WORLD.CENTER_Y;
+      if (dx * dx + dy * dy <= CONFIG.WORLD.RADIUS * CONFIG.WORLD.RADIUS) {
+        this.ctx.save();
+        this.ctx.translate(
+          this.canvas.width / 2 - this.camera.x,
+          this.canvas.height / 2 - this.camera.y
+        );
+        orb.draw(this.ctx);
+        this.ctx.restore();
+      }
+    });
+
+    // Draw snake (all segments)
+    this.ctx.save();
+    this.ctx.translate(
+      this.canvas.width / 2 - this.camera.x,
+      this.canvas.height / 2 - this.camera.y
+    );
     this.snake.draw(this.ctx);
+    this.ctx.restore();
 
-    // Draw UI effects
+    // Draw UI effects (screen space)
     this.effectUI.render(this.ctx);
   }
 

@@ -20,10 +20,12 @@ class SnakeLangGame {
     this.canvas = null;
     this.ctx = null;
     this.popupMenu = new StartPopupMenu();
-    this.popupMenu.onStart = ({ language, orbPercentages }) => {
+    window.snakeLangPopupMenu = this.popupMenu;
+    this.popupMenu.onStart = ({ language, orbPercentages, difficulty }) => {
       // Pass settings to game scene and orb spawner
       this.language = language;
       this.orbPercentages = orbPercentages;
+      this.difficulty = difficulty;
       this.startGame();
     };
     this.language = 'characters';
@@ -99,6 +101,15 @@ class SnakeLangGame {
     // Create a new GameScene with orbCounts
     this.scenes.game = new GameScene(this.canvas, this.ctx, orbCounts);
     this.currentScene = this.scenes.game;
+    // Apply mode difficulty, including Endless
+    if (this.currentScene && this.currentScene.setMode && this.difficulty) {
+      this.currentScene.setMode({ difficulty: this.difficulty });
+    }
+    // If popup provided difficulty, propagate as mode
+    if (this.popupMenu && this.popupMenu.difficultyLevels && this.scenes.game.setMode) {
+      const diffKey = this.popupMenu.difficultyLevels[this.popupMenu.difficultyIndex]?.key || 'easy';
+      this.scenes.game.setMode({ difficulty: diffKey });
+    }
   }
 
   update() {
@@ -106,6 +117,8 @@ class SnakeLangGame {
     if (this.gameController && this.gameController.gameOverPopup.isActive()) return;
     if (this.currentScene && this.currentScene.isActive()) {
       this.currentScene.update();
+      // Always tick effects so toasts fade out
+      if (this.currentScene.postUpdate) this.currentScene.postUpdate();
       // Check for game over
       if (this.scenes.game.scoreboard.getLives() <= 0) {
         this.gameController.showGameOver(

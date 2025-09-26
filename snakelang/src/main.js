@@ -51,9 +51,18 @@ class SnakeLangGame {
       throw new Error('Failed to initialize canvas');
     }
 
-    // Set canvas size from config
-    this.canvas.width = CONFIG.CANVAS.WIDTH;
-    this.canvas.height = CONFIG.CANVAS.HEIGHT;
+    // Make canvas full screen and centered
+    function resizeCanvas() {
+      // Use window size for full screen
+      const dpr = window.devicePixelRatio || 1;
+      this.canvas.width = window.innerWidth * dpr;
+      this.canvas.height = window.innerHeight * dpr;
+      this.canvas.style.width = window.innerWidth + 'px';
+      this.canvas.style.height = window.innerHeight + 'px';
+    }
+    resizeCanvas = resizeCanvas.bind(this);
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     // Initialize scenes
     this.scenes.menu = new MenuScene();

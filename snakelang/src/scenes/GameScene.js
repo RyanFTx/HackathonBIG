@@ -36,10 +36,14 @@ export class GameScene {
     this.isPlaying = false;
     this.keys = {};
 
-    // Mouse controls
-    this.mouseX = 0;
-    this.mouseY = 0;
-    this.mousePressed = false;
+  // Mouse controls
+  this.mouseX = 0;
+  this.mouseY = 0;
+  this.mousePressed = false;
+  this._lastScreenX = null;
+  this._lastScreenY = null;
+  // Camera
+  this.camera = { x: 0, y: 0, width: this.canvas.width, height: this.canvas.height };
 
     // Track wrong answers for game over popup
     this.wrongAnswers = [];
@@ -73,10 +77,15 @@ export class GameScene {
     });
 
     // Mouse controls
-    this.canvas.addEventListener('mousemove', (event) => {
+    window.addEventListener('mousemove', (event) => {
       const rect = this.canvas.getBoundingClientRect();
-      this.mouseX = event.clientX - rect.left;
-      this.mouseY = event.clientY - rect.top;
+      // Mouse position in screen (canvas) coordinates, allow outside canvas
+      const screenX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
+      const screenY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
+      this._lastScreenX = screenX;
+      this._lastScreenY = screenY;
+      this.mouseX = screenX + this.camera.x - this.canvas.width / 2;
+      this.mouseY = screenY + this.camera.y - this.canvas.height / 2;
     });
 
     this.canvas.addEventListener('mousedown', (event) => {
@@ -164,7 +173,7 @@ export class GameScene {
   handleInput() {
     if (!this.isPlaying) return;
 
-    // Mouse controls: snake follows cursor
+    // Mouse controls: snake follows cursor (world coordinates)
     const head = this.snake.getHead();
     const dx = this.mouseX - head.x;
     const dy = this.mouseY - head.y;
@@ -211,10 +220,38 @@ export class GameScene {
   update() {
     if (!this.isPlaying) return;
 
+    // Recalculate mouse position in world coordinates if mouse has moved or camera has moved
+    if (this._lastScreenX !== null && this._lastScreenY !== null) {
+      this.mouseX = this._lastScreenX + this.camera.x - this.canvas.width / 2;
+      this.mouseY = this._lastScreenY + this.camera.y - this.canvas.height / 2;
+    }
     this.handleInput();
 
-    // Move snake
-    this.snake.move(this.canvas.width, this.canvas.height);
+    // Move snake in circular world
+    this.snake.move(); // No need to pass canvas size
+
+    // Camera tracking: center on snake head, soft clamping to world edge
+    const head = this.snake.getHead();
+    const r = CONFIG.WORLD.RADIUS;
+    const cx = CONFIG.WORLD.CENTER_X;
+    const cy = CONFIG.WORLD.CENTER_Y;
+    let targetX = head.x;
+    let targetY = head.y;
+    // Clamp X
+    const dx = targetX - cx;
+    const maxDistX = r - this.camera.width / 2;
+    if (Math.abs(dx) > maxDistX) {
+      targetX = cx + Math.sign(dx) * maxDistX;
+    }
+    // Clamp Y
+    const dy = targetY - cy;
+    const maxDistY = r - this.camera.height / 2;
+    if (Math.abs(dy) > maxDistY) {
+      targetY = cy + Math.sign(dy) * maxDistY;
+    }
+    // Smoothly interpolate camera position (lerp)
+    this.camera.x += (targetX - this.camera.x) * 0.12;
+    this.camera.y += (targetY - this.camera.y) * 0.12;
 
     // Check orb collisions
     const collectedOrbs = this.collisionManager.checkOrbCollisions(this.snake, this.orbs);
@@ -275,7 +312,7 @@ export class GameScene {
       this.effectUI.showScoreGain(points);
     });
 
-    if(this.orbs.length < 10) {
+    if(this.orbs.length < CONFIG.WORLD.MIN_ORB_COUNT){
       let orb = this.orbSpawner.generateOrbWeighted(this.orbPercentages);
       if (orb) this.orbs.push(orb);
     }
@@ -323,15 +360,109 @@ export class GameScene {
     this.ctx.fillStyle = CONFIG.CANVAS.BACKGROUND_COLOR;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Draw orbs
-    this.orbs.forEach(orb => orb.draw(this.ctx));
+    // ...existing code...
 
-    // Draw snake
+  // Fill entire canvas with blue-black background
+  this.ctx.save();
+  this.ctx.fillStyle = '#101522';
+  this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Draw world circle
+  const worldX = this.canvas.width / 2 + (CONFIG.WORLD.CENTER_X - this.camera.x);
+  const worldY = this.canvas.height / 2 + (CONFIG.WORLD.CENTER_Y - this.camera.y);
+  const r = CONFIG.WORLD.RADIUS;
+  this.ctx.beginPath();
+  this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+  this.ctx.closePath();
+  this.ctx.fillStyle = '#101522';
+  this.ctx.fill();
+
+  // Draw outward white border glow
+  this.ctx.save();
+  this.ctx.beginPath();
+  this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+  this.ctx.closePath();
+  this.ctx.strokeStyle = '#fff';
+  this.ctx.lineWidth = 8;
+  this.ctx.shadowColor = '#fff';
+  this.ctx.shadowBlur = 32;
+  this.ctx.shadowOffsetX = 0;
+  this.ctx.shadowOffsetY = 0;
+  this.ctx.stroke();
+  this.ctx.restore();
+
+    // Glowing border (white)
+    this.ctx.beginPath();
+    this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+    this.ctx.closePath();
+    this.ctx.strokeStyle = '#fff';
+    this.ctx.lineWidth = 6;
+    this.ctx.shadowColor = '#fff';
+    this.ctx.shadowBlur = 16;
+    this.ctx.stroke();
+    this.ctx.shadowBlur = 0;
+
+      // Draw stationary stars with parallax effect
+      const STAR_COUNT = CONFIG.WORLD.STARS;
+      const PARALLAX = CONFIG.WORLD.PARALLAX_FACTOR;
+      if (!this.stars || this.stars.length !== STAR_COUNT) {
+        this.stars = [];
+        for (let i = 0; i < STAR_COUNT; i++) {
+          this.stars.push({
+            x: Math.random() * 4000, // Large area for parallax
+            y: Math.random() * 4000,
+            radius: Math.random() * 1.2 + 0.3,
+            alpha: Math.random() * 0.5 + 0.5
+          });
+        }
+      }
+      for (const star of this.stars) {
+        this.ctx.save();
+        this.ctx.globalAlpha = star.alpha;
+        // Parallax offset based on camera
+        const px = star.x - this.camera.x * PARALLAX;
+        const py = star.y - this.camera.y * PARALLAX;
+        // Wrap stars if out of canvas
+        let sx = ((px % this.canvas.width) + this.canvas.width) % this.canvas.width;
+        let sy = ((py % this.canvas.height) + this.canvas.height) % this.canvas.height;
+        this.ctx.beginPath();
+        this.ctx.arc(sx, sy, star.radius, 0, Math.PI * 2);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#fff';
+        this.ctx.shadowColor = '#fff';
+        this.ctx.shadowBlur = 8;
+        this.ctx.fill();
+        this.ctx.restore();
+      }
+
+    // Draw orbs (only those in world circle)
+    this.orbs.forEach(orb => {
+      const dx = orb.x - CONFIG.WORLD.CENTER_X;
+      const dy = orb.y - CONFIG.WORLD.CENTER_Y;
+      if (dx * dx + dy * dy <= CONFIG.WORLD.RADIUS * CONFIG.WORLD.RADIUS) {
+        this.ctx.save();
+        this.ctx.translate(
+          this.canvas.width / 2 - this.camera.x,
+          this.canvas.height / 2 - this.camera.y
+        );
+        orb.draw(this.ctx);
+        this.ctx.restore();
+      }
+    });
+
+    // Draw snake (all segments)
+    this.ctx.save();
+    this.ctx.translate(
+      this.canvas.width / 2 - this.camera.x,
+      this.canvas.height / 2 - this.camera.y
+    );
     this.snake.draw(this.ctx);
+    this.ctx.restore();
 
-    // Draw UI effects
+    // Draw UI effects (screen space)
     this.effectUI.render(this.ctx);
-  }
+  // End of render method
+}
 
   // After updating objects/orbs, tick effects each frame
   // Ensure toasts fade out even when no new orbs are spawned

@@ -21,14 +21,26 @@ export class Snake {
     this.speed = CONFIG.SNAKE.BASE_SPEED;
   }
 
-  move(canvasWidth, canvasHeight) {
+  move() {
     const head = this.body[0];
+    const worldCenterX = CONFIG.WORLD.CENTER_X;
+    const worldCenterY = CONFIG.WORLD.CENTER_Y;
+    const worldRadius = CONFIG.WORLD.RADIUS;
     const newX = head.x + Math.cos(this.angle) * this.speed;
     const newY = head.y + Math.sin(this.angle) * this.speed;
 
-    // Wrap head position into [0, size)
-    const finalX = Snake.wrap(newX, canvasWidth);
-    const finalY = Snake.wrap(newY, canvasHeight);
+    // Check if new head is outside the world circle
+    const dx = newX - worldCenterX;
+    const dy = newY - worldCenterY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    let finalX = newX;
+    let finalY = newY;
+    if (dist > worldRadius) {
+      // Clamp position to the edge of the circle, following the direction of movement
+      const angle = Math.atan2(dy, dx);
+      finalX = worldCenterX + worldRadius * Math.cos(angle);
+      finalY = worldCenterY + worldRadius * Math.sin(angle);
+    }
 
     // Add new head
     this.body.unshift({ x: finalX, y: finalY });
@@ -37,22 +49,20 @@ export class Snake {
     if (!this.isGrowing) {
       this.body.pop();
     } else {
-      this.isGrowing = false; // why: grow for exactly one frame after enqueueing segments
+      this.isGrowing = false;
     }
 
-    // Follow with toroidal shortest path (prevents "teleport stretching")
+    // Follow with shortest path (no toroidal logic for circle)
     for (let i = 1; i < this.body.length; i++) {
       const current = this.body[i];
       const target = this.body[i - 1];
-
-      const dx = Snake.toroidalDelta(target.x, current.x, canvasWidth);
-      const dy = Snake.toroidalDelta(target.y, current.y, canvasHeight);
+      const dx = target.x - current.x;
+      const dy = target.y - current.y;
       const distance = Math.hypot(dx, dy);
-
       if (distance > CONFIG.SNAKE.SEGMENT_DISTANCE) {
         const ratio = CONFIG.SNAKE.SEGMENT_DISTANCE / distance;
-        current.x = Snake.wrap(current.x + dx * ratio, canvasWidth);
-        current.y = Snake.wrap(current.y + dy * ratio, canvasHeight);
+        current.x += dx * ratio;
+        current.y += dy * ratio;
       }
     }
 
@@ -152,11 +162,16 @@ export class Snake {
       ctx.fillStyle = scalePattern;
       ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
 
-      if (index === 0) {
+      // Defensive check for finite values before gradient
+      if (index === 0 && Number.isFinite(segment.x) && Number.isFinite(segment.y) && Number.isFinite(radius)) {
         const gradient = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
         gradient.addColorStop(0, 'rgba(102, 187, 106, 0.3)');
         gradient.addColorStop(1, 'rgba(76, 175, 80, 0.1)');
         ctx.fillStyle = gradient;
+        ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
+      } else if (index === 0) {
+        // fallback: just fill with base color if invalid
+        ctx.fillStyle = CONFIG.COLORS.SNAKE_HEAD_START;
         ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
       } else {
         const alpha = Math.max(0.1, 0.3 - index * 0.01);

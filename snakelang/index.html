@@ -1,25 +1,46 @@
-<!doctype html><!doctype html>
-
+<!doctype html>
 <html lang="en"><html lang="en">
 
-  <head>  
+  <head>
+    <style>
+      #ui-root {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        z-index: 10;
+        pointer-events: none;
+      }
+      #game-ui {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        font-size: 1.5rem;
+        color: #fff;
+        background: rgba(0,0,0,0.5);
+        padding: 0.5rem 2rem;
+        border-radius: 0 0 12px 12px;
+        margin: 0 auto;
+        width: fit-content;
+        pointer-events: auto;
+      }
+    </style>
 
     <meta charset="UTF-8" />    <meta charset="UTF-8" />
 
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SnakeLang - Learn Chinese with Slither.io Style</title>
 
-  </head>  
+  </head>
 
-  <body>  
+  <body>
 
-    <div id="app"></div>    <div id="app"></div>
+  <canvas id="game-canvas"></canvas>
+  <div id="ui-root"></div>
+  <script type="module" src="/src/main.js"></script>
 
-    <script type="module" src="/src/main.js"></script>    <script type="module" src="/src/main.js"></script>
-
-  </body>  
+  </body>
 
 </html>

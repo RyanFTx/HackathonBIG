@@ -38,6 +38,9 @@ export class GameScene {
     this.mouseY = 0;
     this.mousePressed = false;
 
+    // Mode (difficulty)
+    this.mode = { difficulty: 'easy' };
+
     // Track wrong answers for game over popup
     this.wrongAnswers = [];
 
@@ -46,6 +49,10 @@ export class GameScene {
 
   this.setupInput();
   // Do not call reset here; only call it on game start
+  }
+
+  setMode(mode) {
+    this.mode = { ...this.mode, ...mode };
   }
 
   setupInput() {
@@ -227,24 +234,32 @@ export class GameScene {
       const delta = after - before;
       if (delta !== 0) this.effectUI.showLengthChange(delta);
 
-      // If shrink orb, lose a life and end the game if no lives remain
+      // If shrink orb
       if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
-        // Use orb.no to look up the correct translation from orbSpawner.chineseWords
+        // Lookup correct translation
         let correct = orb.translation;
-        let words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
+        const words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
         if (words.length > 0) {
           const found = words.flat().find(w => w.chinese == orb.word || w.pinyin == orb.word);
           if (found) correct = found.english;
         }
-        this.wrongAnswers.push({
-          chinese: orb.word,
-          wrong: orb.wrongTranslation || '?',
-          correct
-        });
-        const isDead = this.scoreboard.loseLife();
-        if (isDead) {
-          this.stop();
-          return; // stop processing further orbs this frame
+
+        // Endless mode: do not lose lives, just show correct translation info
+        if (this.mode && this.mode.difficulty === 'endless') {
+          const text = [orb.word, correct].filter(Boolean).join(' - ');
+          this.effectUI.showEffect('shrink', text);
+        } else {
+          // Normal: track wrong answer and lose a life
+          this.wrongAnswers.push({
+            chinese: orb.word,
+            wrong: orb.wrongTranslation || '?',
+            correct
+          });
+          const isDead = this.scoreboard.loseLife();
+          if (isDead) {
+            this.stop();
+            return; // stop processing further orbs this frame
+          }
         }
       }
 
@@ -253,19 +268,7 @@ export class GameScene {
       const rand = Math.random();
       const orbType = this._pickOrbTypeWeighted();
       // 70% chance normal, 30% chance shrink
-      if(rand < .7){
-        let newOrb = this.orbSpawner.spawnOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
-
-      }else{
-        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
-
-      }
+      this._generateOrbWeighted();
 
 
       // Show effect
@@ -273,13 +276,7 @@ export class GameScene {
     });
 
     if(this.orbs.length < 3) {
-      // Spawn new orb using weighted random selection
-      const orbType = this._pickOrbTypeWeighted();
-      console.log('Spawning new orb of type:', orbType);
-      const newOrb = this.orbSpawner.spawnOrb(orbType);
-      if (newOrb) {
-        this.orbs.push(newOrb);
-      }
+      this._generateOrbWeighted();
     }
 
     this.orbs = this.orbs.filter(orb => !orb.isDead);
@@ -299,25 +296,25 @@ export class GameScene {
       if (r < sum) return types[i];
     }
     return types[0]; // fallback
+  }
 
-    // // Despawn orbs that have exceeded their lifetime
-    // const now = Date.now();
-    // const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
-    // this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
+  _generateOrbWeighted(){
+    const rand = Math.random();
+      const orbType = this._pickOrbTypeWeighted();
+      // 70% chance normal, 30% chance shrink
+      if(rand < .7){
+        let newOrb = this.orbSpawner.spawnOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
 
-    // // Ensure minimum number of normal orbs
-    // const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
-    // const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
-    // if (normalOrbCount < minNormalOrbs) {
-    //   for (let i = normalOrbCount; i < minNormalOrbs; i++) {
-    //     const orb = this.orbSpawner.spawnOrb('normal');
-    //     if (orb) this.orbs.push(orb);
-    //   }
-    // }
+      }else{
+        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
 
-    // // Update systems
-    // this.effectManager.update(16); // Assuming ~60fps
-    // this.effectUI.update();
+      }
   }
 
   render() {
@@ -333,6 +330,13 @@ export class GameScene {
 
     // Draw UI effects
     this.effectUI.render(this.ctx);
+  }
+
+  // After updating objects/orbs, tick effects each frame
+  // Ensure toasts fade out even when no new orbs are spawned
+  postUpdate() {
+    this.effectManager.update(16);
+    this.effectUI.update();
   }
 
   isActive() {

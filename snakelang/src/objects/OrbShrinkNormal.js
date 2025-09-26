@@ -7,12 +7,12 @@ import { Orb } from './Orb.js';
 
 export class OrbShrinkNormal extends Orb {
   constructor(x, y, word, wrongTranslation) {
-    super(x, y, word, wrongTranslation, '#BA68C8'); // purple
+    super(x, y, word, wrongTranslation, '#faffc2ff'); // purple
     this.type = 'shrink';
   }
 
   onCollect() {
     // Future: Apply shrink effect (negative score)
-    return -3 * super.onCollect();
+    return -super.onCollect();
   }
 }

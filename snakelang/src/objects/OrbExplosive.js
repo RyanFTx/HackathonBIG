@@ -6,8 +6,8 @@
 import { Orb } from './Orb.js';
 
 export class OrbExplosive extends Orb {
-  constructor(x, y) {
-    super(x, y);
+  constructor(x, y, word, translation) {
+    super(x, y, word, translation, '#ff4400ff'); // orange-red
     this.type = 'explosive';
   }
 

@@ -12,7 +12,7 @@ import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
 
 export class GameScene {
-  constructor(canvas, ctx) {
+  constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }) {
     this.canvas = canvas;
     this.ctx = ctx;
 
@@ -41,8 +41,11 @@ export class GameScene {
     // Track wrong answers for game over popup
     this.wrongAnswers = [];
 
-    this.setupInput();
-    this.reset();
+    // Store user-defined orb percentages
+    this.orbPercentages = orbPercentages;
+
+  this.setupInput();
+  // Do not call reset here; only call it on game start
   }
 
   setupInput() {
@@ -69,9 +72,11 @@ export class GameScene {
     this.canvas.addEventListener('mousedown', (event) => {
       if (event.button === 0) { // Left mouse button
         this.mousePressed = true;
-        if (!this.isPlaying) {
-          this.start();
-        }
+          // Only start the game if popup menu is NOT active
+          if (!this.isPlaying && !(window.snakeLangPopupMenu && window.snakeLangPopupMenu.isActive && window.snakeLangPopupMenu.isActive())) {
+            this.start();
+            console.log ("2");
+          }
       }
     });
 
@@ -122,12 +127,27 @@ export class GameScene {
       await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms
     }
 
-    if (this.orbSpawner.isReady()) {
-      this.orbs = this.orbSpawner.spawnInitialOrbs();
-      console.log(`🎮 Game ready with ${this.orbSpawner.getWordCount()} Chinese words`);
-    } else {
-      console.warn('⚠️ Timed out waiting for translations, using fallback words');
-      this.orbs = this.orbSpawner.spawnInitialOrbs(); // Try anyway with fallback
+    // Use orbPercentages to determine initial orb distribution
+    const totalOrbs = 5; // You can make this dynamic or configurable
+    const orbCounts = {};
+    Object.entries(this.orbPercentages).forEach(([type, percent]) => {
+      orbCounts[type] = Math.round((percent / 100) * totalOrbs);
+    });
+
+    // Only clear and spawn orbs once
+    if (this.orbs.length === 0) {
+      Object.entries(orbCounts).forEach(([type, count]) => {
+      for (let i = 0; i < count; i++) {
+        const orb = this.orbSpawner.spawnOrb(type);
+        const shrinkOrb = this.orbSpawner.spawnShrinkOrb(type);
+        if (orb) this.orbs.push(orb);
+        if (shrinkOrb && Math.random() < 1) {
+          this.orbs.push(shrinkOrb);
+          console.log(`🎮 Spawned shrink orb: ${type}`);
+        }
+      }
+      });
+      console.log(`🎮 Game ready with user-defined orb percentages and shrink variants`, this.orbs.length);
     }
   }
 
@@ -144,14 +164,14 @@ export class GameScene {
     if (distance > 10) {
       const targetAngle = Math.atan2(dy, dx);
       const currentAngle = this.snake.angle;
-      
+
       // Calculate the shortest rotation direction
       let angleDiff = targetAngle - currentAngle;
-      
+
       // Normalize angle difference to [-π, π]
       while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
       while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
-      
+
       // Turn towards mouse cursor
       if (Math.abs(angleDiff) > 0.1) {
         if (angleDiff > 0) {
@@ -208,11 +228,12 @@ export class GameScene {
       if (delta !== 0) this.effectUI.showLengthChange(delta);
 
       // If shrink orb, lose a life and end the game if no lives remain
-      if (orb.type === 'shrink') {
+      if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
         // Use orb.no to look up the correct translation from orbSpawner.chineseWords
         let correct = orb.translation;
-        if (orb.no && this.orbSpawner.chineseWords) {
-          const found = this.orbSpawner.chineseWords.find(w => w.no == orb.no);
+        let words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
+        if (words.length > 0) {
+          const found = words.flat().find(w => w.chinese == orb.word);
           if (found) correct = found.english;
         }
         this.wrongAnswers.push({
@@ -230,33 +251,73 @@ export class GameScene {
       // Spawn new orb
       // chose randomly between type normal and shrink
       const rand = Math.random();
-      const newOrb = this.orbSpawner.spawnOrb(rand < 0.5 ? 'normal' : 'shrink');
-      if (newOrb) {
-        this.orbs.push(newOrb);
+      const orbType = this._pickOrbTypeWeighted();
+      // 70% chance normal, 30% chance shrink
+      if(rand < .7){
+        let newOrb = this.orbSpawner.spawnOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
+      }else{
+        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
       }
+
 
       // Show effect
       this.effectUI.showScoreGain(points);
     });
 
-    // Despawn orbs that have exceeded their lifetime
-    const now = Date.now();
-    const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
-    this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
-
-    // Ensure minimum number of normal orbs
-    const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
-    const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
-    if (normalOrbCount < minNormalOrbs) {
-      for (let i = normalOrbCount; i < minNormalOrbs; i++) {
-        const orb = this.orbSpawner.spawnOrb('normal');
-        if (orb) this.orbs.push(orb);
+    if(this.orbs.length < 3) {
+      // Spawn new orb using weighted random selection
+      const orbType = this._pickOrbTypeWeighted();
+      console.log('Spawning new orb of type:', orbType);
+      const newOrb = this.orbSpawner.spawnOrb(orbType);
+      if (newOrb) {
+        this.orbs.push(newOrb);
       }
     }
 
-    // Update systems
-    this.effectManager.update(16); // Assuming ~60fps
-    this.effectUI.update();
+    this.orbs = this.orbs.filter(orb => !orb.isDead);
+
+  }
+
+  // Weighted random selection based on orbPercentages
+  _pickOrbTypeWeighted() {
+    const percentages = this.orbPercentages || { normal: 60, speed: 20, explosive: 20 };
+    const types = Object.keys(percentages);
+    const weights = Object.values(percentages);
+    const total = weights.reduce((a, b) => a + b, 0);
+    const r = Math.random() * total;
+    let sum = 0;
+    for (let i = 0; i < types.length; i++) {
+      sum += weights[i];
+      if (r < sum) return types[i];
+    }
+    return types[0]; // fallback
+
+    // // Despawn orbs that have exceeded their lifetime
+    // const now = Date.now();
+    // const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
+    // this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
+
+    // // Ensure minimum number of normal orbs
+    // const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
+    // const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
+    // if (normalOrbCount < minNormalOrbs) {
+    //   for (let i = normalOrbCount; i < minNormalOrbs; i++) {
+    //     const orb = this.orbSpawner.spawnOrb('normal');
+    //     if (orb) this.orbs.push(orb);
+    //   }
+    // }
+
+    // // Update systems
+    // this.effectManager.update(16); // Assuming ~60fps
+    // this.effectUI.update();
   }
 
   render() {

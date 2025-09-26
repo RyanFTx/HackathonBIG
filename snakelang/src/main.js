@@ -90,9 +90,15 @@ class SnakeLangGame {
   }
 
   startGame() {
-    // Pass settings to game scene and orb spawner if needed
+    // Calculate orbCounts from orbPercentages
+    const totalOrbs = 10; // You can make this dynamic or configurable
+    const orbCounts = {};
+    Object.entries(this.orbPercentages).forEach(([type, percent]) => {
+      orbCounts[type] = Math.round((percent / 100) * totalOrbs);
+    });
+    // Create a new GameScene with orbCounts
+    this.scenes.game = new GameScene(this.canvas, this.ctx, orbCounts);
     this.currentScene = this.scenes.game;
-    // TODO: Pass language and orbPercentages to GameScene/OrbSpawner
   }
 
   update() {

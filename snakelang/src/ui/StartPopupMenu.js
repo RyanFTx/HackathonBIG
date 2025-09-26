@@ -15,7 +15,7 @@ export class StartPopupMenu {
       { key: 'explosive', label: 'Explosive' },
       { key: 'speed',     label: 'Speed'     }
     ];
-    this.orbPercentages = { ...options.orbPercentages } || { normal: 60, explosive: 20, speed: 20 };
+    this.orbPercentages = options.orbPercentages ? { ...options.orbPercentages } : { normal: 60, explosive: 20, speed: 20 };
     this._normalizeAll();
 
     // UI state

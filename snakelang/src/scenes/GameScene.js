@@ -55,7 +55,6 @@ export class GameScene {
 
       if (!this.isPlaying && event.code === CONFIG.CONTROLS.START_GAME) {
         this.start();
-        console.log ("1")
       }
     });
 

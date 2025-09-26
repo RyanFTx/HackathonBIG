@@ -111,6 +111,9 @@ export class Orb {
 
   onCollect() {
     // Override in subclasses for specific behavior
+    if (this.isDead) {
+      return 0; // No score if orb is already dying
+    }
     return CONFIG.ORBS.SCORE_VALUE;
   }
 

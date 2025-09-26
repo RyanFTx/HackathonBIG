@@ -21,7 +21,7 @@ export const CONFIG = {
     MAX_SPEED: 5,
     TURN_SPEED: 0.08,
     GROWTH_SEGMENTS: 3,
-    MAX_LENGTH: 50
+    MAX_LENGTH: 100
   },
 
   // Orb settings
@@ -59,7 +59,7 @@ export const CONFIG = {
     ORB_GRADIENT_END: '#FF8F00',
     ORB_BORDER: '#E65100',
     ORB_TEXT: '#000',
-    ORB_SUBTEXT: '#333',
+    ORB_SUBTEXT: '#f3f303ff',
 
     UI_PRIMARY: '#4CAF50',
     UI_TEXT: '#fff'

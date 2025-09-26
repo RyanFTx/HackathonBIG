@@ -26,11 +26,15 @@ export class Snake {
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;
     const worldRadius = CONFIG.WORLD.RADIUS;
-    // Virtual speed scaling based on reference canvas height
-    const referenceHeight = 700; // Design reference
+    // Virtual speed scaling based on geometric mean of canvas width and height
+    const referenceWidth = 1280; // Design reference width
+    const referenceHeight = 700; // Design reference height
     let scale = 1;
     if (typeof window !== 'undefined' && window.snakeLangGame && window.snakeLangGame.ctx && window.snakeLangGame.ctx.canvas) {
-      scale = window.snakeLangGame.ctx.canvas.height / referenceHeight;
+      const canvas = window.snakeLangGame.ctx.canvas;
+      const geomMean = Math.sqrt(canvas.width * canvas.height);
+      const referenceGeomMean = Math.sqrt(referenceWidth * referenceHeight);
+      scale = geomMean / referenceGeomMean;
     }
     const actualSpeed = this.speed * scale;
     const newX = head.x + Math.cos(this.angle) * actualSpeed;

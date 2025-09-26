@@ -230,27 +230,28 @@ export class GameScene {
     // Move snake in circular world
     this.snake.move(); // No need to pass canvas size
 
-    // Camera tracking: center on snake head, clamp to world circle (independent for x/y)
+    // Camera tracking: center on snake head, soft clamping to world edge
     const head = this.snake.getHead();
     const r = CONFIG.WORLD.RADIUS;
     const cx = CONFIG.WORLD.CENTER_X;
     const cy = CONFIG.WORLD.CENTER_Y;
-    let camX = head.x;
-    let camY = head.y;
+    let targetX = head.x;
+    let targetY = head.y;
     // Clamp X
-    const dx = camX - cx;
+    const dx = targetX - cx;
     const maxDistX = r - this.camera.width / 2;
     if (Math.abs(dx) > maxDistX) {
-      camX = cx + Math.sign(dx) * maxDistX;
+      targetX = cx + Math.sign(dx) * maxDistX;
     }
     // Clamp Y
-    const dy = camY - cy;
+    const dy = targetY - cy;
     const maxDistY = r - this.camera.height / 2;
     if (Math.abs(dy) > maxDistY) {
-      camY = cy + Math.sign(dy) * maxDistY;
+      targetY = cy + Math.sign(dy) * maxDistY;
     }
-    this.camera.x = camX;
-    this.camera.y = camY;
+    // Smoothly interpolate camera position (lerp)
+    this.camera.x += (targetX - this.camera.x) * 0.12;
+    this.camera.y += (targetY - this.camera.y) * 0.12;
 
     // Check orb collisions
     const collectedOrbs = this.collisionManager.checkOrbCollisions(this.snake, this.orbs);

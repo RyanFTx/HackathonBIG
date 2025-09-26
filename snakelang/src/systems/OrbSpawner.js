@@ -60,7 +60,7 @@ export class OrbSpawner {
       if (res3.ok) this.wordsLevel3 = await res3.json();
       if (res4.ok) this.wordsLevel4 = await res4.json();
       this.isLoaded = true;
-      console.log(`✅ Loaded translations for levels 1, 2, 4`);
+      console.log(`✅ Loaded translations for levels 1, 2, 3, 4`);
     } catch (error) {
       console.warn('⚠️ Failed to load some translations, using fallback words:', error);
       this.isLoaded = true;

@@ -311,7 +311,7 @@ export class GameScene {
       this.effectUI.showScoreGain(points);
     });
 
-    if(this.orbs.length < 10) {
+    if(this.orbs.length < 20) {
       let orb = this.orbSpawner.generateOrbWeighted(this.orbPercentages);
       if (orb) this.orbs.push(orb);
     }

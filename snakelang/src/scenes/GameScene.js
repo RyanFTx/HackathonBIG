@@ -312,7 +312,7 @@ export class GameScene {
       this.effectUI.showScoreGain(points);
     });
 
-    if(this.orbs.length < 20) {
+    if(this.orbs.length < CONFIG.WORLD.MIN_ORB_COUNT){
       let orb = this.orbSpawner.generateOrbWeighted(this.orbPercentages);
       if (orb) this.orbs.push(orb);
     }
@@ -403,8 +403,8 @@ export class GameScene {
     this.ctx.shadowBlur = 0;
 
       // Draw stationary stars with parallax effect
-      const STAR_COUNT = 120;
-      const PARALLAX = 0.2; // Lower = slower movement
+      const STAR_COUNT = CONFIG.WORLD.STARS;
+      const PARALLAX = CONFIG.WORLD.PARALLAX_FACTOR;
       if (!this.stars || this.stars.length !== STAR_COUNT) {
         this.stars = [];
         for (let i = 0; i < STAR_COUNT; i++) {

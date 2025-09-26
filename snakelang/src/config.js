@@ -20,7 +20,10 @@ export const CONFIG = {
   WORLD: {
     RADIUS: 1000, // Smaller radius to fit inside canvas
     CENTER_X: 750, // Center of canvas
-    CENTER_Y: 350  // Center of canvas
+    CENTER_Y: 350,  // Center of canvas
+    STARS: 120,
+    PARALLAX_FACTOR: 0.02, //lower = slower movement
+    MIN_ORB_COUNT: 20
   },
 
   CANVAS: {

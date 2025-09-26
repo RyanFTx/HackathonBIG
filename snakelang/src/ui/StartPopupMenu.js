@@ -70,7 +70,7 @@ export class StartPopupMenu {
     this._canvas = null;
   }
 
-  // ---------- Mouse handling ----------
+  // Mouse handling
   _handleMouseMove(e) {
     if (!this.active) return;
     const p = this._getMouse(e);
@@ -175,7 +175,7 @@ export class StartPopupMenu {
     this.orbPercentages[bestK] = Math.max(0, Math.min(100, this.orbPercentages[bestK] + diff));
   }
 
-  // ---------- Rendering ----------
+  //Rendering
   render(ctx) {
     if (!this.active) return;
 
@@ -269,7 +269,7 @@ export class StartPopupMenu {
     });
   }
 
-  // ---------- Private: implementation details ----------
+  // Private implementation details
   _hitTest(x, y) {
     // simple AABB hit test
     for (const [id, r] of Object.entries(this._rects)) {

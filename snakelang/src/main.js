@@ -10,6 +10,8 @@ import { MenuScene } from './scenes/MenuScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { UIScene } from './scenes/UIScene.js';
 import { StartPopupMenu } from './ui/StartPopupMenu.js';
+import { GameOverPopup } from './ui/GameOverPopup.js';  
+import { GameController } from './GameController.js';
 
 class SnakeLangGame {
   constructor() {
@@ -26,6 +28,7 @@ class SnakeLangGame {
     };
     this.language = 'characters';
     this.orbPercentages = { normal: 60, explosive: 20, speed: 20 };
+    this.gameController = null;
   }
 
   async init() {
@@ -53,6 +56,7 @@ class SnakeLangGame {
     // Initialize scenes
     this.scenes.menu = new MenuScene();
     this.scenes.game = new GameScene(this.canvas, this.ctx);
+    this.gameController = new GameController(this, this.canvas, this.ctx);
     // Start with popup menu
     this.currentScene = null;
     // Listen for key events for popup
@@ -93,14 +97,25 @@ class SnakeLangGame {
 
   update() {
     if (this.popupMenu.isActive()) return;
+    if (this.gameController && this.gameController.gameOverPopup.isActive()) return;
     if (this.currentScene && this.currentScene.isActive()) {
       this.currentScene.update();
+      // Check for game over
+      if (this.scenes.game.scoreboard.getLives() <= 0) {
+        this.gameController.showGameOver(
+          this.scenes.game.scoreboard.getScore(),
+          this.scenes.game.wrongAnswers
+        );
+      }
     }
   }
 
   render() {
     if (this.popupMenu.isActive()) {
       this.popupMenu.render(this.ctx);
+      return;
+    }
+    if (this.gameController && this.gameController.render()) {
       return;
     }
     if (this.currentScene && this.currentScene.isActive()) {

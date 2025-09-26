@@ -41,8 +41,8 @@ export class GameScene {
     // Store user-defined orb percentages
     this.orbPercentages = orbPercentages;
 
-    this.setupInput();
-    this.reset();
+  this.setupInput();
+  // Do not call reset here; only call it on game start
   }
 
   setupInput() {
@@ -52,6 +52,7 @@ export class GameScene {
 
       if (!this.isPlaying && event.code === CONFIG.CONTROLS.START_GAME) {
         this.start();
+        console.log ("1")
       }
     });
 
@@ -69,9 +70,11 @@ export class GameScene {
     this.canvas.addEventListener('mousedown', (event) => {
       if (event.button === 0) { // Left mouse button
         this.mousePressed = true;
-        if (!this.isPlaying) {
-          this.start();
-        }
+          // Only start the game if popup menu is NOT active
+          if (!this.isPlaying && !(window.snakeLangPopupMenu && window.snakeLangPopupMenu.isActive && window.snakeLangPopupMenu.isActive())) {
+            this.start();
+            console.log ("2");
+          }
       }
     });
 
@@ -117,20 +120,22 @@ export class GameScene {
     }
 
     // Use orbPercentages to determine initial orb distribution
-    const totalOrbs = 10; // You can make this dynamic or configurable
+    const totalOrbs = 5; // You can make this dynamic or configurable
     const orbCounts = {};
     Object.entries(this.orbPercentages).forEach(([type, percent]) => {
       orbCounts[type] = Math.round((percent / 100) * totalOrbs);
     });
 
-    this.orbs = [];
-    Object.entries(orbCounts).forEach(([type, count]) => {
+    // Only clear and spawn orbs once
+    if (this.orbs.length === 0) {
+      Object.entries(orbCounts).forEach(([type, count]) => {
       for (let i = 0; i < count; i++) {
         const orb = this.orbSpawner.spawnOrb(type);
         if (orb) this.orbs.push(orb);
       }
-    });
-    console.log(`🎮 Game ready with user-defined orb percentages`, this.orbPercentages);
+      });
+      console.log(`🎮 Game ready with user-defined orb percentages and shrink variants`, this.orbs.length);
+    }
   }
 
   handleInput() {
@@ -201,6 +206,7 @@ export class GameScene {
 
       // Spawn new orb using weighted random selection
       const orbType = this._pickOrbTypeWeighted();
+      console.log('Spawning new orb of type:', orbType);
       const newOrb = this.orbSpawner.spawnOrb(orbType);
       if (newOrb) {
         this.orbs.push(newOrb);
@@ -209,6 +215,18 @@ export class GameScene {
       // Show effect
       this.effectUI.showScoreGain(points);
     });
+
+    if(this.orbs.length < 3) {
+      // Spawn new orb using weighted random selection
+      const orbType = this._pickOrbTypeWeighted();
+      console.log('Spawning new orb of type:', orbType);
+      const newOrb = this.orbSpawner.spawnOrb(orbType);
+      if (newOrb) {
+        this.orbs.push(newOrb);
+      }
+    }
+
+    this.orbs = this.orbs.filter(orb => !orb.isDead);
 
   }
 
@@ -226,24 +244,24 @@ export class GameScene {
     }
     return types[0]; // fallback
 
-    // Despawn orbs that have exceeded their lifetime
-    const now = Date.now();
-    const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
-    this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
+    // // Despawn orbs that have exceeded their lifetime
+    // const now = Date.now();
+    // const orbLifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
+    // this.orbs = this.orbs.filter(orb => (now - orb.spawnTime) < orbLifetime);
 
-    // Ensure minimum number of normal orbs
-    const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
-    const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
-    if (normalOrbCount < minNormalOrbs) {
-      for (let i = normalOrbCount; i < minNormalOrbs; i++) {
-        const orb = this.orbSpawner.spawnOrb('normal');
-        if (orb) this.orbs.push(orb);
-      }
-    }
+    // // Ensure minimum number of normal orbs
+    // const minNormalOrbs = CONFIG.ORBS.MIN_NORMAL_ORBS;
+    // const normalOrbCount = this.orbs.filter(orb => orb.constructor.name === 'OrbNormal').length;
+    // if (normalOrbCount < minNormalOrbs) {
+    //   for (let i = normalOrbCount; i < minNormalOrbs; i++) {
+    //     const orb = this.orbSpawner.spawnOrb('normal');
+    //     if (orb) this.orbs.push(orb);
+    //   }
+    // }
 
-    // Update systems
-    this.effectManager.update(16); // Assuming ~60fps
-    this.effectUI.update();
+    // // Update systems
+    // this.effectManager.update(16); // Assuming ~60fps
+    // this.effectUI.update();
   }
 
   render() {

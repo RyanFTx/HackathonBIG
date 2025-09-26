@@ -17,38 +17,49 @@ export class Orb {
     this.floatPhase = Math.random() * Math.PI * 2;
     // Track spawn time for lifetime
     this.spawnTime = Date.now();
+    // Dying/dead state
+    this.isDying = false;
+    this.dieStartTime = null;
+    this.fadeOutDuration = 500; // ms
+    this.isDead = false;
     // For debugging
     console.log('Created orb with word:', word, translation, 'color:', color);
   }
 
   draw(ctx) {
-  if (this.word) {
-    // ---- Lifetime-based visual warning ----
+    if (!this.word) return;
     const now = Date.now();
     const lifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
     const timeAlive = now - this.spawnTime;
     const timeLeft = lifetime - timeAlive;
-    const warningStart = lifetime * 0.4; // start warning at last 40%
-    const fadeOutDuration = 500; // ms
+    const warningStart = lifetime * 0.4;
+
+    // If dying, use dieStartTime for fade
+    let alpha = 1;
+    if (this.isDying && this.dieStartTime) {
+      const dyingElapsed = now - this.dieStartTime;
+      alpha = Math.max(0, 1 - dyingElapsed / this.fadeOutDuration);
+      if (dyingElapsed >= this.fadeOutDuration) {
+        this.isDead = true;
+      }
+    } else if (timeLeft < this.fadeOutDuration) {
+      // Start dying
+      this.isDying = true;
+      this.dieStartTime = now;
+      alpha = Math.max(0, timeLeft / this.fadeOutDuration);
+    }
 
     // Animation base
     let time = now / 700;
     let scale = 1 + 0.10 * Math.sin(time + this.floatPhase);
     let floatOffset = 4 * Math.sin(time * 0.9 + this.floatPhase);
-    let alpha = 1;
 
     // Smooth warning ramp-up
     if (timeLeft < warningStart) {
-      const warningProgress = 1 - timeLeft / warningStart; // 0 to 1
-      // Ease-in (quadratic)
+      const warningProgress = 1 - timeLeft / warningStart;
       const ease = warningProgress * warningProgress;
-      scale += 0.18 * ease * Math.sin(now / (180 - 100 * ease) + this.floatPhase); // pulse gets bigger and faster
+      scale += 0.18 * ease * Math.sin(now / (180 - 100 * ease) + this.floatPhase);
       floatOffset += 2 * ease * Math.sin(now / (120 - 60 * ease) + this.floatPhase);
-    }
-
-    // Fade out in last fadeOutDuration ms
-    if (timeLeft < fadeOutDuration) {
-      alpha = Math.max(0, timeLeft / fadeOutDuration);
     }
 
     // ---- Draw main glowing word text with scale, floating, and alpha ----
@@ -83,7 +94,7 @@ export class Orb {
     ctx.shadowBlur = 0;
     ctx.shadowColor = 'transparent';
   }
-  }
+
 
   checkCollision(snakeHead, snakeSize) {
     const dx = snakeHead.x - this.x;
@@ -96,4 +107,5 @@ export class Orb {
     // Override in subclasses for specific behavior
     return CONFIG.ORBS.SCORE_VALUE;
   }
+
 }

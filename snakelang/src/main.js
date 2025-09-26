@@ -10,7 +10,7 @@ import { MenuScene } from './scenes/MenuScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { UIScene } from './scenes/UIScene.js';
 import { StartPopupMenu } from './ui/StartPopupMenu.js';
-import { GameOverPopup } from './ui/GameOverPopup.js';  
+import { GameOverPopup } from './ui/GameOverPopup.js';
 import { GameController } from './GameController.js';
 
 class SnakeLangGame {
@@ -105,10 +105,13 @@ class SnakeLangGame {
     if (this.currentScene && this.currentScene.setMode && this.difficulty) {
       this.currentScene.setMode({ difficulty: this.difficulty });
     }
-    // If popup provided difficulty, propagate as mode
     if (this.popupMenu && this.popupMenu.difficultyLevels && this.scenes.game.setMode) {
       const diffKey = this.popupMenu.difficultyLevels[this.popupMenu.difficultyIndex]?.key || 'easy';
       this.scenes.game.setMode({ difficulty: diffKey });
+    }
+    // Start the game immediately
+    if (this.scenes.game && this.scenes.game.start) {
+      this.scenes.game.start();
     }
   }
 

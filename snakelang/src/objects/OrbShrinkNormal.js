@@ -9,6 +9,7 @@ export class OrbShrinkNormal extends Orb {
   constructor(x, y, word, wrongTranslation) {
     super(x, y, word, wrongTranslation, '#BA68C8'); // purple
     this.type = 'shrink';
+    this.no = no;
   }
 
   onCollect() {

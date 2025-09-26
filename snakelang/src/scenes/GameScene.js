@@ -38,6 +38,9 @@ export class GameScene {
     this.mouseY = 0;
     this.mousePressed = false;
 
+    // Track wrong answers for game over popup
+    this.wrongAnswers = [];
+
     // Store user-defined orb percentages
     this.orbPercentages = orbPercentages;
 
@@ -98,13 +101,19 @@ export class GameScene {
   stop() {
     this.isPlaying = false;
     const isHighScore = this.scoreboard.getScore() === this.scoreboard.getHighScore();
-    this.effectUI.showGameOver(this.scoreboard.getScore(), isHighScore);
+    // Pass wrongAnswers to GameOverPopup
+    if (window.gameController) {
+      window.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
+    } else {
+      this.effectUI.showGameOver(this.scoreboard.getScore(), isHighScore);
+    }
   }
 
   reset() {
     this.snake.reset();
     this.scoreboard.reset();
     this.effectManager.clear();
+    this.wrongAnswers = [];
 
     // Wait for translations to load before spawning orbs
     this.initializeOrbs();
@@ -221,6 +230,18 @@ export class GameScene {
 
       // If shrink orb, lose a life and end the game if no lives remain
       if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
+        // Use orb.no to look up the correct translation from orbSpawner.chineseWords
+        let correct = orb.translation;
+        let words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
+        if (orb.no && words.length > 0) {
+          const found = words.flat().find(w => w.no == orb.no);
+          if (found) correct = found.english;
+        }
+        this.wrongAnswers.push({
+          chinese: orb.word,
+          wrong: orb.wrongTranslation || '?',
+          correct
+        });
         const isDead = this.scoreboard.loseLife();
         if (isDead) {
           this.stop();

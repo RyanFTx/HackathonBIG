@@ -10,6 +10,7 @@ import { OrbSpawner } from '../systems/OrbSpawner.js';
 import { Scoreboard } from '../ui/Scoreboard.js';
 import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
+import { PronunciationPlayer } from '../systems/PronunciationPlayer.js';
 
 export class GameScene {
   constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }, language = 'characters') {
@@ -261,6 +262,11 @@ export class GameScene {
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
 
+      // Play pronunciation audio for correct orbs only
+      if (points > 0 && orb.word) {
+        PronunciationPlayer.play(orb.word, orb.translation);
+      }
+
       const totalScore = Math.max(0, this.scoreboard.getScore()); // floor at 0
 
       // Proportional mapping: length = base + k * score
@@ -475,5 +481,19 @@ export class GameScene {
 
   isActive() {
     return true; // Game scene is always active when created
+  }
+
+  // Add pronunciation audio method
+  playPronunciationAudio(word, translation) {
+    // Use browser SpeechSynthesis API for demo
+    if ('speechSynthesis' in window) {
+      const utter = new window.SpeechSynthesisUtterance(word);
+      utter.lang = 'zh-CN'; // Mandarin Chinese
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } else {
+      // Could add fallback to play a pre-recorded audio file
+      console.warn('Speech synthesis not supported');
+    }
   }
 }

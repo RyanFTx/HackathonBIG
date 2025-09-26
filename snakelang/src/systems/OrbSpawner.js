@@ -83,7 +83,7 @@ export class OrbSpawner {
   }
 
 
-  generateOrbWeighted(orbPercentages){
+  generateOrbWeighted(orbPercentages) {
     const rand = Math.random();
       const orbType = this._pickOrbTypeWeighted(orbPercentages);
       // 70% chance normal, 30% chance shrink

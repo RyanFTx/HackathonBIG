@@ -11,7 +11,7 @@ export class BootScene {
   async preload() {
     // Future: Load sprites, sounds, translation files
     console.log('🚀 BootScene: Preloading assets...');
-    
+
     // Simulate loading time
     return new Promise(resolve => {
       setTimeout(() => {

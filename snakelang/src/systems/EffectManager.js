@@ -32,7 +32,7 @@ export class EffectManager {
     // Update all active effects
     for (const [type, effect] of this.activeEffects.entries()) {
       effect.remainingTime -= deltaTime;
-      
+
       if (effect.remainingTime <= 0) {
         this.removeEffect(type);
       }

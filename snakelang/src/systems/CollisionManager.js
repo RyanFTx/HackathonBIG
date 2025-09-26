@@ -28,19 +28,19 @@ export class CollisionManager {
 
   checkSnakeSelfCollision(snake) {
     const head = snake.getHead();
-    
+
     // Check collision with body (skip first few segments to avoid immediate collision)
     for (let i = 4; i < snake.body.length; i++) {
       const segment = snake.body[i];
       const dx = head.x - segment.x;
       const dy = head.y - segment.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      
+
       if (distance < CONFIG.SNAKE.SIZE) {
         return true;
       }
     }
-    
+
     return false;
   }
 

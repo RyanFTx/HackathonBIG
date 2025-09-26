@@ -26,7 +26,7 @@ export class OrbSpawner {
     const word = this.chineseWords[Math.floor(Math.random() * this.chineseWords.length)];
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    
+
     return new OrbNormal(x, y, word);
   }
 

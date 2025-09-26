@@ -53,7 +53,7 @@ export const CONFIG = {
     SNAKE_BODY: 'rgba(76, 175, 80, {alpha})',
     SNAKE_BORDER: '#2E7D32',
     SNAKE_EYES: '#fff',
-    
+
     ORB_GRADIENT_START: '#FFD700',
     ORB_GRADIENT_MID: '#FFA000',
     ORB_GRADIENT_END: '#FF8F00',

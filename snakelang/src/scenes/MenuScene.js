@@ -27,7 +27,7 @@ export class MenuScene {
 
   render(ctx) {
     if (!this.active) return;
-    
+
     // Future: Render main menu
     ctx.fillStyle = '#4CAF50';
     ctx.font = '24px Arial';

@@ -15,24 +15,24 @@ export class GameScene {
   constructor(canvas, ctx) {
     this.canvas = canvas;
     this.ctx = ctx;
-    
+
     // Game objects
     this.snake = new Snake();
     this.orbs = [];
-    
+
     // Systems
     this.collisionManager = new CollisionManager();
     this.effectManager = new EffectManager();
     this.orbSpawner = new OrbSpawner(canvas.width, canvas.height);
-    
+
     // UI
     this.scoreboard = new Scoreboard();
     this.effectUI = new EffectUI();
-    
+
     // Game state
     this.isPlaying = false;
     this.keys = {};
-    
+
     this.setupInput();
     this.reset();
   }
@@ -76,12 +76,12 @@ export class GameScene {
     if (CONFIG.CONTROLS.TURN_LEFT.some(key => this.keys[key])) {
       this.snake.turnLeft();
     }
-    
+
     // Turn right
     if (CONFIG.CONTROLS.TURN_RIGHT.some(key => this.keys[key])) {
       this.snake.turnRight();
     }
-    
+
     // Speed boost
     if (CONFIG.CONTROLS.SPEED_BOOST.some(key => this.keys[key])) {
       this.snake.speedBoost();
@@ -100,18 +100,18 @@ export class GameScene {
 
     // Check orb collisions
     const collectedOrbs = this.collisionManager.checkOrbCollisions(this.snake, this.orbs);
-    
+
     collectedOrbs.forEach(orb => {
       // Grow snake
       this.snake.grow();
-      
+
       // Update score
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
-      
+
       // Spawn new orb
       this.orbs.push(this.orbSpawner.spawnOrb());
-      
+
       // Show effect
       this.effectUI.showScoreGain(points);
     });
@@ -128,10 +128,10 @@ export class GameScene {
 
     // Draw orbs
     this.orbs.forEach(orb => orb.draw(this.ctx));
-    
+
     // Draw snake
     this.snake.draw(this.ctx);
-    
+
     // Draw UI effects
     this.effectUI.render(this.ctx);
   }

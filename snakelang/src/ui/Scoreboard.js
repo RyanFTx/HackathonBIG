@@ -36,11 +36,11 @@ export class Scoreboard {
   render() {
     const scoreElement = document.getElementById('score');
     const livesElement = document.getElementById('lives');
-    
+
     if (scoreElement) {
       scoreElement.textContent = `Score: ${this.score}`;
     }
-    
+
     if (livesElement) {
       const hearts = '❤️'.repeat(this.lives);
       livesElement.textContent = `Lives: ${hearts}`;

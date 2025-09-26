@@ -5,7 +5,7 @@ A Slither.io-inspired game for learning Chinese vocabulary through interactive g
 ## 🎮 Game Features
 
 - **Smooth Slither.io Movement**: Continuous, angle-based snake control
-- **Chinese Vocabulary**: Learn Chinese characters with English translations  
+- **Chinese Vocabulary**: Learn Chinese characters with English translations
 - **Progressive Growth**: Snake grows when collecting vocabulary orbs
 - **Score System**: Track progress with persistent high scores
 - **Responsive Design**: Works on desktop and mobile devices
@@ -52,11 +52,13 @@ snakelang/
 ## 🚀 Getting Started
 
 1. **Install Dependencies**
+
    ```bash
    npm install
    ```
 
 2. **Start Development Server**
+
    ```bash
    npm run dev
    ```
@@ -70,7 +72,7 @@ snakelang/
 ## 🎯 Game Controls
 
 - **A / ← (Left Arrow)**: Steer left
-- **D / → (Right Arrow)**: Steer right  
+- **D / → (Right Arrow)**: Steer right
 - **W / ↑ (Up Arrow)**: Speed boost
 - **Space**: Start/Restart game
 
@@ -84,12 +86,14 @@ snakelang/
 ## 🛠️ Technical Architecture
 
 ### **Modular Design**
+
 - **Scene System**: Organized game states (Boot, Menu, Game, UI)
 - **Object-Oriented**: Clean separation of Snake, Orb, and system classes
 - **Configuration**: Centralized settings in `config.js`
 - **Extensible**: Easy to add new orb types and game features
 
 ### **Core Systems**
+
 - **Collision Detection**: Efficient collision management system
 - **Effect Management**: Handle temporary game effects
 - **Orb Spawning**: Smart positioning and vocabulary selection
@@ -98,16 +102,21 @@ snakelang/
 ## 🎨 Customization
 
 ### **Adding New Vocabulary**
+
 Edit the `chineseWords` array in `src/systems/OrbSpawner.js` or create JSON files in `public/assets/translations/`.
 
 ### **Game Balance**
+
 Modify values in `src/config.js`:
+
 - Snake speed and turning rate
 - Orb spawn frequency and positioning
 - Score values and growth mechanics
 
-### **Visual Style** 
+### **Visual Style**
+
 Update colors and styling in:
+
 - `src/config.js` for game object colors
 - `src/style.css` for UI styling
 
@@ -123,12 +132,14 @@ Update colors and styling in:
 ## 🧑‍💻 Development
 
 ### **Adding New Features**
+
 1. Determine appropriate module (objects/, systems/, scenes/, ui/)
 2. Create new class following existing patterns
 3. Import and integrate with relevant systems
 4. Update configuration if needed
 
 ### **Building for Production**
+
 ```bash
 npm run build
 ```

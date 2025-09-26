@@ -1,0 +1,1784 @@
+[
+  {
+    "no": "1",
+    "chinese": "阿姨",
+    "pinyin": "āyí",
+    "english": "aunt"
+  },
+  {
+    "no": "2",
+    "chinese": "啊",
+    "pinyin": "a",
+    "english": "ah"
+  },
+  {
+    "no": "3",
+    "chinese": "矮",
+    "pinyin": "ǎi",
+    "english": "short"
+  },
+  {
+    "no": "4",
+    "chinese": "爱好",
+    "pinyin": "àihào",
+    "english": "hobby"
+  },
+  {
+    "no": "5",
+    "chinese": "安静",
+    "pinyin": "ānjìng",
+    "english": "Be quiet"
+  },
+  {
+    "no": "6",
+    "chinese": "把",
+    "pinyin": "bǎ",
+    "english": "hold"
+  },
+  {
+    "no": "7",
+    "chinese": "班",
+    "pinyin": "bān",
+    "english": "class"
+  },
+  {
+    "no": "8",
+    "chinese": "搬",
+    "pinyin": "bān",
+    "english": "move"
+  },
+  {
+    "no": "9",
+    "chinese": "半",
+    "pinyin": "bàn",
+    "english": "half"
+  },
+  {
+    "no": "10",
+    "chinese": "办法",
+    "pinyin": "bànfǎ",
+    "english": "Way"
+  },
+  {
+    "no": "11",
+    "chinese": "办公室",
+    "pinyin": "bàngōngshì",
+    "english": "Office"
+  },
+  {
+    "no": "12",
+    "chinese": "帮忙",
+    "pinyin": "bāngmáng",
+    "english": "Help"
+  },
+  {
+    "no": "13",
+    "chinese": "包",
+    "pinyin": "bāo",
+    "english": "package"
+  },
+  {
+    "no": "14",
+    "chinese": "饱",
+    "pinyin": "bǎo",
+    "english": "full"
+  },
+  {
+    "no": "15",
+    "chinese": "北方",
+    "pinyin": "běifāng",
+    "english": "north"
+  },
+  {
+    "no": "16",
+    "chinese": "被",
+    "pinyin": "bèi",
+    "english": "cover"
+  },
+  {
+    "no": "17",
+    "chinese": "鼻子",
+    "pinyin": "bízi",
+    "english": "nose"
+  },
+  {
+    "no": "18",
+    "chinese": "比较",
+    "pinyin": "bǐjiào",
+    "english": "compare"
+  },
+  {
+    "no": "19",
+    "chinese": "比赛",
+    "pinyin": "bǐsài",
+    "english": "Match"
+  },
+  {
+    "no": "20",
+    "chinese": "笔记本",
+    "pinyin": "bǐjìběn",
+    "english": "notebook"
+  },
+  {
+    "no": "21",
+    "chinese": "必须",
+    "pinyin": "bìxū",
+    "english": "Must"
+  },
+  {
+    "no": "22",
+    "chinese": "变化",
+    "pinyin": "biànhuà",
+    "english": "change"
+  },
+  {
+    "no": "23",
+    "chinese": "别人",
+    "pinyin": "biéren",
+    "english": "Others"
+  },
+  {
+    "no": "24",
+    "chinese": "冰箱",
+    "pinyin": "bīngxiāng",
+    "english": "Refrigerator"
+  },
+  {
+    "no": "25",
+    "chinese": "菜单",
+    "pinyin": "càidān",
+    "english": "menu"
+  },
+  {
+    "no": "26",
+    "chinese": "参加",
+    "pinyin": "cānjiā",
+    "english": "participate in"
+  },
+  {
+    "no": "27",
+    "chinese": "草",
+    "pinyin": "cǎo",
+    "english": "grass"
+  },
+  {
+    "no": "28",
+    "chinese": "层",
+    "pinyin": "céng",
+    "english": "layer"
+  },
+  {
+    "no": "29",
+    "chinese": "差",
+    "pinyin": "chà",
+    "english": "bad"
+  },
+  {
+    "no": "30",
+    "chinese": "超市",
+    "pinyin": "chāoshì",
+    "english": "Supermarket"
+  },
+  {
+    "no": "31",
+    "chinese": "衬衫",
+    "pinyin": "chènshān",
+    "english": "shirt"
+  },
+  {
+    "no": "32",
+    "chinese": "成绩",
+    "pinyin": "chéngjì",
+    "english": "achievement"
+  },
+  {
+    "no": "33",
+    "chinese": "城市",
+    "pinyin": "chéngshì",
+    "english": "City"
+  },
+  {
+    "no": "34",
+    "chinese": "迟到",
+    "pinyin": "chídào",
+    "english": "Late"
+  },
+  {
+    "no": "35",
+    "chinese": "除了",
+    "pinyin": "chúle",
+    "english": "except, besides"
+  },
+  {
+    "no": "36",
+    "chinese": "船",
+    "pinyin": "chuán",
+    "english": "ship"
+  },
+  {
+    "no": "37",
+    "chinese": "春",
+    "pinyin": "chūn",
+    "english": "spring"
+  },
+  {
+    "no": "38",
+    "chinese": "词典",
+    "pinyin": "cídiǎn",
+    "english": "Dictionaries"
+  },
+  {
+    "no": "39",
+    "chinese": "聪明",
+    "pinyin": "cōngming",
+    "english": "clever"
+  },
+  {
+    "no": "40",
+    "chinese": "打扫",
+    "pinyin": "dǎsǎo",
+    "english": "Clean"
+  },
+  {
+    "no": "41",
+    "chinese": "打算",
+    "pinyin": "dǎsuàn",
+    "english": "Plan"
+  },
+  {
+    "no": "42",
+    "chinese": "带",
+    "pinyin": "dài",
+    "english": "belt"
+  },
+  {
+    "no": "43",
+    "chinese": "担心",
+    "pinyin": "dānxīn",
+    "english": "Worry"
+  },
+  {
+    "no": "44",
+    "chinese": "蛋糕",
+    "pinyin": "dàngāo",
+    "english": "Cake"
+  },
+  {
+    "no": "45",
+    "chinese": "当然",
+    "pinyin": "dāngrán",
+    "english": "Of course"
+  },
+  {
+    "no": "47",
+    "chinese": "灯",
+    "pinyin": "dēng",
+    "english": "lamp"
+  },
+  {
+    "no": "48",
+    "chinese": "地方",
+    "pinyin": "dìfang",
+    "english": "local"
+  },
+  {
+    "no": "49",
+    "chinese": "地铁",
+    "pinyin": "dìtiě",
+    "english": "metro"
+  },
+  {
+    "no": "50",
+    "chinese": "地图",
+    "pinyin": "dìtú",
+    "english": "Map"
+  },
+  {
+    "no": "51",
+    "chinese": "电梯",
+    "pinyin": "diàntī",
+    "english": "Elevator."
+  },
+  {
+    "no": "52",
+    "chinese": "电子邮件",
+    "pinyin": "diànzǐyóujiàn",
+    "english": "E-mail"
+  },
+  {
+    "no": "53",
+    "chinese": "东",
+    "pinyin": "dōng",
+    "english": "east"
+  },
+  {
+    "no": "54",
+    "chinese": "冬",
+    "pinyin": "dōng",
+    "english": "winter"
+  },
+  {
+    "no": "55",
+    "chinese": "动物",
+    "pinyin": "dòngwù",
+    "english": "Animal"
+  },
+  {
+    "no": "56",
+    "chinese": "短",
+    "pinyin": "duǎn",
+    "english": "short"
+  },
+  {
+    "no": "57",
+    "chinese": "段",
+    "pinyin": "duàn",
+    "english": "paragraph"
+  },
+  {
+    "no": "58",
+    "chinese": "锻炼",
+    "pinyin": "duànliàn",
+    "english": "Physical exercise"
+  },
+  {
+    "no": "59",
+    "chinese": "多么",
+    "pinyin": "duōme",
+    "english": "such"
+  },
+  {
+    "no": "60",
+    "chinese": "饿",
+    "pinyin": "è",
+    "english": "hungry"
+  },
+  {
+    "no": "62",
+    "chinese": "耳朵",
+    "pinyin": "ěrduo",
+    "english": "Ears"
+  },
+  {
+    "no": "63",
+    "chinese": "发",
+    "pinyin": "fā",
+    "english": "send out"
+  },
+  {
+    "no": "64",
+    "chinese": "发烧",
+    "pinyin": "fāshāo",
+    "english": "Have a fever"
+  },
+  {
+    "no": "65",
+    "chinese": "发现",
+    "pinyin": "fāxiàn",
+    "english": "find, discover"
+  },
+  {
+    "no": "66",
+    "chinese": "方便",
+    "pinyin": "fāngbiàn",
+    "english": "convenient"
+  },
+  {
+    "no": "67",
+    "chinese": "放",
+    "pinyin": "fàng",
+    "english": "discharge"
+  },
+  {
+    "no": "68",
+    "chinese": "放心",
+    "pinyin": "fàngxīn",
+    "english": "Don't worry"
+  },
+  {
+    "no": "69",
+    "chinese": "分",
+    "pinyin": "fēn",
+    "english": "minute"
+  },
+  {
+    "no": "70",
+    "chinese": "附近",
+    "pinyin": "fùjìn",
+    "english": "nearby"
+  },
+  {
+    "no": "71",
+    "chinese": "复习",
+    "pinyin": "fùxí",
+    "english": "Review"
+  },
+  {
+    "no": "72",
+    "chinese": "干净",
+    "pinyin": "gānjìng",
+    "english": "clean"
+  },
+  {
+    "no": "73",
+    "chinese": "感兴趣",
+    "pinyin": "gǎnxìngqù",
+    "english": "be intretested in"
+  },
+  {
+    "no": "74",
+    "chinese": "感冒",
+    "pinyin": "gǎnmào",
+    "english": "get a cold"
+  },
+  {
+    "no": "75",
+    "chinese": "刚才",
+    "pinyin": "gāngcái",
+    "english": "just"
+  },
+  {
+    "no": "76",
+    "chinese": "个子",
+    "pinyin": "gèzi",
+    "english": "height"
+  },
+  {
+    "no": "77",
+    "chinese": "跟",
+    "pinyin": "gēn",
+    "english": "with"
+  },
+  {
+    "no": "78",
+    "chinese": "根据",
+    "pinyin": "gēnjù",
+    "english": "according to"
+  },
+  {
+    "no": "79",
+    "chinese": "更",
+    "pinyin": "gèng",
+    "english": "more"
+  },
+  {
+    "no": "80",
+    "chinese": "公斤",
+    "pinyin": "gōngjīn",
+    "english": "Kg."
+  },
+  {
+    "no": "81",
+    "chinese": "公园",
+    "pinyin": "gōngyuán",
+    "english": "Park"
+  },
+  {
+    "no": "82",
+    "chinese": "故事",
+    "pinyin": "gùshi",
+    "english": "Story"
+  },
+  {
+    "no": "83",
+    "chinese": "刮风",
+    "pinyin": "guāfēng",
+    "english": "Windy"
+  },
+  {
+    "no": "84",
+    "chinese": "关",
+    "pinyin": "guān",
+    "english": "shut"
+  },
+  {
+    "no": "85",
+    "chinese": "关系",
+    "pinyin": "guānxì",
+    "english": "relationship"
+  },
+  {
+    "no": "86",
+    "chinese": "关心",
+    "pinyin": "guānxīn",
+    "english": "Care for"
+  },
+  {
+    "no": "87",
+    "chinese": "关于",
+    "pinyin": "guānyú",
+    "english": "about"
+  },
+  {
+    "no": "88",
+    "chinese": "国家",
+    "pinyin": "guójiā",
+    "english": "Country"
+  },
+  {
+    "no": "89",
+    "chinese": "过去",
+    "pinyin": "guòqù",
+    "english": "Past times"
+  },
+  {
+    "no": "90",
+    "chinese": "过（动词）",
+    "pinyin": "guò",
+    "english": "pass"
+  },
+  {
+    "no": "91",
+    "chinese": "还是",
+    "pinyin": "háishì",
+    "english": "still"
+  },
+  {
+    "no": "92",
+    "chinese": "害怕",
+    "pinyin": "hàipà",
+    "english": "Fear"
+  },
+  {
+    "no": "93",
+    "chinese": "黑板",
+    "pinyin": "hēibǎn",
+    "english": "blackboard"
+  },
+  {
+    "no": "94",
+    "chinese": "后来",
+    "pinyin": "hòulái",
+    "english": "later"
+  },
+  {
+    "no": "95",
+    "chinese": "护照",
+    "pinyin": "hùzhào",
+    "english": "passport"
+  },
+  {
+    "no": "96",
+    "chinese": "花（动词）",
+    "pinyin": "huā",
+    "english": "spend"
+  },
+  {
+    "no": "97",
+    "chinese": "花（名词）",
+    "pinyin": "huā",
+    "english": "flower"
+  },
+  {
+    "no": "98",
+    "chinese": "画",
+    "pinyin": "huà",
+    "english": "painting"
+  },
+  {
+    "no": "99",
+    "chinese": "坏",
+    "pinyin": "huài",
+    "english": "bad"
+  },
+  {
+    "no": "100",
+    "chinese": "欢迎",
+    "pinyin": "huānyíng",
+    "english": "Welcome"
+  },
+  {
+    "no": "101",
+    "chinese": "还（动词）",
+    "pinyin": "huán",
+    "english": "Return"
+  },
+  {
+    "no": "102",
+    "chinese": "环境",
+    "pinyin": "huánjìng",
+    "english": "Environment"
+  },
+  {
+    "no": "103",
+    "chinese": "换",
+    "pinyin": "huàn",
+    "english": "change"
+  },
+  {
+    "no": "104",
+    "chinese": "黄河",
+    "pinyin": "huánghé",
+    "english": "Yellow River"
+  },
+  {
+    "no": "105",
+    "chinese": "回答",
+    "pinyin": "huídá",
+    "english": "Answer"
+  },
+  {
+    "no": "106",
+    "chinese": "会议",
+    "pinyin": "huìyì",
+    "english": "Meeting"
+  },
+  {
+    "no": "107",
+    "chinese": "或者",
+    "pinyin": "huòzhě",
+    "english": "perhaps"
+  },
+  {
+    "no": "108",
+    "chinese": "几乎",
+    "pinyin": "jīhū",
+    "english": "almost"
+  },
+  {
+    "no": "109",
+    "chinese": "机会",
+    "pinyin": "jīhuì",
+    "english": "Opportunity"
+  },
+  {
+    "no": "110",
+    "chinese": "极",
+    "pinyin": "jí",
+    "english": "extremely"
+  },
+  {
+    "no": "111",
+    "chinese": "记得",
+    "pinyin": "jìde",
+    "english": "remember"
+  },
+  {
+    "no": "112",
+    "chinese": "季节",
+    "pinyin": "jìjié",
+    "english": "Season"
+  },
+  {
+    "no": "113",
+    "chinese": "检查",
+    "pinyin": "jiǎnchá",
+    "english": "inspect"
+  },
+  {
+    "no": "114",
+    "chinese": "简单",
+    "pinyin": "jiǎndān",
+    "english": "simple"
+  },
+  {
+    "no": "115",
+    "chinese": "健康",
+    "pinyin": "jiànkāng",
+    "english": "Healthy"
+  },
+  {
+    "no": "116",
+    "chinese": "见面",
+    "pinyin": "jiànmiàn",
+    "english": "meet"
+  },
+  {
+    "no": "117",
+    "chinese": "讲",
+    "pinyin": "jiǎng",
+    "english": "speak"
+  },
+  {
+    "no": "118",
+    "chinese": "教",
+    "pinyin": "jiāo",
+    "english": "teach"
+  },
+  {
+    "no": "119",
+    "chinese": "角",
+    "pinyin": "jiǎo",
+    "english": "horn"
+  },
+  {
+    "no": "120",
+    "chinese": "脚",
+    "pinyin": "jiǎo",
+    "english": "foot"
+  },
+  {
+    "no": "121",
+    "chinese": "接",
+    "pinyin": "jiē",
+    "english": "pick,get"
+  },
+  {
+    "no": "122",
+    "chinese": "街道",
+    "pinyin": "jiēdào",
+    "english": "Street"
+  },
+  {
+    "no": "123",
+    "chinese": "结婚",
+    "pinyin": "jiéhūn",
+    "english": "marry"
+  },
+  {
+    "no": "124",
+    "chinese": "结束",
+    "pinyin": "jiéshù",
+    "english": "End"
+  },
+  {
+    "no": "125",
+    "chinese": "节目",
+    "pinyin": "jiémù",
+    "english": "program"
+  },
+  {
+    "no": "126",
+    "chinese": "节日",
+    "pinyin": "jiérì",
+    "english": "festival"
+  },
+  {
+    "no": "127",
+    "chinese": "解决",
+    "pinyin": "jiějué",
+    "english": "Solve"
+  },
+  {
+    "no": "128",
+    "chinese": "借",
+    "pinyin": "jiè",
+    "english": "borrow"
+  },
+  {
+    "no": "129",
+    "chinese": "经常",
+    "pinyin": "jīngcháng",
+    "english": "Often"
+  },
+  {
+    "no": "130",
+    "chinese": "经过",
+    "pinyin": "jīngguò",
+    "english": "After, through"
+  },
+  {
+    "no": "131",
+    "chinese": "经理",
+    "pinyin": "jīnglǐ",
+    "english": "manager"
+  },
+  {
+    "no": "132",
+    "chinese": "久",
+    "pinyin": "jiǔ",
+    "english": "long"
+  },
+  {
+    "no": "133",
+    "chinese": "旧",
+    "pinyin": "jiù",
+    "english": "old,used"
+  },
+  {
+    "no": "134",
+    "chinese": "句子",
+    "pinyin": "jùzi",
+    "english": "sentence"
+  },
+  {
+    "no": "135",
+    "chinese": "决定",
+    "pinyin": "juédìng",
+    "english": "Decision"
+  },
+  {
+    "no": "136",
+    "chinese": "渴",
+    "pinyin": "kě",
+    "english": "thirsty"
+  },
+  {
+    "no": "137",
+    "chinese": "可爱",
+    "pinyin": "kě'ài",
+    "english": "Lovely"
+  },
+  {
+    "no": "138",
+    "chinese": "刻",
+    "pinyin": "kè",
+    "english": "moment"
+  },
+  {
+    "no": "139",
+    "chinese": "客人",
+    "pinyin": "kèrén",
+    "english": "Guest"
+  },
+  {
+    "no": "140",
+    "chinese": "空调",
+    "pinyin": "kōngtiáo",
+    "english": "Air conditioner"
+  },
+  {
+    "no": "141",
+    "chinese": "口",
+    "pinyin": "kǒu",
+    "english": "mouth"
+  },
+  {
+    "no": "142",
+    "chinese": "哭",
+    "pinyin": "kū",
+    "english": "cry"
+  },
+  {
+    "no": "143",
+    "chinese": "裤子",
+    "pinyin": "kùzi",
+    "english": "trousers"
+  },
+  {
+    "no": "144",
+    "chinese": "筷子",
+    "pinyin": "kuàizi",
+    "english": "chopsticks"
+  },
+  {
+    "no": "145",
+    "chinese": "蓝",
+    "pinyin": "lán",
+    "english": "blue"
+  },
+  {
+    "no": "146",
+    "chinese": "老",
+    "pinyin": "lǎo",
+    "english": "old"
+  },
+  {
+    "no": "147",
+    "chinese": "离开",
+    "pinyin": "líkāi",
+    "english": "leave"
+  },
+  {
+    "no": "148",
+    "chinese": "礼物",
+    "pinyin": "lǐwù",
+    "english": "gift"
+  },
+  {
+    "no": "149",
+    "chinese": "历史",
+    "pinyin": "lìshǐ",
+    "english": "History"
+  },
+  {
+    "no": "150",
+    "chinese": "脸",
+    "pinyin": "liǎn",
+    "english": "face"
+  },
+  {
+    "no": "151",
+    "chinese": "聊天",
+    "pinyin": "liáotiān",
+    "english": "chat"
+  },
+  {
+    "no": "152",
+    "chinese": "练习",
+    "pinyin": "liànxí",
+    "english": "Practice"
+  },
+  {
+    "no": "153",
+    "chinese": "辆",
+    "pinyin": "liàng",
+    "english": "Car"
+  },
+  {
+    "no": "154",
+    "chinese": "了解",
+    "pinyin": "liǎojiě",
+    "english": "understand"
+  },
+  {
+    "no": "155",
+    "chinese": "邻居",
+    "pinyin": "línjū",
+    "english": "neighbor"
+  },
+  {
+    "no": "156",
+    "chinese": "留学",
+    "pinyin": "liúxué",
+    "english": "Overseas Study"
+  },
+  {
+    "no": "157",
+    "chinese": "楼",
+    "pinyin": "lóu",
+    "english": "floor"
+  },
+  {
+    "no": "158",
+    "chinese": "绿",
+    "pinyin": "lǜ",
+    "english": "green"
+  },
+  {
+    "no": "159",
+    "chinese": "马",
+    "pinyin": "mǎ",
+    "english": "Horse"
+  },
+  {
+    "no": "160",
+    "chinese": "马上",
+    "pinyin": "mǎshàng",
+    "english": "Right off"
+  },
+  {
+    "no": "161",
+    "chinese": "满意",
+    "pinyin": "mǎnyì",
+    "english": "Satisfied"
+  },
+  {
+    "no": "162",
+    "chinese": "帽子",
+    "pinyin": "màozi",
+    "english": "Hat"
+  },
+  {
+    "no": "163",
+    "chinese": "米",
+    "pinyin": "mǐ",
+    "english": "rice"
+  },
+  {
+    "no": "164",
+    "chinese": "面包",
+    "pinyin": "miànbāo",
+    "english": "Bread"
+  },
+  {
+    "no": "165",
+    "chinese": "明白",
+    "pinyin": "míngbai",
+    "english": "clear"
+  },
+  {
+    "no": "166",
+    "chinese": "拿",
+    "pinyin": "ná",
+    "english": "take"
+  },
+  {
+    "no": "167",
+    "chinese": "奶奶",
+    "pinyin": "nǎinai",
+    "english": "grandma"
+  },
+  {
+    "no": "168",
+    "chinese": "南",
+    "pinyin": "nán",
+    "english": "south"
+  },
+  {
+    "no": "169",
+    "chinese": "难",
+    "pinyin": "nán",
+    "english": "difficult"
+  },
+  {
+    "no": "170",
+    "chinese": "难过",
+    "pinyin": "nánguò",
+    "english": "sad"
+  },
+  {
+    "no": "171",
+    "chinese": "年级",
+    "pinyin": "niánjí",
+    "english": "grade"
+  },
+  {
+    "no": "172",
+    "chinese": "年轻",
+    "pinyin": "niánqīng",
+    "english": "Young"
+  },
+  {
+    "no": "173",
+    "chinese": "鸟",
+    "pinyin": "niǎo",
+    "english": "bird"
+  },
+  {
+    "no": "174",
+    "chinese": "努力",
+    "pinyin": "nǔlì",
+    "english": "Strive"
+  },
+  {
+    "no": "175",
+    "chinese": "爬山",
+    "pinyin": "páshān",
+    "english": "Mountain climbing"
+  },
+  {
+    "no": "176",
+    "chinese": "盘子",
+    "pinyin": "pánzi",
+    "english": "plate"
+  },
+  {
+    "no": "177",
+    "chinese": "胖",
+    "pinyin": "pàng",
+    "english": "fat"
+  },
+  {
+    "no": "178",
+    "chinese": "啤酒",
+    "pinyin": "píjiǔ",
+    "english": "Beer"
+  },
+  {
+    "no": "179",
+    "chinese": "皮鞋",
+    "pinyin": "píxié",
+    "english": "leather shoes"
+  },
+  {
+    "no": "180",
+    "chinese": "瓶子",
+    "pinyin": "píngzi",
+    "english": "bottle"
+  },
+  {
+    "no": "181",
+    "chinese": "其实",
+    "pinyin": "qíshí",
+    "english": "actually"
+  },
+  {
+    "no": "182",
+    "chinese": "其他",
+    "pinyin": "qítā",
+    "english": "Other"
+  },
+  {
+    "no": "183",
+    "chinese": "骑",
+    "pinyin": "qí",
+    "english": "ride"
+  },
+  {
+    "no": "184",
+    "chinese": "奇怪",
+    "pinyin": "qíguài",
+    "english": "strange"
+  },
+  {
+    "no": "185",
+    "chinese": "起来",
+    "pinyin": "qǐlái",
+    "english": "get up"
+  },
+  {
+    "no": "186",
+    "chinese": "起飞",
+    "pinyin": "qǐfēi",
+    "english": "take off"
+  },
+  {
+    "no": "187",
+    "chinese": "清楚",
+    "pinyin": "qīngchu",
+    "english": "clear"
+  },
+  {
+    "no": "188",
+    "chinese": "请假",
+    "pinyin": "qǐngjià",
+    "english": "ask for leave"
+  },
+  {
+    "no": "189",
+    "chinese": "秋",
+    "pinyin": "qiū",
+    "english": "autumn"
+  },
+  {
+    "no": "190",
+    "chinese": "裙子",
+    "pinyin": "qúnzi",
+    "english": "skirt"
+  },
+  {
+    "no": "191",
+    "chinese": "然后",
+    "pinyin": "ránhòu",
+    "english": "Then"
+  },
+  {
+    "no": "192",
+    "chinese": "热情",
+    "pinyin": "rèqíng",
+    "english": "Enthusiasm"
+  },
+  {
+    "no": "193",
+    "chinese": "认为",
+    "pinyin": "rènwéi",
+    "english": "think"
+  },
+  {
+    "no": "194",
+    "chinese": "认真",
+    "pinyin": "rènzhēn",
+    "english": "earnest"
+  },
+  {
+    "no": "195",
+    "chinese": "容易",
+    "pinyin": "róngyì",
+    "english": "easily"
+  },
+  {
+    "no": "196",
+    "chinese": "如果",
+    "pinyin": "rúguǒ",
+    "english": "If"
+  },
+  {
+    "no": "197",
+    "chinese": "伞",
+    "pinyin": "sǎn",
+    "english": "umbrella"
+  },
+  {
+    "no": "198",
+    "chinese": "上网",
+    "pinyin": "shàngwǎng",
+    "english": "Surf the Internet"
+  },
+  {
+    "no": "199",
+    "chinese": "生气",
+    "pinyin": "shēngqì",
+    "english": "get angry"
+  },
+  {
+    "no": "200",
+    "chinese": "声音",
+    "pinyin": "shēngyīn",
+    "english": "voice"
+  },
+  {
+    "no": "201",
+    "chinese": "试",
+    "pinyin": "shì",
+    "english": "try"
+  },
+  {
+    "no": "202",
+    "chinese": "世界",
+    "pinyin": "shìjiè",
+    "english": "world"
+  },
+  {
+    "no": "203",
+    "chinese": "瘦",
+    "pinyin": "shòu",
+    "english": "thin"
+  },
+  {
+    "no": "204",
+    "chinese": "舒服",
+    "pinyin": "shūfu",
+    "english": "comfortable"
+  },
+  {
+    "no": "205",
+    "chinese": "叔叔",
+    "pinyin": "shūshu",
+    "english": "uncle"
+  },
+  {
+    "no": "206",
+    "chinese": "树",
+    "pinyin": "shù",
+    "english": "tree"
+  },
+  {
+    "no": "207",
+    "chinese": "数学",
+    "pinyin": "shùxué",
+    "english": "Mathematics"
+  },
+  {
+    "no": "208",
+    "chinese": "刷牙",
+    "pinyin": "shuāyá",
+    "english": "Brush one's teeth"
+  },
+  {
+    "no": "209",
+    "chinese": "双",
+    "pinyin": "shuāng",
+    "english": "double, pair"
+  },
+  {
+    "no": "210",
+    "chinese": "水平",
+    "pinyin": "shuǐpíng",
+    "english": "level"
+  },
+  {
+    "no": "211",
+    "chinese": "司机",
+    "pinyin": "sījī",
+    "english": "Driver"
+  },
+  {
+    "no": "212",
+    "chinese": "太阳",
+    "pinyin": "tàiyáng",
+    "english": "sun"
+  },
+  {
+    "no": "213",
+    "chinese": "特别",
+    "pinyin": "tèbié",
+    "english": "Especially"
+  },
+  {
+    "no": "214",
+    "chinese": "疼",
+    "pinyin": "téng",
+    "english": "hurt"
+  },
+  {
+    "no": "215",
+    "chinese": "提高",
+    "pinyin": "tígāo",
+    "english": "increase"
+  },
+  {
+    "no": "216",
+    "chinese": "体育",
+    "pinyin": "tǐyù",
+    "english": "Sports"
+  },
+  {
+    "no": "217",
+    "chinese": "甜",
+    "pinyin": "tián",
+    "english": "sweet"
+  },
+  {
+    "no": "218",
+    "chinese": "条",
+    "pinyin": "tiáo",
+    "english": "strip"
+  },
+  {
+    "no": "219",
+    "chinese": "同事",
+    "pinyin": "tóngshì",
+    "english": "Colleague"
+  },
+  {
+    "no": "220",
+    "chinese": "同意",
+    "pinyin": "tóngyì",
+    "english": "Agree"
+  },
+  {
+    "no": "221",
+    "chinese": "头发",
+    "pinyin": "tóufa",
+    "english": "Hair"
+  },
+  {
+    "no": "222",
+    "chinese": "突然",
+    "pinyin": "tūrán",
+    "english": "suddenly"
+  },
+  {
+    "no": "223",
+    "chinese": "图书馆",
+    "pinyin": "túshūguǎn",
+    "english": "Library"
+  },
+  {
+    "no": "224",
+    "chinese": "腿",
+    "pinyin": "tuǐ",
+    "english": "leg"
+  },
+  {
+    "no": "225",
+    "chinese": "完成",
+    "pinyin": "wánchéng",
+    "english": "complete"
+  },
+  {
+    "no": "226",
+    "chinese": "碗",
+    "pinyin": "wǎn",
+    "english": "bowl"
+  },
+  {
+    "no": "227",
+    "chinese": "万",
+    "pinyin": "wàn",
+    "english": "ten thousand"
+  },
+  {
+    "no": "228",
+    "chinese": "忘记",
+    "pinyin": "wàngjì",
+    "english": "forget"
+  },
+  {
+    "no": "229",
+    "chinese": "为",
+    "pinyin": "wèi",
+    "english": "for"
+  },
+  {
+    "no": "230",
+    "chinese": "为了",
+    "pinyin": "wèile",
+    "english": "in order to"
+  },
+  {
+    "no": "231",
+    "chinese": "位",
+    "pinyin": "wèi",
+    "english": "position"
+  },
+  {
+    "no": "232",
+    "chinese": "文化",
+    "pinyin": "wénhuà",
+    "english": "Culture"
+  },
+  {
+    "no": "233",
+    "chinese": "西",
+    "pinyin": "xī",
+    "english": "west"
+  },
+  {
+    "no": "234",
+    "chinese": "习惯",
+    "pinyin": "xíguàn",
+    "english": "Habit"
+  },
+  {
+    "no": "235",
+    "chinese": "洗手间",
+    "pinyin": "xǐshǒujiān",
+    "english": "Restroom"
+  },
+  {
+    "no": "236",
+    "chinese": "洗澡",
+    "pinyin": "xǐzǎo",
+    "english": "Take a shower"
+  },
+  {
+    "no": "237",
+    "chinese": "夏",
+    "pinyin": "xià",
+    "english": "summer"
+  },
+  {
+    "no": "238",
+    "chinese": "先",
+    "pinyin": "xiān",
+    "english": "first"
+  },
+  {
+    "no": "239",
+    "chinese": "香蕉",
+    "pinyin": "xiāngjiāo",
+    "english": "Banana"
+  },
+  {
+    "no": "240",
+    "chinese": "相信",
+    "pinyin": "xiāngxìn",
+    "english": "believe"
+  },
+  {
+    "no": "241",
+    "chinese": "向",
+    "pinyin": "xiàng",
+    "english": "towards"
+  },
+  {
+    "no": "242",
+    "chinese": "像",
+    "pinyin": "xiàng",
+    "english": "image"
+  },
+  {
+    "no": "243",
+    "chinese": "小心",
+    "pinyin": "xiǎoxīn",
+    "english": "watch out"
+  },
+  {
+    "no": "244",
+    "chinese": "校长",
+    "pinyin": "xiàozhǎng",
+    "english": "Principal"
+  },
+  {
+    "no": "245",
+    "chinese": "新闻",
+    "pinyin": "xīnwén",
+    "english": "news"
+  },
+  {
+    "no": "246",
+    "chinese": "新鲜",
+    "pinyin": "xīnxiān",
+    "english": "fresh"
+  },
+  {
+    "no": "247",
+    "chinese": "信用卡",
+    "pinyin": "xìnyòngkǎ",
+    "english": "Credit card"
+  },
+  {
+    "no": "248",
+    "chinese": "行李箱",
+    "pinyin": "xínglixiāng",
+    "english": "Trunk"
+  },
+  {
+    "no": "249",
+    "chinese": "熊猫",
+    "pinyin": "xióngmāo",
+    "english": "Panda"
+  },
+  {
+    "no": "250",
+    "chinese": "需要",
+    "pinyin": "xūyào",
+    "english": "Need"
+  },
+  {
+    "no": "251",
+    "chinese": "选择",
+    "pinyin": "xuǎnzé",
+    "english": "Choice"
+  },
+  {
+    "no": "252",
+    "chinese": "要求",
+    "pinyin": "yāoqiú",
+    "english": "Requirement"
+  },
+  {
+    "no": "253",
+    "chinese": "爷爷",
+    "pinyin": "yéye",
+    "english": "grandpa"
+  },
+  {
+    "no": "254",
+    "chinese": "一定",
+    "pinyin": "yídìng",
+    "english": "Certain"
+  },
+  {
+    "no": "255",
+    "chinese": "一共",
+    "pinyin": "yígòng",
+    "english": "Altogether"
+  },
+  {
+    "no": "256",
+    "chinese": "一会儿",
+    "pinyin": "yíhuìr",
+    "english": "a while"
+  },
+  {
+    "no": "257",
+    "chinese": "一样",
+    "pinyin": "yíyàng",
+    "english": "equally"
+  },
+  {
+    "no": "258",
+    "chinese": "以前",
+    "pinyin": "yǐqián",
+    "english": "before"
+  },
+  {
+    "no": "259",
+    "chinese": "一般",
+    "pinyin": "yìbān",
+    "english": "commonly"
+  },
+  {
+    "no": "260",
+    "chinese": "一边",
+    "pinyin": "yìbiān",
+    "english": "One side"
+  },
+  {
+    "no": "261",
+    "chinese": "一直",
+    "pinyin": "yìzhí",
+    "english": "always"
+  },
+  {
+    "no": "262",
+    "chinese": "音乐",
+    "pinyin": "yīnyuè",
+    "english": "Music"
+  },
+  {
+    "no": "263",
+    "chinese": "银行",
+    "pinyin": "yínháng",
+    "english": "Bank"
+  },
+  {
+    "no": "264",
+    "chinese": "饮料",
+    "pinyin": "yǐnliào",
+    "english": "Drinks"
+  },
+  {
+    "no": "265",
+    "chinese": "应该",
+    "pinyin": "yīnggāi",
+    "english": "Should"
+  },
+  {
+    "no": "266",
+    "chinese": "影响",
+    "pinyin": "yǐngxiǎng",
+    "english": "Influence"
+  },
+  {
+    "no": "267",
+    "chinese": "用",
+    "pinyin": "yòng",
+    "english": "use"
+  },
+  {
+    "no": "268",
+    "chinese": "游戏",
+    "pinyin": "yóuxì",
+    "english": "Game"
+  },
+  {
+    "no": "269",
+    "chinese": "有名",
+    "pinyin": "yǒumíng",
+    "english": "Famous"
+  },
+  {
+    "no": "270",
+    "chinese": "又",
+    "pinyin": "yòu",
+    "english": "again"
+  },
+  {
+    "no": "271",
+    "chinese": "遇到",
+    "pinyin": "yùdào",
+    "english": "encounter"
+  },
+  {
+    "no": "272",
+    "chinese": "元",
+    "pinyin": "yuán",
+    "english": "element; yuan"
+  },
+  {
+    "no": "273",
+    "chinese": "愿意",
+    "pinyin": "yuànyì",
+    "english": "Be willing"
+  },
+  {
+    "no": "274",
+    "chinese": "月亮",
+    "pinyin": "yuèliang",
+    "english": "Moon"
+  },
+  {
+    "no": "275",
+    "chinese": "越",
+    "pinyin": "yuè",
+    "english": "the more"
+  },
+  {
+    "no": "276",
+    "chinese": "站",
+    "pinyin": "zhàn",
+    "english": "station"
+  },
+  {
+    "no": "277",
+    "chinese": "张",
+    "pinyin": "zhāng",
+    "english": "Zhang (surname)"
+  },
+  {
+    "no": "278",
+    "chinese": "长（动词）",
+    "pinyin": "zhǎng",
+    "english": "grow"
+  },
+  {
+    "no": "279",
+    "chinese": "着急",
+    "pinyin": "zháojí",
+    "english": "Worry"
+  },
+  {
+    "no": "280",
+    "chinese": "照顾",
+    "pinyin": "zhàogù",
+    "english": "look after"
+  },
+  {
+    "no": "281",
+    "chinese": "照片",
+    "pinyin": "zhàopiàn",
+    "english": "Photo"
+  },
+  {
+    "no": "282",
+    "chinese": "照相机",
+    "pinyin": "zhàoxiàngjī",
+    "english": "Camera"
+  },
+  {
+    "no": "283",
+    "chinese": "只（量词）",
+    "pinyin": "zhī",
+    "english": "(measure word)"
+  },
+  {
+    "no": "284",
+    "chinese": "只（副词）",
+    "pinyin": "zhǐ",
+    "english": "only"
+  },
+  {
+    "no": "286",
+    "chinese": "中文",
+    "pinyin": "zhōngwén",
+    "english": "Chinese"
+  },
+  {
+    "no": "287",
+    "chinese": "中间",
+    "pinyin": "zhōngjiān",
+    "english": "Middle"
+  },
+  {
+    "no": "288",
+    "chinese": "终于",
+    "pinyin": "zhōngyú",
+    "english": "finally"
+  },
+  {
+    "no": "289",
+    "chinese": "种",
+    "pinyin": "zhǒng",
+    "english": "species"
+  },
+  {
+    "no": "290",
+    "chinese": "重要",
+    "pinyin": "zhòngyào",
+    "english": "important"
+  },
+  {
+    "no": "291",
+    "chinese": "周末",
+    "pinyin": "zhōumò",
+    "english": "Weekend"
+  },
+  {
+    "no": "292",
+    "chinese": "主要",
+    "pinyin": "zhǔyào",
+    "english": "main"
+  },
+  {
+    "no": "293",
+    "chinese": "注意",
+    "pinyin": "zhùyì",
+    "english": "Be careful"
+  },
+  {
+    "no": "294",
+    "chinese": "自己",
+    "pinyin": "zìjǐ",
+    "english": "Own, self"
+  },
+  {
+    "no": "295",
+    "chinese": "自行车",
+    "pinyin": "zìxíngchē",
+    "english": "Bicycle"
+  },
+  {
+    "no": "296",
+    "chinese": "总是",
+    "pinyin": "zǒngshì",
+    "english": "always"
+  },
+  {
+    "no": "297",
+    "chinese": "嘴",
+    "pinyin": "zuǐ",
+    "english": "mouth"
+  },
+  {
+    "no": "298",
+    "chinese": "最后",
+    "pinyin": "zuìhòu",
+    "english": "Last"
+  },
+  {
+    "no": "299",
+    "chinese": "最近",
+    "pinyin": "zuìjìn",
+    "english": "lately"
+  },
+  {
+    "no": "300",
+    "chinese": "作业",
+    "pinyin": "zuòyè",
+    "english": "homework"
+  }
+]

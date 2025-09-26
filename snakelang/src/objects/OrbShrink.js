@@ -6,9 +6,11 @@
 import { Orb } from './Orb.js';
 
 export class OrbShrink extends Orb {
-  constructor(x, y, word, wrongTranslation) {
+  constructor(x, y, word, correctTranslation, wrongTranslation) {
+    // For display on the orb itself we still show the (possibly) wrong translation
     super(x, y, word, wrongTranslation, '#BA68C8'); // purple
     this.type = 'shrink';
+    this.correctTranslation = correctTranslation;
   }
 
   onCollect() {

@@ -84,7 +84,8 @@ export class OrbSpawner {
     const wrongText = this.chineseWords[(rand + 1) % this.chineseWords.length]; // Simple way to get a different word
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbShrink(x, y, text.chinese, wrongText.english);
+    // Pass both correct and wrong translation
+    return new OrbShrink(x, y, text.chinese, text.english, wrongText.english);
   }
 
   spawnInitialOrbs(count = CONFIG.ORBS.INITIAL_COUNT) {

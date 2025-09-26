@@ -18,10 +18,11 @@ class SnakeLangGame {
     this.canvas = null;
     this.ctx = null;
     this.popupMenu = new StartPopupMenu();
-    this.popupMenu.onStart = ({ language, orbPercentages }) => {
+    this.popupMenu.onStart = ({ language, orbPercentages, difficulty }) => {
       // Pass settings to game scene and orb spawner
       this.language = language;
       this.orbPercentages = orbPercentages;
+      this.difficulty = difficulty;
       this.startGame();
     };
     this.language = 'characters';
@@ -89,6 +90,9 @@ class SnakeLangGame {
     // Pass settings to game scene and orb spawner if needed
     this.currentScene = this.scenes.game;
     // TODO: Pass language and orbPercentages to GameScene/OrbSpawner
+    if (this.currentScene && this.currentScene.setMode) {
+      this.currentScene.setMode({ difficulty: this.difficulty || 'easy' });
+    }
   }
 
   update() {

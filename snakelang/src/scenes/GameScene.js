@@ -32,6 +32,8 @@ export class GameScene {
     // Game state
     this.isPlaying = false;
     this.keys = {};
+    // Mode
+    this.mode = { difficulty: 'easy' };
 
     // Mouse controls
     this.mouseX = 0;
@@ -40,6 +42,10 @@ export class GameScene {
 
     this.setupInput();
     this.reset();
+  }
+
+  setMode(mode) {
+    this.mode = { ...this.mode, ...mode };
   }
 
   setupInput() {
@@ -198,12 +204,22 @@ export class GameScene {
       const delta = after - before;
       if (delta !== 0) this.effectUI.showLengthChange(delta);
 
-      // If shrink orb, lose a life and end the game if no lives remain
+      // If shrink orb
       if (orb.type === 'shrink') {
-        const isDead = this.scoreboard.loseLife();
-        if (isDead) {
-          this.stop();
-          return; // stop processing further orbs this frame
+        if (this.mode.difficulty === 'endless') {
+          // Endless: do not lose life; show word + correct translation
+          const correct = orb.correctTranslation || orb.translation;
+          if (orb.word || correct) {
+            const text = [orb.word, correct].filter(Boolean).join(' - ');
+            this.effectUI.showEffect('shrink', text);
+          }
+        } else {
+          // Normal modes: lose life
+          const isDead = this.scoreboard.loseLife();
+          if (isDead) {
+            this.stop();
+            return; // stop processing further orbs this frame
+          }
         }
       }
 

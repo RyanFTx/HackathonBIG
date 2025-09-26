@@ -6,7 +6,7 @@ export class StartPopupMenu {
     this.languages = [
       { key: 'characters', label: 'Characters (汉字)' },
       { key: 'pinyin',     label: 'Pinyin (拼音)'   },
-      { key: 'mixed',      label: 'Mixed'                    },
+      { key: 'mixed',      label: 'Mixed'          },
     ];
     this.languageIndex = 0;
 
@@ -18,32 +18,18 @@ export class StartPopupMenu {
     this.orbPercentages = options.orbPercentages ? { ...options.orbPercentages } : { normal: 60, explosive: 20, speed: 20 };
     this._normalizeAll();
 
-    // UI state
     this.hoverId = null;
     this.pressedId = null;
-
-    // layout caches (recomputed each frame)
     this._rects = {}; // id -> {x,y,w,h}
 
-    // callbacks
     this.onStart = null;
-
-    // config
     this.step = 5; // % step for – / +
 
     this.difficultyLevels = [
-      {
-        key: 'easy', label: 'Easy',
-        orbPercentages: { normal: 100 }
-      },
-      {
-        key: 'medium', label: 'Medium',
-        orbPercentages: { normal: 70, speed: 30 }
-      },
-      {
-        key: 'hard', label: 'Hard',
-        orbPercentages: { normal: 10, speed: 40, explosive: 50 }
-      }
+      { key: 'easy',    label: 'Easy',    orbPercentages: { normal: 100 } },
+      { key: 'medium',  label: 'Medium',  orbPercentages: { normal: 70, speed: 30 } },
+      { key: 'hard',    label: 'Hard',    orbPercentages: { normal: 10, speed: 40, explosive: 50 } },
+      { key: 'endless', label: 'Endless', orbPercentages: { normal: 60, speed: 20, explosive: 20 } }
     ];
     this.difficultyIndex = 0;
   }
@@ -52,7 +38,6 @@ export class StartPopupMenu {
   hide() { this.active = false; }
   isActive() { return this.active; }
 
-  // ---------- Public: hook mouse to the canvas ----------
   attach(canvas) {
     this._canvas = canvas;
     this._onMouseMove = (e) => this._handleMouseMove(e);
@@ -70,14 +55,11 @@ export class StartPopupMenu {
     this._canvas = null;
   }
 
-  // ---------- Mouse handling ----------
   _handleMouseMove(e) {
     if (!this.active) return;
     const p = this._getMouse(e);
     this.hoverId = this._hitTest(p.x, p.y);
-    if (this._canvas) {
-      this._canvas.style.cursor = this.hoverId ? 'pointer' : 'default';
-    }
+    if (this._canvas) this._canvas.style.cursor = this.hoverId ? 'pointer' : 'default';
   }
   _handleMouseDown(e) {
     if (!this.active) return;
@@ -89,20 +71,18 @@ export class StartPopupMenu {
     if (!this.active) return;
     const p = this._getMouse(e);
     const id = this._hitTest(p.x, p.y);
-    if (id && id === this.pressedId) {
-      this._activate(id);
-    }
+    if (id && id === this.pressedId) this._activate(id);
     this.pressedId = null;
   }
   _getMouse(e) {
     const rect = this._canvas.getBoundingClientRect();
-    return { x: (e.clientX - rect.left) * (this._canvas.width / rect.width),
-             y: (e.clientY - rect.top)  * (this._canvas.height / rect.height) };
+    return {
+      x: (e.clientX - rect.left) * (this._canvas.width / rect.width),
+      y: (e.clientY - rect.top)  * (this._canvas.height / rect.height)
+    };
   }
 
-  // ---------- Actions ----------
   _activate(id) {
-    // ids are like: lang:0, lang:1, diff:0, diff:1, start
     if (id.startsWith('lang:')) {
       const idx = parseInt(id.split(':')[1], 10);
       this.languageIndex = idx;
@@ -124,7 +104,6 @@ export class StartPopupMenu {
     }
   }
 
-  // ---------- Normalization (sum = 100) ----------
   _normalizeAll() {
     let total = this.orbTypes.reduce((s, t) => s + (this.orbPercentages[t.key] || 0), 0);
     if (total === 0) {
@@ -137,7 +116,7 @@ export class StartPopupMenu {
       this.orbPercentages[t.key] = Math.round((this.orbPercentages[t.key] || 0) * scale / this.step) * this.step;
       this.orbPercentages[t.key] = Math.max(0, Math.min(100, this.orbPercentages[t.key]));
     }
-    this._fixDrift();
+    this._normalizeOthersKeeping(0); // ensure sum=100 and snap to steps
   }
   _normalizeOthersKeeping(selectedIndex) {
     const selKey = this.orbTypes[selectedIndex].key;
@@ -148,7 +127,6 @@ export class StartPopupMenu {
     const needed = 100 - selVal;
 
     if (sumOthers === 0) {
-      // put all remainder into the first other
       this.orbPercentages[others[0]] = Math.max(0, Math.min(100, needed));
       for (let i = 1; i < others.length; i++) this.orbPercentages[others[i]] = 0;
       this._fixDrift();
@@ -167,7 +145,6 @@ export class StartPopupMenu {
     let total = this.orbTypes.reduce((s, t) => s + this.orbPercentages[t.key], 0);
     const diff = 100 - total;
     if (diff === 0) return;
-    // Nudge the largest bucket to absorb the diff
     let bestK = this.orbTypes[0].key;
     for (const t of this.orbTypes) {
       if (this.orbPercentages[t.key] > this.orbPercentages[bestK]) bestK = t.key;
@@ -175,7 +152,6 @@ export class StartPopupMenu {
     this.orbPercentages[bestK] = Math.max(0, Math.min(100, this.orbPercentages[bestK] + diff));
   }
 
-  // ---------- Rendering ----------
   render(ctx) {
     if (!this.active) return;
 
@@ -183,22 +159,36 @@ export class StartPopupMenu {
     const H = ctx.canvas.height;
 
     // Panel metrics
-    const PW = Math.min(560, Math.floor(W * 0.8));
-    const PX = Math.floor((W - PW) / 2);
-    const PY = Math.max(40, Math.floor(H * 0.12));
+    const PW  = Math.min(560, Math.floor(W * 0.8));
+    const PX  = Math.floor((W - PW) / 2);
+    const PY  = Math.max(40, Math.floor(H * 0.12));
     const PAD = 24;
     const ROW = 36;
+    const gap = 16;
+    const btnH = 40;
 
-    // clear overlay
+    // Clear overlay
     ctx.save();
     ctx.globalAlpha = 0.6;
     ctx.fillStyle = '#0b1022';
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
 
-    // panel
-    const ph = 380; // enough room
+    // === Compute panel height to safely fit 2 rows of difficulty if needed ===
+    const diffCols   = Math.min(4, this.difficultyLevels.length);
+    const diffRows   = Math.ceil(this.difficultyLevels.length / diffCols);
+    const orbRowSpacing = 48;
+    const maxOrbRows = 3; // reserved space
+    const ph =
+      /* title area */        26 + PAD +
+      /* lang label+btns */   22 + btnH + 24 +
+      /* diff label+grid */   22 + (diffRows * btnH) + ((diffRows - 1) * gap) + 24 +
+      /* orb block */         16 + (orbRowSpacing * maxOrbRows) + 40 +
+      /* start btn */         48 + PAD;
+
+    // Panel
     this._roundRect(ctx, PX, PY, PW, ph, 16, '#1e2442');
+
     // Title
     this._text(ctx, 'Game Setup', W/2, PY + PAD, 'bold 26px Inter, Arial', '#FFFFFF', 'center');
 
@@ -208,57 +198,58 @@ export class StartPopupMenu {
     this._text(ctx, 'Choose Language', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
     y += 22;
 
-    const gap = 16;
-    const btnW = Math.floor((PW - PAD*2 - gap*2) / 3);
-    const btnH = 40;
+    const langBtnW = Math.floor((PW - PAD*2 - gap*2) / 3); // 3 columns
     let x = PX + PAD;
 
-    this._rects = {}; // reset
+    this._rects = {}; // reset hit rects
 
     this.languages.forEach((opt, i) => {
       const id = `lang:${i}`;
       const selected = (this.languageIndex === i);
       const hover = (this.hoverId === id);
-      this._button(ctx, id, x, y, btnW, btnH, opt.label, { selected, hover });
-      x += btnW + gap;
+      this._button(ctx, id, x, y, langBtnW, btnH, opt.label, { selected, hover });
+      x += langBtnW + gap;
     });
 
     y += btnH + 24;
 
-    // Difficulty selection
+    // Difficulty selection (grid, 4 columns)
     this._text(ctx, 'Select Difficulty', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
     y += 22;
 
-    x = PX + PAD;
-    this.difficultyLevels.forEach((level, i) => {
+    const diffBtnW = Math.floor((PW - PAD*2 - gap*(diffCols - 1)) / diffCols);
+    for (let i = 0; i < this.difficultyLevels.length; i++) {
+      const col = i % diffCols;
+      const row = Math.floor(i / diffCols);
+      const btnX = PX + PAD + col * (diffBtnW + gap);
+      const btnY = y + row * (btnH + gap);
       const id = `diff:${i}`;
       const selected = (this.difficultyIndex === i);
       const hover = (this.hoverId === id);
-      this._button(ctx, id, x, y, btnW, btnH, level.label, { selected, hover });
-      x += btnW + gap;
-    });
+      this._button(ctx, id, btnX, btnY, diffBtnW, btnH, this.difficultyLevels[i].label, { selected, hover });
+    }
 
-    y += btnH + 24;
+    y += (diffRows * (btnH + gap)) - gap + 24; // advance past grid
 
-    // Show orb percentages for selected difficulty
+    // Orb percentages for selected difficulty
     const orbP = this.difficultyLevels[this.difficultyIndex].orbPercentages;
     this._text(ctx, 'Orb Distribution (%)', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
     y += 16;
-    const orbRowSpacing = 48;
+
     const orbRows = Object.entries(orbP).length;
-    // Reserve space for 3 rows, center actual rows vertically in that space
-    const maxRows = 3;
-    const orbBlockHeight = orbRowSpacing * maxRows;
+    const orbBlockHeight = orbRowSpacing * maxOrbRows; // reserve 3 rows
     const orbStartY = y + (orbBlockHeight - orbRowSpacing * orbRows) / 2;
+
     Object.entries(orbP).forEach(([key, val], idx) => {
       const orbType = this.orbTypes.find(o => o.key === key);
       if (orbType) {
-        this._text(ctx, `${orbType.label}: ${val}%`, W/2, orbStartY + idx*orbRowSpacing, '600 18px Inter, Arial', '#3ee37f', 'center');
+        this._text(ctx, `${orbType.label}: ${val}%`, W/2, orbStartY + idx * orbRowSpacing, '600 18px Inter, Arial', '#3ee37f', 'center');
       }
     });
+
     y += orbBlockHeight + 40;
 
-    // Start button always at same place
+    // Start button
     const startW = 200, startH = 48;
     const startX = W/2 - startW/2;
     const startY = y;
@@ -269,13 +260,9 @@ export class StartPopupMenu {
     });
   }
 
-  // ---------- Private: implementation details ----------
   _hitTest(x, y) {
-    // simple AABB hit test
     for (const [id, r] of Object.entries(this._rects)) {
-      if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
-        return id;
-      }
+      if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) return id;
     }
     return null;
   }
@@ -316,13 +303,10 @@ export class StartPopupMenu {
     }
     ctx.fillStyle = fillStyle;
     ctx.fillRect(x, y, w, h);
-
     ctx.restore();
 
-    // Text
     this._text(ctx, label, x + w/2, y + h/2, '600 18px Inter, Arial', '#FFFFFF', 'center', 'middle');
 
-    // Save rect for hit testing
     this._rects[id] = { x, y, w, h };
   }
 }

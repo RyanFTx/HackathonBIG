@@ -33,11 +33,11 @@ export class EffectUI {
   }
 
   showGameOver(finalScore, isHighScore) {
-    const message = isHighScore
-      ? `🎉 NEW HIGH SCORE! 🎉\nScore: ${finalScore}\nPress Space to play again!`
-      : `Game Over!\nScore: ${finalScore}\nPress Space to restart!`;
-
-    alert(message);
+    // GameOverPopup now handles game over UI. No alert needed.
+    // const message = isHighScore
+    //   ? `🎉 NEW HIGH SCORE! 🎉\nScore: ${finalScore}\nPress Space to play again!`
+    //   : `Game Over!\nScore: ${finalScore}\nPress Space to restart!`;
+    // alert(message);
   }
 
   update() {

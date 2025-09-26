@@ -12,7 +12,7 @@ import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
 
 export class GameScene {
-  constructor(canvas, ctx) {
+  constructor(canvas, ctx, orbPercentages = { normal: 60, shrink: 20, speed: 20, explosive: 0 }) {
     this.canvas = canvas;
     this.ctx = ctx;
 
@@ -37,6 +37,9 @@ export class GameScene {
     this.mouseX = 0;
     this.mouseY = 0;
     this.mousePressed = false;
+
+    // Store user-defined orb percentages
+    this.orbPercentages = orbPercentages;
 
     this.setupInput();
     this.reset();
@@ -113,13 +116,21 @@ export class GameScene {
       await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms
     }
 
-    if (this.orbSpawner.isReady()) {
-      this.orbs = this.orbSpawner.spawnInitialOrbs();
-      console.log(`🎮 Game ready with ${this.orbSpawner.getWordCount()} Chinese words`);
-    } else {
-      console.warn('⚠️ Timed out waiting for translations, using fallback words');
-      this.orbs = this.orbSpawner.spawnInitialOrbs(); // Try anyway with fallback
-    }
+    // Use orbPercentages to determine initial orb distribution
+    const totalOrbs = 10; // You can make this dynamic or configurable
+    const orbCounts = {};
+    Object.entries(this.orbPercentages).forEach(([type, percent]) => {
+      orbCounts[type] = Math.round((percent / 100) * totalOrbs);
+    });
+
+    this.orbs = [];
+    Object.entries(orbCounts).forEach(([type, count]) => {
+      for (let i = 0; i < count; i++) {
+        const orb = this.orbSpawner.spawnOrb(type);
+        if (orb) this.orbs.push(orb);
+      }
+    });
+    console.log(`🎮 Game ready with user-defined orb percentages`, this.orbPercentages);
   }
 
   handleInput() {
@@ -135,14 +146,14 @@ export class GameScene {
     if (distance > 10) {
       const targetAngle = Math.atan2(dy, dx);
       const currentAngle = this.snake.angle;
-      
+
       // Calculate the shortest rotation direction
       let angleDiff = targetAngle - currentAngle;
-      
+
       // Normalize angle difference to [-π, π]
       while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
       while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
-      
+
       // Turn towards mouse cursor
       if (Math.abs(angleDiff) > 0.1) {
         if (angleDiff > 0) {
@@ -188,10 +199,9 @@ export class GameScene {
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
 
-      // Spawn new orb
-      //chose randomly between type normal and shrink
-      const rand = Math.random();
-      const newOrb = this.orbSpawner.spawnOrb(rand < 0.5 ? 'normal' : 'shrink');
+      // Spawn new orb using weighted random selection
+      const orbType = this._pickOrbTypeWeighted();
+      const newOrb = this.orbSpawner.spawnOrb(orbType);
       if (newOrb) {
         this.orbs.push(newOrb);
       }
@@ -199,6 +209,22 @@ export class GameScene {
       // Show effect
       this.effectUI.showScoreGain(points);
     });
+
+  }
+
+  // Weighted random selection based on orbPercentages
+  _pickOrbTypeWeighted() {
+    const percentages = this.orbPercentages || { normal: 60, shrink: 20, speed: 20, explosive: 0 };
+    const types = Object.keys(percentages);
+    const weights = Object.values(percentages);
+    const total = weights.reduce((a, b) => a + b, 0);
+    const r = Math.random() * total;
+    let sum = 0;
+    for (let i = 0; i < types.length; i++) {
+      sum += weights[i];
+      if (r < sum) return types[i];
+    }
+    return types[0]; // fallback
 
     // Despawn orbs that have exceeded their lifetime
     const now = Date.now();

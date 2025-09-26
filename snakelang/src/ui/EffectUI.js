@@ -6,6 +6,7 @@
 export class EffectUI {
   constructor() {
     this.notifications = [];
+    this.maxNotifications = 6;
   }
 
   showEffect(type, message, duration = 2000) {
@@ -15,7 +16,20 @@ export class EffectUI {
       startTime: Date.now(),
       duration
     };
-    this.notifications.push(notification);
+    // Allow duplicates for score toasts so each pickup shows independently
+    if (type === 'score') {
+      this.notifications.push(notification);
+    } else {
+      // Avoid duplicates back-to-back for non-score types
+      const last = this.notifications[this.notifications.length - 1];
+      if (!last || last.message !== notification.message || last.type !== notification.type) {
+        this.notifications.push(notification);
+      }
+    }
+    // Cap list size
+    if (this.notifications.length > this.maxNotifications) {
+      this.notifications.splice(0, this.notifications.length - this.maxNotifications);
+    }
   }
 
   showScoreGain(points) {
@@ -42,13 +56,11 @@ export class EffectUI {
 
   update() {
     const currentTime = Date.now();
-    this.notifications = this.notifications.filter(notification => {
-      return (currentTime - notification.startTime) < notification.duration;
-    });
+    this.notifications = this.notifications.filter(n => (currentTime - n.startTime) < n.duration);
   }
 
   render(ctx) {
-    // Simple stacked toasts top-left
+    // Simple stacked toasts top-left with vertical float and fade
     const padding = 10;
     const lineHeight = 24;
     ctx.save();
@@ -59,7 +71,9 @@ export class EffectUI {
     this.notifications.forEach((n, i) => {
       const elapsed = Date.now() - n.startTime;
       const t = Math.max(0, Math.min(1, 1 - elapsed / n.duration));
-      const y = padding + i * lineHeight;
+      // Float up slightly as it fades
+      const floatUp = (1 - t) * 6;
+      const y = padding + i * lineHeight - floatUp;
 
       // Color by type
       let color = '#ffffff';

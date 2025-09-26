@@ -12,7 +12,7 @@ import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
 
 export class GameScene {
-  constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }) {
+  constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }, language = 'characters') {
     this.canvas = canvas;
     this.ctx = ctx;
 
@@ -23,7 +23,7 @@ export class GameScene {
     // Systems
     this.collisionManager = new CollisionManager();
     this.effectManager = new EffectManager();
-    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height);
+    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height, language);
 
     // UI
     this.scoreboard = new Scoreboard();
@@ -240,7 +240,7 @@ export class GameScene {
         let correct = orb.translation;
         const words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
         if (words.length > 0) {
-          const found = words.flat().find(w => w.chinese === orb.word);
+          const found = words.flat().find(w => w.chinese == orb.word || w.pinyin == orb.word);
           if (found) correct = found.english;
         }
 

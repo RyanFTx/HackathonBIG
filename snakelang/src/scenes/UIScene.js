@@ -10,14 +10,14 @@ export class UIScene {
   }
 
   setupHTML() {
-    // This matches the existing HTML structure
-    document.querySelector('#app').innerHTML = `
-      <div id="game-container">
+    // Use #ui-root for UI container
+    const uiRoot = document.querySelector('#ui-root');
+    if (uiRoot) {
+      uiRoot.innerHTML = `
         <div id="game-ui">
           <div id="score">Score: 0</div>
           <div id="lives">Lives: ❤️❤️❤️</div>
         </div>
-        <canvas id="game-canvas" width="800" height="600"></canvas>
         <div id="instructions">
           <p>🎮 <strong>Controls:</strong> A/D or ← → to steer, W/↑ for speed boost</p>
           <p>🐍 <strong>Goal:</strong> Eat orbs with Chinese words to grow!</p>
@@ -26,13 +26,12 @@ export class UIScene {
         <div id="start-instructions">
           <p><strong>Press SPACE to start!</strong> Use A/D or ← → to steer, W/↑ to boost</p>
         </div>
-      </div>
-    `;
-
-    // Add styling to start instructions
-    const startInstructions = document.getElementById('start-instructions');
-    if (startInstructions) {
-      startInstructions.style.cssText = 'color: #4CAF50; font-size: 1.2em; margin: 1rem 0; font-weight: bold;';
+      `;
+      // Add styling to start instructions
+      const startInstructions = document.getElementById('start-instructions');
+      if (startInstructions) {
+        startInstructions.style.cssText = 'color: #4CAF50; font-size: 1.2em; margin: 1rem 0; font-weight: bold;';
+      }
     }
   }
 

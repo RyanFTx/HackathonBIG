@@ -6,8 +6,8 @@
 export const CONFIG = {
   // Canvas settings
   CANVAS: {
-    WIDTH: 800,
-    HEIGHT: 600,
+    WIDTH: 1500,
+    HEIGHT: 700,
     BACKGROUND_COLOR: '#1a1a1a'
   },
 
@@ -21,7 +21,7 @@ export const CONFIG = {
     MAX_SPEED: 5,
     TURN_SPEED: 0.08,
     GROWTH_SEGMENTS: 3,
-    MAX_LENGTH: 100
+    MAX_LENGTH: 1000
   },
 
   // Orb settings

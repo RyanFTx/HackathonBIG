@@ -275,7 +275,7 @@ export class GameScene {
       this.effectUI.showScoreGain(points);
     });
 
-    if(this.orbs.length < 3) {
+    if(this.orbs.length < 10) {
       this._generateOrbWeighted();
     }
 

@@ -61,11 +61,35 @@ export class Snake {
   }
 
   grow() {
-    this.isGrowing = true;
-    for (let i = 0; i < CONFIG.SNAKE.GROWTH_SEGMENTS; i++) {
-      const tail = this.body[this.body.length - 1];
-      this.body.push({ x: tail.x, y: tail.y });
+    this.adjustLengthBy(CONFIG.SNAKE.GROWTH_SEGMENTS);
+  }
+
+  adjustLengthBy(segmentsDelta) {
+    // Positive: grow by duplicating tail segments
+    if (segmentsDelta > 0) {
+      for (let i = 0; i < segmentsDelta; i++) {
+        const tail = this.body[this.body.length - 1];
+        this.body.push({ x: tail.x, y: tail.y });
+      }
+      // Mark growing for the next move frame so we don't immediately remove the tail
+      this.isGrowing = true;
+      return;
     }
+
+    // Negative: shrink by removing tail segments (keep at least the head)
+    const toRemove = Math.min(this.body.length - 1, Math.abs(segmentsDelta));
+    for (let i = 0; i < toRemove; i++) {
+      this.body.pop();
+    }
+  }
+
+  adjustLengthTo(desiredLength) {
+    // Clamp desired length between 1 and MAX_LENGTH
+    const minLen = 1;
+    const maxLen = CONFIG.SNAKE.MAX_LENGTH;
+    const target = Math.max(minLen, Math.min(maxLen, desiredLength | 0));
+    const delta = target - this.body.length;
+    if (delta !== 0) this.adjustLengthBy(delta);
   }
 
   turnLeft()  { this.angle -= CONFIG.SNAKE.TURN_SPEED; }

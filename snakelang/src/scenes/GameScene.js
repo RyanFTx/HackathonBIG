@@ -181,15 +181,25 @@ export class GameScene {
     const collectedOrbs = this.collisionManager.checkOrbCollisions(this.snake, this.orbs);
 
     collectedOrbs.forEach(orb => {
-      // Grow snake
-      this.snake.grow();
-
-      // Update score
+      // Update score and set snake length proportional to total score
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
 
+      const totalScore = Math.max(0, this.scoreboard.getScore()); // floor at 0
+
+      // Proportional mapping: length = base + k * score
+      const baseSegments = 5; // starting beyond head
+      const segmentsPerScore = 0.2; // tune growth rate
+      const desiredLength = Math.round(baseSegments + totalScore * segmentsPerScore);
+
+      const before = this.snake.body.length;
+      this.snake.adjustLengthTo(desiredLength);
+      const after = this.snake.body.length;
+      const delta = after - before;
+      if (delta !== 0) this.effectUI.showLengthChange(delta);
+
       // Spawn new orb
-      //chose randomly between type normal and shrink
+      // chose randomly between type normal and shrink
       const rand = Math.random();
       const newOrb = this.orbSpawner.spawnOrb(rand < 0.5 ? 'normal' : 'shrink');
       if (newOrb) {

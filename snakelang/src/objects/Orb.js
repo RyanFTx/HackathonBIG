@@ -20,7 +20,11 @@ export class Orb {
     // Dying/dead state
     this.isDying = false;
     this.dieStartTime = null;
-    this.fadeOutDuration = 500; // ms
+    // Use a constant fade out duration for all orbs
+    this.fadeOutDuration = 800; // ms
+    // Randomize dying start offset (how long orb lives before dying)
+    // Each orb will start dying after base lifetime minus a random offset
+    this.dyingOffset = Math.random() * 0.7 + 0.3; // between 0.3 and 1.0 (fraction of lifetime)
     this.isDead = false;
     // For debugging
     console.log('Created orb with word:', word, translation, 'color:', color);
@@ -31,8 +35,10 @@ export class Orb {
     const now = Date.now();
     const lifetime = CONFIG.ORBS.ORB_LIFETIME_MS;
     const timeAlive = now - this.spawnTime;
-    const timeLeft = lifetime - timeAlive;
-    const warningStart = lifetime * 0.4;
+    // Calculate when this orb should start dying
+    const dyingStartTime = lifetime * this.dyingOffset;
+    const timeLeft = dyingStartTime - timeAlive;
+    const warningStart = dyingStartTime * 0.4;
 
     // If dying, use dieStartTime for fade
     let alpha = 1;

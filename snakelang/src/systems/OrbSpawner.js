@@ -68,6 +68,42 @@ export class OrbSpawner {
     }
   }
 
+   _pickOrbTypeWeighted(orbPercentages) {
+    const percentages = orbPercentages || { normal: 60, speed: 20, explosive: 20 };
+    const types = Object.keys(percentages);
+    const weights = Object.values(percentages);
+    const total = weights.reduce((a, b) => a + b, 0);
+    const r = Math.random() * total;
+    let sum = 0;
+    for (let i = 0; i < types.length; i++) {
+      sum += weights[i];
+      if (r < sum) return types[i];
+    }
+    return types[0]; // fallback
+  }
+
+
+  generateOrbWeighted(orbPercentages){
+    const rand = Math.random();
+      const orbType = this._pickOrbTypeWeighted(orbPercentages);
+      // 70% chance normal, 30% chance shrink
+      if(rand < .7){
+        let newOrb = this.spawnOrb(orbType);
+        if (newOrb) {
+          return newOrb;
+        }
+
+      }else{
+        let newOrb = this.spawnShrinkOrb(orbType);
+        if (newOrb) {
+          return newOrb;
+        }
+
+      }
+  }
+
+
+
   spawnOrb(type = null) {
     // If no type specified, pick one randomly
     const types = ['normal', 'speed', 'explosive'];

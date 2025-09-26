@@ -264,11 +264,8 @@ export class GameScene {
       }
 
       // Spawn new orb
-      // chose randomly between type normal and shrink
-      const rand = Math.random();
-      const orbType = this._pickOrbTypeWeighted();
-      // 70% chance normal, 30% chance shrink
-      this._generateOrbWeighted();
+      let newOrb = this.orbSpawner.generateOrbWeighted(this.orbPercentages);
+      if (newOrb) this.orbs.push(newOrb);
 
 
       // Show effect
@@ -276,7 +273,8 @@ export class GameScene {
     });
 
     if(this.orbs.length < 10) {
-      this._generateOrbWeighted();
+      let orb = this.orbSpawner.generateOrbWeighted(this.orbPercentages);
+      if (orb) this.orbs.push(orb);
     }
 
     this.orbs = this.orbs.filter(orb => !orb.isDead);
@@ -284,38 +282,38 @@ export class GameScene {
   }
 
   // Weighted random selection based on orbPercentages
-  _pickOrbTypeWeighted() {
-    const percentages = this.orbPercentages || { normal: 60, speed: 20, explosive: 20 };
-    const types = Object.keys(percentages);
-    const weights = Object.values(percentages);
-    const total = weights.reduce((a, b) => a + b, 0);
-    const r = Math.random() * total;
-    let sum = 0;
-    for (let i = 0; i < types.length; i++) {
-      sum += weights[i];
-      if (r < sum) return types[i];
-    }
-    return types[0]; // fallback
-  }
+  // _pickOrbTypeWeighted() {
+  //   const percentages = this.orbPercentages || { normal: 60, speed: 20, explosive: 20 };
+  //   const types = Object.keys(percentages);
+  //   const weights = Object.values(percentages);
+  //   const total = weights.reduce((a, b) => a + b, 0);
+  //   const r = Math.random() * total;
+  //   let sum = 0;
+  //   for (let i = 0; i < types.length; i++) {
+  //     sum += weights[i];
+  //     if (r < sum) return types[i];
+  //   }
+  //   return types[0]; // fallback
+  // }
 
-  _generateOrbWeighted(){
-    const rand = Math.random();
-      const orbType = this._pickOrbTypeWeighted();
-      // 70% chance normal, 30% chance shrink
-      if(rand < .7){
-        let newOrb = this.orbSpawner.spawnOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
+  // _generateOrbWeighted(){
+  //   const rand = Math.random();
+  //     const orbType = this._pickOrbTypeWeighted();
+  //     // 70% chance normal, 30% chance shrink
+  //     if(rand < .7){
+  //       let newOrb = this.orbSpawner.spawnOrb(orbType);
+  //       if (newOrb) {
+  //         this.orbs.push(newOrb);
+  //       }
 
-      }else{
-        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
+  //     }else{
+  //       let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
+  //       if (newOrb) {
+  //         this.orbs.push(newOrb);
+  //       }
 
-      }
-  }
+  //     }
+  // }
 
   render() {
     // Clear canvas

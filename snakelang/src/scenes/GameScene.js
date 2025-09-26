@@ -288,7 +288,7 @@ export class GameScene {
 
   // Weighted random selection based on orbPercentages
   _pickOrbTypeWeighted() {
-    const percentages = this.orbPercentages || { normal: 60, shrink: 20, speed: 20, explosive: 0 };
+    const percentages = this.orbPercentages || { normal: 60, speed: 20, explosive: 20 };
     const types = Object.keys(percentages);
     const weights = Object.values(percentages);
     const total = weights.reduce((a, b) => a + b, 0);

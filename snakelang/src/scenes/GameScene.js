@@ -16,6 +16,9 @@ export class GameScene {
     this.canvas = canvas;
     this.ctx = ctx;
 
+    // Mode (difficulty) - must be set before OrbSpawner
+    this.mode = { difficulty: 'easy' };
+
     // Game objects
     this.snake = new Snake();
     this.orbs = [];
@@ -23,7 +26,7 @@ export class GameScene {
     // Systems
     this.collisionManager = new CollisionManager();
     this.effectManager = new EffectManager();
-    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height, language);
+    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height, language, this.mode.difficulty);
 
     // UI
     this.scoreboard = new Scoreboard();
@@ -38,9 +41,6 @@ export class GameScene {
     this.mouseY = 0;
     this.mousePressed = false;
 
-    // Mode (difficulty)
-    this.mode = { difficulty: 'easy' };
-
     // Track wrong answers for game over popup
     this.wrongAnswers = [];
 
@@ -53,6 +53,9 @@ export class GameScene {
 
   setMode(mode) {
     this.mode = { ...this.mode, ...mode };
+    if (this.orbSpawner) {
+      this.orbSpawner.difficulty = this.mode.difficulty;
+    }
   }
 
   setupInput() {

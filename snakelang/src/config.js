@@ -29,7 +29,9 @@ export const CONFIG = {
     SIZE: 15,
     INITIAL_COUNT: 8,
     SPAWN_MARGIN: 25,
-    SCORE_VALUE: 10
+    SCORE_VALUE: 10,
+    MIN_NORMAL_ORBS: 3,
+    ORB_LIFETIME_MS: 10000 // 10 seconds
   },
 
   // Game settings

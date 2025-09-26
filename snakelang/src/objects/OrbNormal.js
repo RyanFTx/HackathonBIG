@@ -6,8 +6,8 @@
 import { Orb } from './Orb.js';
 
 export class OrbNormal extends Orb {
-  constructor(x, y, word) {
-    super(x, y, word);
+  constructor(x, y, word, translation) {
+    super(x, y, word, translation, '#FFD700'); // gold
     this.type = 'normal';
   }
 

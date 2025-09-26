@@ -6,43 +6,56 @@
 import { CONFIG } from '../config.js';
 
 export class Orb {
-  constructor(x, y, word = null) {
+  constructor(x, y, word = null, translation = null, color = '#FFD700') {
     this.x = x;
     this.y = y;
     this.word = word;
+    this.translation = translation;
+    this.color = color;
     this.size = CONFIG.ORBS.SIZE;
+    // Add a random phase offset for natural floating
+    this.floatPhase = Math.random() * Math.PI * 2;
+    // For debugging
+    console.log('Created orb with word:', word, translation, 'color:', color);
   }
 
   draw(ctx) {
-    // Draw orb background
-    const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-    gradient.addColorStop(0, CONFIG.COLORS.ORB_GRADIENT_START);
-    gradient.addColorStop(0.7, CONFIG.COLORS.ORB_GRADIENT_MID);
-    gradient.addColorStop(1, CONFIG.COLORS.ORB_GRADIENT_END);
+  if (this.word) {
+    // ---- Scale pulsation and natural floating effect ----
+    const time = Date.now() / 700;
+    const scale = 1 + 0.10 * Math.sin(time + this.floatPhase);
+    const floatOffset = 4 * Math.sin(time * 0.9 + this.floatPhase);
 
-    ctx.fillStyle = gradient;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fill();
+    // ---- Draw main glowing word text with scale and floating ----
+    ctx.save();
+    ctx.translate(this.x, this.y - 2 + floatOffset);
+    ctx.scale(scale, scale);
+    ctx.shadowBlur = 12 + 4 * Math.sin(time * 2 + this.floatPhase);
+    ctx.shadowColor = this.color;
+    ctx.fillStyle = this.color;
+    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.word, 0, 0);
+    ctx.restore();
 
-    // Add border
-    ctx.strokeStyle = CONFIG.COLORS.ORB_BORDER;
-    ctx.lineWidth = 2;
-    ctx.stroke();
+    // ---- Draw translation below with same color, glow, scale, and floating ----
+    ctx.save();
+    ctx.translate(this.x, this.y + 25 + floatOffset);
+    ctx.scale(scale, scale);
+    ctx.shadowBlur = 8 + 3 * Math.sin(time * 2 + Math.PI / 2 + this.floatPhase);
+    ctx.shadowColor = this.color;
+    ctx.fillStyle = this.color;
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.translation, 0, 0);
+    ctx.restore();
 
-    if (this.word) {
-      // Draw Chinese character
-      ctx.fillStyle = CONFIG.COLORS.ORB_TEXT;
-      ctx.font = 'bold 14px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.word.chinese, this.x, this.y - 2);
-
-      // Draw English translation below (small)
-      ctx.fillStyle = CONFIG.COLORS.ORB_SUBTEXT;
-      ctx.font = '8px Arial';
-      ctx.fillText(this.word.english, this.x, this.y + 25);
-    }
+    // ---- Reset shadow to avoid affecting other drawings ----
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
+  }
   }
 
   checkCollision(snakeHead, snakeSize) {

@@ -97,9 +97,29 @@ export class GameScene {
 
   reset() {
     this.snake.reset();
-    this.orbs = this.orbSpawner.spawnInitialOrbs();
     this.scoreboard.reset();
     this.effectManager.clear();
+
+    // Wait for translations to load before spawning orbs
+    this.initializeOrbs();
+  }
+
+  async initializeOrbs() {
+    // Wait for orb spawner to be ready
+    const maxWaitTime = 3000; // 3 seconds max wait
+    const startTime = Date.now();
+
+    while (!this.orbSpawner.isReady() && (Date.now() - startTime) < maxWaitTime) {
+      await new Promise(resolve => setTimeout(resolve, 100)); // Wait 100ms
+    }
+
+    if (this.orbSpawner.isReady()) {
+      this.orbs = this.orbSpawner.spawnInitialOrbs();
+      console.log(`🎮 Game ready with ${this.orbSpawner.getWordCount()} Chinese words`);
+    } else {
+      console.warn('⚠️ Timed out waiting for translations, using fallback words');
+      this.orbs = this.orbSpawner.spawnInitialOrbs(); // Try anyway with fallback
+    }
   }
 
   handleInput() {
@@ -169,7 +189,12 @@ export class GameScene {
       this.scoreboard.updateScore(points);
 
       // Spawn new orb
-      this.orbs.push(this.orbSpawner.spawnOrb());
+      //chose randomly between type normal and shrink
+      const rand = Math.random();
+      const newOrb = this.orbSpawner.spawnOrb(rand < 0.5 ? 'normal' : 'shrink');
+      if (newOrb) {
+        this.orbs.push(newOrb);
+      }
 
       // Show effect
       this.effectUI.showScoreGain(points);

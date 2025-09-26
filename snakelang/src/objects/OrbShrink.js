@@ -6,8 +6,8 @@
 import { Orb } from './Orb.js';
 
 export class OrbShrink extends Orb {
-  constructor(x, y) {
-    super(x, y);
+  constructor(x, y, word, wrongTranslation) {
+    super(x, y, word, wrongTranslation, '#BA68C8'); // purple
     this.type = 'shrink';
   }
 

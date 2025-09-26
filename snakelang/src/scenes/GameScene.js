@@ -359,25 +359,80 @@ export class GameScene {
     this.ctx.fillStyle = CONFIG.CANVAS.BACKGROUND_COLOR;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // Debug: log camera and snake positions
-    if (this.snake && this.snake.body && this.snake.body.length > 0) {
-      const head = this.snake.getHead();
-      console.log('[DEBUG] Camera:', this.camera.x, this.camera.y, 'Snake head:', head.x, head.y);
-    }
+    // ...existing code...
 
-    // Draw world border (circle)
-    this.ctx.save();
+  // Fill entire canvas with blue-black background
+  this.ctx.save();
+  this.ctx.fillStyle = '#101522';
+  this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+  // Draw world circle
+  const worldX = this.canvas.width / 2 + (CONFIG.WORLD.CENTER_X - this.camera.x);
+  const worldY = this.canvas.height / 2 + (CONFIG.WORLD.CENTER_Y - this.camera.y);
+  const r = CONFIG.WORLD.RADIUS;
+  this.ctx.beginPath();
+  this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+  this.ctx.closePath();
+  this.ctx.fillStyle = '#101522';
+  this.ctx.fill();
+
+  // Draw outward white border glow
+  this.ctx.save();
+  this.ctx.beginPath();
+  this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+  this.ctx.closePath();
+  this.ctx.strokeStyle = '#fff';
+  this.ctx.lineWidth = 8;
+  this.ctx.shadowColor = '#fff';
+  this.ctx.shadowBlur = 32;
+  this.ctx.shadowOffsetX = 0;
+  this.ctx.shadowOffsetY = 0;
+  this.ctx.stroke();
+  this.ctx.restore();
+
+    // Glowing border (white)
     this.ctx.beginPath();
-    this.ctx.arc(
-      this.canvas.width / 2 + (CONFIG.WORLD.CENTER_X - this.camera.x),
-      this.canvas.height / 2 + (CONFIG.WORLD.CENTER_Y - this.camera.y),
-      CONFIG.WORLD.RADIUS,
-      0, Math.PI * 2
-    );
-    this.ctx.strokeStyle = CONFIG.COLORS.ORB_BORDER || '#E65100'; // Use orb border color for world border
+    this.ctx.arc(worldX, worldY, r, 0, Math.PI * 2);
+    this.ctx.closePath();
+    this.ctx.strokeStyle = '#fff';
     this.ctx.lineWidth = 6;
+    this.ctx.shadowColor = '#fff';
+    this.ctx.shadowBlur = 16;
     this.ctx.stroke();
-    this.ctx.restore();
+    this.ctx.shadowBlur = 0;
+
+      // Draw stationary stars with parallax effect
+      const STAR_COUNT = 120;
+      const PARALLAX = 0.2; // Lower = slower movement
+      if (!this.stars || this.stars.length !== STAR_COUNT) {
+        this.stars = [];
+        for (let i = 0; i < STAR_COUNT; i++) {
+          this.stars.push({
+            x: Math.random() * 4000, // Large area for parallax
+            y: Math.random() * 4000,
+            radius: Math.random() * 1.2 + 0.3,
+            alpha: Math.random() * 0.5 + 0.5
+          });
+        }
+      }
+      for (const star of this.stars) {
+        this.ctx.save();
+        this.ctx.globalAlpha = star.alpha;
+        // Parallax offset based on camera
+        const px = star.x - this.camera.x * PARALLAX;
+        const py = star.y - this.camera.y * PARALLAX;
+        // Wrap stars if out of canvas
+        let sx = ((px % this.canvas.width) + this.canvas.width) % this.canvas.width;
+        let sy = ((py % this.canvas.height) + this.canvas.height) % this.canvas.height;
+        this.ctx.beginPath();
+        this.ctx.arc(sx, sy, star.radius, 0, Math.PI * 2);
+        this.ctx.closePath();
+        this.ctx.fillStyle = '#fff';
+        this.ctx.shadowColor = '#fff';
+        this.ctx.shadowBlur = 8;
+        this.ctx.fill();
+        this.ctx.restore();
+      }
 
     // Draw orbs (only those in world circle)
     this.orbs.forEach(orb => {
@@ -405,7 +460,8 @@ export class GameScene {
 
     // Draw UI effects (screen space)
     this.effectUI.render(this.ctx);
-  }
+  // End of render method
+}
 
   // After updating objects/orbs, tick effects each frame
   // Ensure toasts fade out even when no new orbs are spawned

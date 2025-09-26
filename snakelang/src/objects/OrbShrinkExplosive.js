@@ -2,7 +2,8 @@ import { Orb } from './Orb.js';
 
 export class OrbShrinkExplosive extends Orb {
   constructor(x, y, word, translation) {
-    super(x, y, word, translation, '#ff1744'); // red for explosive shrink
+    super(x, y, word, translation, '#f49fb0ff'); // red for explosive shrink
+    this.type = 'shrink_explosive';
   }
 
   onCollect() {

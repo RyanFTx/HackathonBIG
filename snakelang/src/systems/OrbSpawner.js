@@ -92,6 +92,7 @@ export class OrbSpawner {
     if (!type) {
       type = types[Math.floor(Math.random() * types.length)];
     }
+    console.log('Spawning shrink orb of type:', type);
     switch (type) {
       case 'normal':
         return this.spawnShrinkNormalOrb();

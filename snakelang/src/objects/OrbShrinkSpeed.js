@@ -2,7 +2,8 @@ import { Orb } from './Orb.js';
 
 export class OrbShrinkSpeed extends Orb {
   constructor(x, y, word, translation) {
-    super(x, y, word, translation, '#00bfff'); // blue for speed shrink
+    super(x, y, word, translation, '#99d1e3ff'); // blue for speed shrink
+    this.type = 'shrink_speed';
   }
 
   onCollect() {

@@ -12,7 +12,7 @@ import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
 
 export class GameScene {
-  constructor(canvas, ctx, orbPercentages = { normal: 60, shrink: 20, speed: 20, explosive: 0 }) {
+  constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }) {
     this.canvas = canvas;
     this.ctx = ctx;
 
@@ -131,7 +131,12 @@ export class GameScene {
       Object.entries(orbCounts).forEach(([type, count]) => {
       for (let i = 0; i < count; i++) {
         const orb = this.orbSpawner.spawnOrb(type);
+        const shrinkOrb = this.orbSpawner.spawnShrinkOrb(type);
         if (orb) this.orbs.push(orb);
+        if (shrinkOrb && Math.random() < 1) {
+          this.orbs.push(shrinkOrb);
+          console.log(`🎮 Spawned shrink orb: ${type}`);
+        }
       }
       });
       console.log(`🎮 Game ready with user-defined orb percentages and shrink variants`, this.orbs.length);
@@ -215,7 +220,7 @@ export class GameScene {
       if (delta !== 0) this.effectUI.showLengthChange(delta);
 
       // If shrink orb, lose a life and end the game if no lives remain
-      if (orb.type === 'shrink') {
+      if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
         const isDead = this.scoreboard.loseLife();
         if (isDead) {
           this.stop();
@@ -226,10 +231,22 @@ export class GameScene {
       // Spawn new orb
       // chose randomly between type normal and shrink
       const rand = Math.random();
-      const newOrb = this.orbSpawner.spawnOrb(rand < 0.5 ? 'normal' : 'shrink');
-      if (newOrb) {
-        this.orbs.push(newOrb);
+      const orbType = this._pickOrbTypeWeighted();
+      // 70% chance normal, 30% chance shrink
+      if(rand < .7){
+        let newOrb = this.orbSpawner.spawnOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
+      }else{
+        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
       }
+
 
       // Show effect
       this.effectUI.showScoreGain(points);

@@ -198,6 +198,15 @@ export class GameScene {
       const delta = after - before;
       if (delta !== 0) this.effectUI.showLengthChange(delta);
 
+      // If shrink orb, lose a life and end the game if no lives remain
+      if (orb.type === 'shrink') {
+        const isDead = this.scoreboard.loseLife();
+        if (isDead) {
+          this.stop();
+          return; // stop processing further orbs this frame
+        }
+      }
+
       // Spawn new orb
       // chose randomly between type normal and shrink
       const rand = Math.random();

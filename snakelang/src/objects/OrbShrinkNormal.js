@@ -13,6 +13,6 @@ export class OrbShrinkNormal extends Orb {
 
   onCollect() {
     // Future: Apply shrink effect (negative score)
-    return -super.onCollect();
+    return -3 * super.onCollect();
   }
 }

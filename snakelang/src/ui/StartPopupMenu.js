@@ -247,10 +247,9 @@ export class StartPopupMenu {
     y += 18;
     y += this._drawOrbDistribution(ctx, PX + PAD, y, PW - PAD * 2, orbP) + 20;
 
-    // start button
     const startW = 200, startH = 48;
     const startX = W/2 - startW/2;
-    const startY = y;
+    const startY = PY + 440 - startH + 70 ;
     this._buttonFancy(ctx, 'start', startX, startY, startW, startH, {
       label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary'
     });

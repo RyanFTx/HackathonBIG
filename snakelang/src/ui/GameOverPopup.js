@@ -95,31 +95,37 @@ export class GameOverPopup {
     ctx.restore();
 
     // Title
-    this._text(ctx, 'Game Over', W/2, H/2 - 100, 'bold 48px Inter, Arial', '#FF5C5C', 'center');
-    this._text(ctx, `Final Score: ${this.score}`, W/2, H/2 - 30, '600 28px Inter, Arial', '#FFFFFF', 'center');
+    const titleFontSize = Math.round(H * 0.07); // 7% of canvas height
+    const scoreFontSize = Math.round(H * 0.04); // 4% of canvas height
+    const reviewFontSize = Math.round(H * 0.03); // 3% of canvas height
+    const tableHeaderFontSize = Math.round(H * 0.025); // 2.5% of canvas height
+    const tableFontSize = Math.round(H * 0.022); // 2.2% of canvas height
+    const moreFontSize = Math.round(H * 0.018); // 1.8% of canvas height
+    this._text(ctx, 'Game Over', W/2, H/2 - titleFontSize - 20, `bold ${titleFontSize}px Inter, Arial`, '#FF5C5C', 'center');
+    this._text(ctx, `Final Score: ${this.score}`, W/2, H/2 - scoreFontSize - 10, `600 ${scoreFontSize}px Inter, Arial`, '#FFFFFF', 'center');
 
     // Render wrong answers as a table if any
     if (this.wrongAnswers && this.wrongAnswers.length > 0) {
       const startY = H/2 + 30;
-      this._text(ctx, 'Words for Review:', W/2, startY, '600 22px Inter, Arial', '#FFD700', 'center');
-      let y = startY + 36;
+      this._text(ctx, 'Words for Review:', W/2, startY, `600 ${reviewFontSize}px Inter, Arial`, '#FFD700', 'center');
+      let y = startY + reviewFontSize + 10;
 
       // Table header
-      this._text(ctx, 'Chinese', W/2 - 60, y, 'bold 18px Inter, Arial', '#FFD700', 'center');
-      this._text(ctx, 'Correct', W/2 + 60, y, 'bold 18px Inter, Arial', '#FFD700', 'center');
-      y += 28;
+      this._text(ctx, 'Chinese', W/2 - 60, y, `bold ${tableHeaderFontSize}px Inter, Arial`, '#FFD700', 'center');
+      this._text(ctx, 'Correct', W/2 + 60, y, `bold ${tableHeaderFontSize}px Inter, Arial`, '#FFD700', 'center');
+      y += tableHeaderFontSize + 10;
       const maxToShow = 6;
       for (let i = 0; i < Math.min(this.wrongAnswers.length, maxToShow); i++) {
         const wa = this.wrongAnswers[i];
-        this._text(ctx, wa.chinese, W/2 - 60, y, '18px Inter, Arial', '#FFFFFF', 'center');
-        this._text(ctx, wa.correct, W/2 + 60, y, '18px Inter, Arial', '#32d672', 'center');
-        y += 26;
+        this._text(ctx, wa.chinese, W/2 - 60, y, `${tableFontSize}px Inter, Arial`, '#FFFFFF', 'center');
+        this._text(ctx, wa.correct, W/2 + 60, y, `${tableFontSize}px Inter, Arial`, '#32d672', 'center');
+        y += tableFontSize + 8;
       }
       if (this.wrongAnswers.length > maxToShow) {
-        this._text(ctx, `...and ${this.wrongAnswers.length - maxToShow} more`, W/2, y, '16px Inter, Arial', '#AAAAAA', 'center');
+        this._text(ctx, `...and ${this.wrongAnswers.length - maxToShow} more`, W/2, y, `${moreFontSize}px Inter, Arial`, '#AAAAAA', 'center');
       }
       // Adjust button Y
-      this._buttonYExtra = 36 + 28 + Math.min(this.wrongAnswers.length, maxToShow) * 26 + 10;
+      this._buttonYExtra = reviewFontSize + tableHeaderFontSize + Math.min(this.wrongAnswers.length, maxToShow) * (tableFontSize + 8) + 10;
     } else {
       this._buttonYExtra = 0;
     }

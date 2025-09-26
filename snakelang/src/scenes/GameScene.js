@@ -407,10 +407,12 @@ export class GameScene {
       const PARALLAX = CONFIG.WORLD.PARALLAX_FACTOR;
       if (!this.stars || this.stars.length !== STAR_COUNT) {
         this.stars = [];
+        const starFieldWidth = this.canvas.width * 2;
+        const starFieldHeight = this.canvas.height * 2;
         for (let i = 0; i < STAR_COUNT; i++) {
           this.stars.push({
-            x: Math.random() * 4000, // Large area for parallax
-            y: Math.random() * 4000,
+            x: Math.random() * starFieldWidth,
+            y: Math.random() * starFieldHeight,
             radius: Math.random() * 1.2 + 0.3,
             alpha: Math.random() * 0.5 + 0.5
           });

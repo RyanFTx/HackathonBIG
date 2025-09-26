@@ -68,33 +68,35 @@ export class Orb {
       floatOffset += 2 * ease * Math.sin(now / (120 - 60 * ease) + this.floatPhase);
     }
 
-    // ---- Draw main glowing word text with scale, floating, and alpha ----
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(this.x, this.y - 2 + floatOffset);
-    ctx.scale(scale, scale);
-    ctx.shadowBlur = 12 + 4 * Math.sin(time * 2 + this.floatPhase);
-    ctx.shadowColor = this.color;
-    ctx.fillStyle = this.color;
-    ctx.font = 'bold 18px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(this.word, 0, 0);
-    ctx.restore();
+  // ---- Draw main glowing word text with scale, floating, and alpha ----
+  const wordFontSize = Math.round(ctx.canvas.height * 0.025); // 2.5% of canvas height
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(this.x, this.y - 2 + floatOffset);
+  ctx.scale(scale, scale);
+  ctx.shadowBlur = 12 + 4 * Math.sin(time * 2 + this.floatPhase);
+  ctx.shadowColor = this.color;
+  ctx.fillStyle = this.color;
+  ctx.font = `bold ${wordFontSize}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(this.word, 0, 0);
+  ctx.restore();
 
-    // ---- Draw translation below with same color, glow, scale, floating, and alpha ----
-    ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(this.x, this.y + 25 + floatOffset);
-    ctx.scale(scale, scale);
-    ctx.shadowBlur = 8 + 3 * Math.sin(time * 2 + Math.PI / 2 + this.floatPhase);
-    ctx.shadowColor = this.color;
-    ctx.fillStyle = this.color;
-    ctx.font = '16px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(this.translation, 0, 0);
-    ctx.restore();
+  // ---- Draw translation below with same color, glow, scale, floating, and alpha ----
+  const transFontSize = Math.round(ctx.canvas.height * 0.018); // 1.8% of canvas height
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.translate(this.x, this.y + 25 + floatOffset);
+  ctx.scale(scale, scale);
+  ctx.shadowBlur = 8 + 3 * Math.sin(time * 2 + Math.PI / 2 + this.floatPhase);
+  ctx.shadowColor = this.color;
+  ctx.fillStyle = this.color;
+  ctx.font = `${transFontSize}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(this.translation, 0, 0);
+  ctx.restore();
 
     // ---- Reset shadow to avoid affecting other drawings ----
     ctx.shadowBlur = 0;

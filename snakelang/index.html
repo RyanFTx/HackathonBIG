@@ -3,6 +3,29 @@
 <html lang="en"><html lang="en">
 
   <head>
+    <style>
+      #ui-root {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        z-index: 10;
+        pointer-events: none;
+      }
+      #game-ui {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        font-size: 1.5rem;
+        color: #fff;
+        background: rgba(0,0,0,0.5);
+        padding: 0.5rem 2rem;
+        border-radius: 0 0 12px 12px;
+        margin: 0 auto;
+        width: fit-content;
+        pointer-events: auto;
+      }
+    </style>
 
     <meta charset="UTF-8" />    <meta charset="UTF-8" />
 

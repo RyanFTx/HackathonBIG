@@ -21,7 +21,7 @@ export class Snake {
     this.speed = CONFIG.SNAKE.BASE_SPEED;
   }
 
-  move(canvasWidth, canvasHeight) {
+  move() {
     const head = this.body[0];
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;

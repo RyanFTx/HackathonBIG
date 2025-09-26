@@ -195,15 +195,4 @@ export class OrbSpawner {
     return this.chineseWords ? this.chineseWords.length : 0;
   }
 
-  // Future: Add methods for spawning special orbs
-  spawnSpeedOrb() {
-    // Use level 1 and 2 words for speed orbs as well
-    const allWords = [...this.wordsLevel1, ...this.wordsLevel2];
-    if (allWords.length === 0) return null;
-    const text = allWords[Math.floor(Math.random() * allWords.length)];
-    const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbSpeed(x, y, text.chinese, text.english);
-  }
-  // Future: Add methods for spawning special orbs
 }

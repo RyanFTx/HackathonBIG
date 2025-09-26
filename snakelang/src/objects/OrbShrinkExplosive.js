@@ -8,6 +8,6 @@ export class OrbShrinkExplosive extends Orb {
 
   onCollect() {
     // Shrink and explosive effect logic here
-    return -1; // or custom score
+    return -super.onCollect() * 5; // or custom score
   }
 }

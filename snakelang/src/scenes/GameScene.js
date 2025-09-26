@@ -268,19 +268,7 @@ export class GameScene {
       const rand = Math.random();
       const orbType = this._pickOrbTypeWeighted();
       // 70% chance normal, 30% chance shrink
-      if(rand < .7){
-        let newOrb = this.orbSpawner.spawnOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
-
-      }else{
-        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
-        if (newOrb) {
-          this.orbs.push(newOrb);
-        }
-
-      }
+      this._generateOrbWeighted();
 
 
       // Show effect
@@ -288,13 +276,7 @@ export class GameScene {
     });
 
     if(this.orbs.length < 3) {
-      // Spawn new orb using weighted random selection
-      const orbType = this._pickOrbTypeWeighted();
-      console.log('Spawning new orb of type:', orbType);
-      const newOrb = this.orbSpawner.spawnOrb(orbType);
-      if (newOrb) {
-        this.orbs.push(newOrb);
-      }
+      this._generateOrbWeighted();
     }
 
     this.orbs = this.orbs.filter(orb => !orb.isDead);
@@ -314,6 +296,25 @@ export class GameScene {
       if (r < sum) return types[i];
     }
     return types[0]; // fallback
+  }
+
+  _generateOrbWeighted(){
+    const rand = Math.random();
+      const orbType = this._pickOrbTypeWeighted();
+      // 70% chance normal, 30% chance shrink
+      if(rand < .7){
+        let newOrb = this.orbSpawner.spawnOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
+      }else{
+        let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
+        if (newOrb) {
+          this.orbs.push(newOrb);
+        }
+
+      }
   }
 
   render() {

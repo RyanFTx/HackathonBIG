@@ -26,8 +26,15 @@ export class Snake {
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;
     const worldRadius = CONFIG.WORLD.RADIUS;
-    const newX = head.x + Math.cos(this.angle) * this.speed;
-    const newY = head.y + Math.sin(this.angle) * this.speed;
+    // Virtual speed scaling based on reference canvas height
+    const referenceHeight = 700; // Design reference
+    let scale = 1;
+    if (typeof window !== 'undefined' && window.snakeLangGame && window.snakeLangGame.ctx && window.snakeLangGame.ctx.canvas) {
+      scale = window.snakeLangGame.ctx.canvas.height / referenceHeight;
+    }
+    const actualSpeed = this.speed * scale;
+    const newX = head.x + Math.cos(this.angle) * actualSpeed;
+    const newY = head.y + Math.sin(this.angle) * actualSpeed;
 
     // Check if new head is outside the world circle
     const dx = newX - worldCenterX;

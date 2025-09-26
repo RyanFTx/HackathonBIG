@@ -77,15 +77,13 @@ export class GameScene {
     });
 
     // Mouse controls
-    this.canvas.addEventListener('mousemove', (event) => {
+    window.addEventListener('mousemove', (event) => {
       const rect = this.canvas.getBoundingClientRect();
-      // Mouse position in screen (canvas) coordinates
+      // Mouse position in screen (canvas) coordinates, allow outside canvas
       const screenX = (event.clientX - rect.left) * (this.canvas.width / rect.width);
       const screenY = (event.clientY - rect.top) * (this.canvas.height / rect.height);
-      // Store last screen coordinates for camera-relative update
       this._lastScreenX = screenX;
       this._lastScreenY = screenY;
-      // Update world coordinates immediately for responsiveness
       this.mouseX = screenX + this.camera.x - this.canvas.width / 2;
       this.mouseY = screenY + this.camera.y - this.canvas.height / 2;
     });
@@ -232,22 +230,24 @@ export class GameScene {
     // Move snake in circular world
     this.snake.move(); // No need to pass canvas size
 
-    // Camera tracking: center on snake head, clamp to world circle
+    // Camera tracking: center on snake head, clamp to world circle (independent for x/y)
     const head = this.snake.getHead();
     const r = CONFIG.WORLD.RADIUS;
     const cx = CONFIG.WORLD.CENTER_X;
     const cy = CONFIG.WORLD.CENTER_Y;
-    // Clamp camera center so viewport stays inside world circle
     let camX = head.x;
     let camY = head.y;
-    // Calculate distance from world center
-    const dist = Math.sqrt((camX - cx) ** 2 + (camY - cy) ** 2);
-    const maxDist = r - Math.max(this.camera.width, this.camera.height) / 2;
-    if (dist > maxDist) {
-      // Clamp camera to edge of world circle
-      const angle = Math.atan2(camY - cy, camX - cx);
-      camX = cx + maxDist * Math.cos(angle);
-      camY = cy + maxDist * Math.sin(angle);
+    // Clamp X
+    const dx = camX - cx;
+    const maxDistX = r - this.camera.width / 2;
+    if (Math.abs(dx) > maxDistX) {
+      camX = cx + Math.sign(dx) * maxDistX;
+    }
+    // Clamp Y
+    const dy = camY - cy;
+    const maxDistY = r - this.camera.height / 2;
+    if (Math.abs(dy) > maxDistY) {
+      camY = cy + Math.sign(dy) * maxDistY;
     }
     this.camera.x = camX;
     this.camera.y = camY;

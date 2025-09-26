@@ -21,7 +21,7 @@ export const CONFIG = {
     MAX_SPEED: 5,
     TURN_SPEED: 0.08,
     GROWTH_SEGMENTS: 3,
-    MAX_LENGTH: 50
+    MAX_LENGTH: 100
   },
 
   // Orb settings

@@ -12,10 +12,11 @@ import { OrbShrinkSpeed } from '../objects/OrbShrinkSpeed.js';
 import { OrbShrinkExplosive } from '../objects/OrbShrinkExplosive.js';
 
 export class OrbSpawner {
-  constructor(canvasWidth, canvasHeight) {
+  constructor(canvasWidth, canvasHeight, language) {
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
     this.isLoaded = false;
+    this.language = language;
 
     // Fallback words in case JSON fails to load
     this.wordsLevel1 = [
@@ -92,6 +93,7 @@ export class OrbSpawner {
     if (!type) {
       type = types[Math.floor(Math.random() * types.length)];
     }
+    //const textToUse = this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin;
     console.log('Spawning shrink orb of type:', type);
     switch (type) {
       case 'normal':
@@ -113,7 +115,7 @@ export class OrbSpawner {
     const text = allWords[Math.floor(Math.random() * allWords.length)];
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbNormal(x, y, text.chinese, text.english);
+    return new OrbNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   spawnSpeedOrb() {
@@ -122,7 +124,7 @@ export class OrbSpawner {
         const text = this.wordsLevel3[Math.floor(Math.random() * this.wordsLevel3.length)];
         const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
         const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        return new OrbSpeed(x, y, text.chinese, text.english);
+        return new OrbSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   spawnExplosiveOrb() {
@@ -132,7 +134,7 @@ export class OrbSpawner {
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     // You need to implement OrbExplosive class for this to work
-    return new OrbExplosive(x, y, text.chinese, text.english);
+    return new OrbExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, text.english);
   }
 
   //SHRINK ORBS
@@ -145,7 +147,7 @@ export class OrbSpawner {
     const wrongText = allWords[(rand + 1) % allWords.length]; // Simple way to get a different word
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbShrinkNormal(x, y, text.chinese, wrongText.english);
+    return new OrbShrinkNormal(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english);
   }
 
   spawnShrinkExplosiveOrb() {
@@ -156,7 +158,7 @@ export class OrbSpawner {
     const wrongText = this.wordsLevel4[(rand + 1) % this.wordsLevel4.length];
     const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
     const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-    return new OrbShrinkExplosive(x, y, text.chinese, wrongText.english);
+    return new OrbShrinkExplosive(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english);
   }
 
     spawnShrinkSpeedOrb() {
@@ -166,7 +168,7 @@ export class OrbSpawner {
         const wrongText = this.wordsLevel3[(Math.floor(Math.random() * this.wordsLevel3.length) + 1) % this.wordsLevel3.length];
         const x = Math.random() * (this.canvasWidth - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
         const y = Math.random() * (this.canvasHeight - CONFIG.ORBS.SPAWN_MARGIN * 2) + CONFIG.ORBS.SPAWN_MARGIN;
-        return new OrbShrinkSpeed(x, y, text.chinese, wrongText.english);
+        return new OrbShrinkSpeed(x, y,  this.language === 'characters' || this.language === 'pinyin' ? this.language === 'characters' ? text.chinese : text.pinyin : Math.random() < 0.5 ? text.chinese : text.pinyin, wrongText.english);
   }
 
   spawnInitialOrbs(count = CONFIG.ORBS.INITIAL_COUNT) {

@@ -97,7 +97,7 @@ class SnakeLangGame {
       orbCounts[type] = Math.round((percent / 100) * totalOrbs);
     });
     // Create a new GameScene with orbCounts
-    this.scenes.game = new GameScene(this.canvas, this.ctx, orbCounts);
+    this.scenes.game = new GameScene(this.canvas, this.ctx, orbCounts, this.language);
     this.currentScene = this.scenes.game;
   }
 

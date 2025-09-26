@@ -8,6 +8,6 @@ export class OrbShrinkSpeed extends Orb {
 
   onCollect() {
     // Shrink and speed effect logic here
-    return -1; // or custom score
+    return -super.onCollect(); // or custom score
   }
 }

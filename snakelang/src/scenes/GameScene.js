@@ -233,8 +233,8 @@ export class GameScene {
         // Use orb.no to look up the correct translation from orbSpawner.chineseWords
         let correct = orb.translation;
         let words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
-        if (orb.no && words.length > 0) {
-          const found = words.flat().find(w => w.no == orb.no);
+        if (words.length > 0) {
+          const found = words.flat().find(w => w.chinese == orb.word);
           if (found) correct = found.english;
         }
         this.wrongAnswers.push({

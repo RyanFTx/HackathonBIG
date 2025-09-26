@@ -33,11 +33,17 @@ export class GameScene {
     this.isPlaying = false;
     this.keys = {};
 
+    // Mouse controls
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.mousePressed = false;
+
     this.setupInput();
     this.reset();
   }
 
   setupInput() {
+    // Keyboard controls
     document.addEventListener('keydown', (event) => {
       this.keys[event.code] = true;
 
@@ -48,6 +54,33 @@ export class GameScene {
 
     document.addEventListener('keyup', (event) => {
       this.keys[event.code] = false;
+    });
+
+    // Mouse controls
+    this.canvas.addEventListener('mousemove', (event) => {
+      const rect = this.canvas.getBoundingClientRect();
+      this.mouseX = event.clientX - rect.left;
+      this.mouseY = event.clientY - rect.top;
+    });
+
+    this.canvas.addEventListener('mousedown', (event) => {
+      if (event.button === 0) { // Left mouse button
+        this.mousePressed = true;
+        if (!this.isPlaying) {
+          this.start();
+        }
+      }
+    });
+
+    this.canvas.addEventListener('mouseup', (event) => {
+      if (event.button === 0) { // Left mouse button
+        this.mousePressed = false;
+      }
+    });
+
+    // Prevent context menu on right click
+    this.canvas.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
     });
   }
 
@@ -72,21 +105,47 @@ export class GameScene {
   handleInput() {
     if (!this.isPlaying) return;
 
-    // Turn left
-    if (CONFIG.CONTROLS.TURN_LEFT.some(key => this.keys[key])) {
-      this.snake.turnLeft();
+    // Mouse controls: snake follows cursor
+    const head = this.snake.getHead();
+    const dx = this.mouseX - head.x;
+    const dy = this.mouseY - head.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Only turn if mouse is far enough from snake head
+    if (distance > 10) {
+      const targetAngle = Math.atan2(dy, dx);
+      const currentAngle = this.snake.angle;
+      
+      // Calculate the shortest rotation direction
+      let angleDiff = targetAngle - currentAngle;
+      
+      // Normalize angle difference to [-π, π]
+      while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+      while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+      
+      // Turn towards mouse cursor
+      if (Math.abs(angleDiff) > 0.1) {
+        if (angleDiff > 0) {
+          this.snake.turnRight();
+        } else {
+          this.snake.turnLeft();
+        }
+      }
     }
 
-    // Turn right
-    if (CONFIG.CONTROLS.TURN_RIGHT.some(key => this.keys[key])) {
-      this.snake.turnRight();
-    }
-
-    // Speed boost
-    if (CONFIG.CONTROLS.SPEED_BOOST.some(key => this.keys[key])) {
+    // Speed boost on mouse click
+    if (this.mousePressed) {
       this.snake.speedBoost();
     } else {
       this.snake.normalSpeed();
+    }
+
+    // Keep keyboard controls as backup
+    if (CONFIG.CONTROLS.TURN_LEFT.some(key => this.keys[key])) {
+      this.snake.turnLeft();
+    }
+    if (CONFIG.CONTROLS.TURN_RIGHT.some(key => this.keys[key])) {
+      this.snake.turnRight();
     }
   }
 

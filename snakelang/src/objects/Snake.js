@@ -1,6 +1,8 @@
+// /root/HackathonBIG/snakelang/entities/Snake.js
 /**
  * Snake Object
  * Handles snake logic, movement, and rendering
+ * Fixes edge "stretching" by using toroidal deltas + wrap helpers.
  */
 
 import { CONFIG } from '../config.js';
@@ -8,6 +10,9 @@ import { CONFIG } from '../config.js';
 export class Snake {
   constructor() {
     this.reset();
+    this.texturePattern = null;
+    this.textureCanvas = null;
+    this.isGrowing = false;
   }
 
   reset() {
@@ -17,119 +22,163 @@ export class Snake {
   }
 
   move(canvasWidth, canvasHeight) {
-    // Move head in the direction of the angle
     const head = this.body[0];
     const newX = head.x + Math.cos(this.angle) * this.speed;
     const newY = head.y + Math.sin(this.angle) * this.speed;
 
-    // Check wall collision (wrap around like Slither.io)
-    let finalX = newX;
-    let finalY = newY;
+    // Wrap head position into [0, size)
+    const finalX = Snake.wrap(newX, canvasWidth);
+    const finalY = Snake.wrap(newY, canvasHeight);
 
-    if (newX < 0) finalX = canvasWidth;
-    if (newX > canvasWidth) finalX = 0;
-    if (newY < 0) finalY = canvasHeight;
-    if (newY > canvasHeight) finalY = 0;
-
-    // Add new head position
+    // Add new head
     this.body.unshift({ x: finalX, y: finalY });
 
-    // Update body segments to follow
+    // Maintain length (unless growing)
+    if (!this.isGrowing) {
+      this.body.pop();
+    } else {
+      this.isGrowing = false; // why: grow for exactly one frame after enqueueing segments
+    }
+
+    // Follow with toroidal shortest path (prevents "teleport stretching")
     for (let i = 1; i < this.body.length; i++) {
       const current = this.body[i];
       const target = this.body[i - 1];
 
-      const dx = target.x - current.x;
-      const dy = target.y - current.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
+      const dx = Snake.toroidalDelta(target.x, current.x, canvasWidth);
+      const dy = Snake.toroidalDelta(target.y, current.y, canvasHeight);
+      const distance = Math.hypot(dx, dy);
 
       if (distance > CONFIG.SNAKE.SEGMENT_DISTANCE) {
         const ratio = CONFIG.SNAKE.SEGMENT_DISTANCE / distance;
-        current.x = target.x - dx * ratio;
-        current.y = target.y - dy * ratio;
+        current.x = Snake.wrap(current.x + dx * ratio, canvasWidth);
+        current.y = Snake.wrap(current.y + dy * ratio, canvasHeight);
       }
     }
 
-    // Keep snake at reasonable length
-    while (this.body.length > CONFIG.SNAKE.MAX_LENGTH) {
-      this.body.pop();
-    }
+    // Optional cap
+    while (this.body.length > CONFIG.SNAKE.MAX_LENGTH) this.body.pop();
   }
 
   grow() {
+    this.isGrowing = true;
     for (let i = 0; i < CONFIG.SNAKE.GROWTH_SEGMENTS; i++) {
       const tail = this.body[this.body.length - 1];
       this.body.push({ x: tail.x, y: tail.y });
     }
   }
 
-  turnLeft() {
-    this.angle -= CONFIG.SNAKE.TURN_SPEED;
-  }
+  turnLeft()  { this.angle -= CONFIG.SNAKE.TURN_SPEED; }
+  turnRight() { this.angle += CONFIG.SNAKE.TURN_SPEED; }
+  speedBoost() { this.speed = Math.min(this.speed + 0.1, CONFIG.SNAKE.MAX_SPEED); }
+  normalSpeed() { this.speed = Math.max(this.speed - 0.05, CONFIG.SNAKE.BASE_SPEED); }
+  getHead() { return this.body[0]; }
 
-  turnRight() {
-    this.angle += CONFIG.SNAKE.TURN_SPEED;
-  }
+  // --- Rendering with scale texture (unchanged) ---
+  generateScaleTexture() {
+    if (this.texturePattern) return this.texturePattern;
 
-  speedBoost() {
-    this.speed = Math.min(this.speed + 0.1, CONFIG.SNAKE.MAX_SPEED);
-  }
+    this.textureCanvas = document.createElement('canvas');
+    this.textureCanvas.width = 32;
+    this.textureCanvas.height = 32;
+    const textureCtx = this.textureCanvas.getContext('2d');
 
-  normalSpeed() {
-    this.speed = Math.max(this.speed - 0.05, CONFIG.SNAKE.BASE_SPEED);
-  }
+    const baseColor = CONFIG.COLORS.SNAKE_HEAD_END;
+    const scaleColor = CONFIG.COLORS.SNAKE_HEAD_START;
+    const shadowColor = CONFIG.COLORS.SNAKE_BORDER;
 
-  getHead() {
-    return this.body[0];
+    for (let y = 0; y < 32; y += 8) {
+      for (let x = 0; x < 32; x += 8) {
+        const offset = (y / 8) % 2 === 0 ? 0 : 4;
+        const scaleX = x + offset;
+        const scaleY = y;
+
+        textureCtx.fillStyle = baseColor;
+        textureCtx.beginPath();
+        textureCtx.ellipse(scaleX + 4, scaleY + 4, 3, 2, 0, 0, Math.PI * 2);
+        textureCtx.fill();
+
+        textureCtx.fillStyle = scaleColor;
+        textureCtx.beginPath();
+        textureCtx.ellipse(scaleX + 3, scaleY + 3, 2, 1.5, 0, 0, Math.PI * 2);
+        textureCtx.fill();
+
+        textureCtx.fillStyle = shadowColor;
+        textureCtx.beginPath();
+        textureCtx.ellipse(scaleX + 5, scaleY + 5, 2.5, 1.8, 0, 0, Math.PI * 2);
+        textureCtx.fill();
+      }
+    }
+
+    this.texturePattern = textureCtx.createPattern(this.textureCanvas, 'repeat');
+    return this.texturePattern;
   }
 
   draw(ctx) {
-    // Draw snake body segments
+    const scalePattern = this.generateScaleTexture();
+
     this.body.forEach((segment, index) => {
       const radius = index === 0 ? CONFIG.SNAKE.SIZE + 2 : CONFIG.SNAKE.SIZE;
 
-      // Body gradient
-      if (index === 0) {
-        // Head
-        const gradient = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
-        gradient.addColorStop(0, CONFIG.COLORS.SNAKE_HEAD_START);
-        gradient.addColorStop(1, CONFIG.COLORS.SNAKE_HEAD_END);
-        ctx.fillStyle = gradient;
-      } else {
-        // Body segments get darker as they go back
-        const alpha = Math.max(0.6, 1 - (index * 0.02));
-        ctx.fillStyle = CONFIG.COLORS.SNAKE_BODY.replace('{alpha}', alpha);
-      }
-
+      ctx.save();
       ctx.beginPath();
       ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.clip();
 
-      // Add a border to segments
+      ctx.fillStyle = scalePattern;
+      ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
+
+      if (index === 0) {
+        const gradient = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
+        gradient.addColorStop(0, 'rgba(102, 187, 106, 0.3)');
+        gradient.addColorStop(1, 'rgba(76, 175, 80, 0.1)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
+      } else {
+        const alpha = Math.max(0.1, 0.3 - index * 0.01);
+        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+        ctx.fillRect(segment.x - radius, segment.y - radius, radius * 2, radius * 2);
+      }
+
+      ctx.restore();
+
       ctx.strokeStyle = CONFIG.COLORS.SNAKE_BORDER;
       ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
       ctx.stroke();
     });
 
-    // Draw eyes on head
     if (this.body.length > 0) {
       const head = this.body[0];
       const eyeDistance = 6;
       const eyeSize = 2;
 
-      // Calculate eye positions based on snake angle
-      const leftEyeX = head.x + Math.cos(this.angle - 0.5) * eyeDistance;
-      const leftEyeY = head.y + Math.sin(this.angle - 0.5) * eyeDistance;
+      const leftEyeX  = head.x + Math.cos(this.angle - 0.5) * eyeDistance;
+      const leftEyeY  = head.y + Math.sin(this.angle - 0.5) * eyeDistance;
       const rightEyeX = head.x + Math.cos(this.angle + 0.5) * eyeDistance;
       const rightEyeY = head.y + Math.sin(this.angle + 0.5) * eyeDistance;
 
       ctx.fillStyle = CONFIG.COLORS.SNAKE_EYES;
-      ctx.beginPath();
-      ctx.arc(leftEyeX, leftEyeY, eyeSize, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(rightEyeX, rightEyeY, eyeSize, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(leftEyeX,  leftEyeY,  eyeSize, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(rightEyeX, rightEyeY, eyeSize, 0, Math.PI * 2); ctx.fill();
     }
+  }
+
+  // --- Helpers ---
+  static wrap(v, size) {
+    // why: stable wrap into [0, size)
+    if (v >= size) return v - size;
+    if (v < 0) return v + size;
+    return v;
+  }
+
+  static toroidalDelta(a, b, size) {
+    // why: choose shortest signed distance on a torus
+    let d = a - b;
+    const half = size / 2;
+    if (d >  half) d -= size;
+    if (d < -half) d += size;
+    return d;
   }
 }

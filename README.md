@@ -28,6 +28,10 @@ This project is a Slither.io-style language learning game built with JavaScript 
    ```
 2. Open your browser and go to the URL shown in the terminal (usually [http://localhost:5173](http://localhost:5173)).
 
+### Live Demo
+
+You can play the deployed game here: [https://hackathon-big.vercel.app/](https://hackathon-big.vercel.app/)
+
 ### Project Structure
 
 - `snakelang/src/` — Main game source code

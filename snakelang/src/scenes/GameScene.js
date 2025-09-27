@@ -119,6 +119,8 @@ export class GameScene {
 
   stop() {
     this.isPlaying = false;
+    // Update high score when game ends
+    this.scoreboard.updateHighScore();
     const isHighScore = this.scoreboard.getScore() === this.scoreboard.getHighScore();
     // Pass wrongAnswers to GameOverPopup
     if (window.gameController) {

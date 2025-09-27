@@ -15,7 +15,8 @@ export class GameController {
   }
 
   showGameOver(score, wrongAnswers = []) {
-    this.gameOverPopup.show(score, wrongAnswers);
+    const highScore = this.game.scenes.game.scoreboard.getHighScore();
+    this.gameOverPopup.show(score, wrongAnswers, highScore);
   }
 
   render() {
@@ -44,6 +45,8 @@ export class GameController {
     // Reset game scene and scoreboard
     this.game.scenes.game.scoreboard.reset();
     this.game.scenes.game.reset();
+    // Update high score in start menu
+    this.game.popupMenu.updateHighScore();
     // Show the start popup menu
     this.game.popupMenu.show();
     this.game.currentScene = null;

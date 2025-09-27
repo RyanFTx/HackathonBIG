@@ -20,6 +20,7 @@ export class OrbSpawner {
     this.difficulty = difficulty;
     this.mode = mode;
 
+
     // Fallback words in case JSON fails to load
     this.wordsLevel1 = [
       { chinese: "你好", english: "hello", pinyin: "nǐ hǎo" },
@@ -84,7 +85,9 @@ export class OrbSpawner {
     return types[0]; // fallback
   }
 
-
+  setMode(mode = 'normal') {
+    this.mode = mode;
+  }
   generateOrbWeighted(orbPercentages) {
     const rand = Math.random();
       const orbType = this._pickOrbTypeWeighted(orbPercentages);

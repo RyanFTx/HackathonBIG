@@ -75,6 +75,16 @@ export class GameScene {
       if (event.code === 'Escape') {
         this.stop();
       }
+
+      if (event.code === 'KeyD') {
+        if (this.orbSpawner.mode !== 'demo') {
+          this.orbSpawner.setMode('demo');
+          console.log("Demo mode ON");
+        }else{
+          this.orbSpawner.setMode('normal');
+          console.log("Demo mode OFF");
+        }
+      }
     });
 
     document.addEventListener('keyup', (event) => {

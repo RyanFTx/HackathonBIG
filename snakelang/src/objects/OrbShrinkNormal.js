@@ -8,13 +8,10 @@ import { Orb } from './Orb.js';
 export class OrbShrinkNormal extends Orb {
   constructor(x, y, word, wrongTranslation, difficulty, mode = 'normal') {
     if (mode === 'normal') {
-      let color ='#FFD700';
-      super(x, y, word, translation, color);
+      super(x, y, word, wrongTranslation, '#FFD700');
     }else{
-      let color = '#faffc2ff';
-      super(x, y, word, translation, color);
+      super(x, y, word, wrongTranslation, '#faffc2ff');
     }
-    super(x, y, word, wrongTranslation, '#faffc2ff'); // purple
     this.type = 'shrink';
     this.difficulty = difficulty;
   }

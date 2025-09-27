@@ -271,7 +271,6 @@ export class StartPopupMenu {
     y += this._drawOrbDistribution(ctx, PX + PAD, y, PW - PAD * 2, orbP, orbFont);
   // Add extra vertical gap below distribution bars (reduce gap so button is higher)
   y += Math.round(16 * fontScale); // smaller gap below bars
-  //y += Math.round(64 * fontScale); // larger gap above start button
 
     const startW = Math.round(200 * fontScale), startH = Math.round(48 * fontScale);
     const startX = W/2 - startW/2;

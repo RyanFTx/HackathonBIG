@@ -43,7 +43,7 @@ export class GameScene {
   this.mousePressed = false;
   this._lastScreenX = null;
   this._lastScreenY = null;
-  
+
   // Boost bar system
   this.boostBar = {
     current: 0,        // Current boost (0-100)
@@ -51,7 +51,7 @@ export class GameScene {
     consumptionRate: 2, // Boost consumed per frame when accelerating
     fillAmount: 25     // Boost gained per correct speed orb
   };
-  
+
   // Camera
   this.camera = { x: 0, y: 0, width: this.canvas.width, height: this.canvas.height };
 
@@ -89,9 +89,11 @@ export class GameScene {
         if (this.orbSpawner.mode !== 'demo') {
           this.orbSpawner.setMode('demo');
           console.warn("Demo mode ON");
+          this.orbs = []; // Clear existing orbs
         }else{
           this.orbSpawner.setMode('normal');
           console.warn("Demo mode OFF");
+          this.orbs = []; // Clear existing orbs
         }
       }
     });
@@ -524,46 +526,46 @@ export class GameScene {
   renderBoostBar() {
     const ctx = this.ctx;
     const canvas = this.canvas;
-    
+
     // Boost bar dimensions and position
     const barWidth = 200;
     const barHeight = 20;
     const barX = 20;
     const barY = 20;
     const borderRadius = 10;
-    
+
     // Calculate boost percentage
     const boostPercentage = this.boostBar.current / this.boostBar.max;
-    
+
     // Draw background
     ctx.save();
     ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
     this._roundRect(ctx, barX, barY, barWidth, barHeight, borderRadius);
     ctx.fill();
-    
+
     // Draw border
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.lineWidth = 2;
     this._roundRect(ctx, barX, barY, barWidth, barHeight, borderRadius);
     ctx.stroke();
-    
+
     // Draw boost fill
     if (boostPercentage > 0) {
       const fillWidth = (barWidth - 4) * boostPercentage;
       const fillX = barX + 2;
       const fillY = barY + 2;
       const fillHeight = barHeight - 4;
-      
+
       // Create gradient for boost bar
       const gradient = ctx.createLinearGradient(fillX, fillY, fillX + fillWidth, fillY);
       gradient.addColorStop(0, '#FF6B6B'); // Red when low
       gradient.addColorStop(0.5, '#FFD93D'); // Yellow when medium
       gradient.addColorStop(1, '#6BCF7F'); // Green when full
-      
+
       ctx.fillStyle = gradient;
       this._roundRect(ctx, fillX, fillY, fillWidth, fillHeight, borderRadius - 2);
       ctx.fill();
-      
+
       // Add glow effect
       ctx.shadowColor = gradient;
       ctx.shadowBlur = 8;
@@ -571,14 +573,14 @@ export class GameScene {
       ctx.fill();
       ctx.shadowBlur = 0;
     }
-    
+
     // Draw boost text
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 14px Inter, Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(`Boost: ${Math.round(this.boostBar.current)}/${this.boostBar.max}`, barX + barWidth + 10, barY + barHeight / 2);
-    
+
     ctx.restore();
   }
 
@@ -588,7 +590,7 @@ export class GameScene {
   renderInstructions() {
     const ctx = this.ctx;
     const canvas = this.canvas;
-    
+
     // Instruction text
     const instructions = [
       'Match Chinese ↔ English orbs',
@@ -596,26 +598,26 @@ export class GameScene {
       'Left click = Speed boost',
       'Wrong match = -1 life'
     ];
-    
+
     // Position in top right
     const margin = 20;
     const lineHeight = 16;
     const fontSize = 12;
     const startX = canvas.width - 200; // 200px from right edge
     const startY = 120; // Further below the boost bar
-    
+
     ctx.save();
     ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; // Grey with transparency
     ctx.font = `${fontSize}px Inter, Arial`;
     ctx.textAlign = 'right';
     ctx.textBaseline = 'top';
-    
+
     // Draw each instruction line
     instructions.forEach((instruction, index) => {
       const y = startY + (index * lineHeight);
       ctx.fillText(instruction, startX, y);
     });
-    
+
     ctx.restore();
   }
 

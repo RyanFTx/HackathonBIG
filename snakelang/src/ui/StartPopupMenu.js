@@ -177,7 +177,8 @@ export class StartPopupMenu {
     ctx.restore();
 
   // --- Dynamic font sizes and layout variables based on canvas height ---
-  const fontScale = Math.max(0.7, Math.min(1.5, H / 700));
+ const minDimension = Math.min(W, H);
+  const fontScale = Math.max(0.7, Math.min(1.5, minDimension / 700));
   const titleFont = `bold ${Math.round(26 * fontScale)}px Inter, Arial`;
   const labelFont = `600 ${Math.round(16 * fontScale)}px Inter, Arial`;
   const smallFont = `600 ${Math.round(14 * fontScale)}px Inter, Arial`;

@@ -264,7 +264,7 @@ export class GameScene {
 
       // Play pronunciation audio for correct orbs only
       if (points > 0 && orb.word) {
-        PronunciationPlayer.play(orb.word, orb.translation);
+        PronunciationPlayer.play(orb.word, orb.translation, orb.chinese || orb.word);
       }
 
       const totalScore = Math.max(0, this.scoreboard.getScore()); // floor at 0

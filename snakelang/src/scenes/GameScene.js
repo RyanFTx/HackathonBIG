@@ -444,8 +444,11 @@ export class GameScene {
       }
     });
 
-  // Set camera scale for resolution independence
-  this.camera.scale = Math.min(this.canvas.width, this.canvas.height) / 1000;
+  // Set camera scale for resolution independence and high-DPI screens
+  const pixelWidth = this.canvas.width;
+  const pixelHeight = this.canvas.height;
+  const deviceScale = window.devicePixelRatio || 1;
+  this.camera.scale = Math.min(pixelWidth, pixelHeight) / (1000 * deviceScale);
   // Draw snake (all segments)
   this.snake.draw(this.ctx, this.camera, this.canvas);
 

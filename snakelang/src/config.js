@@ -39,7 +39,7 @@ export const CONFIG = {
     SPAWN_MARGIN: 25,
     SCORE_VALUE: 10,
     MIN_NORMAL_ORBS: 3,
-    ORB_LIFETIME_MS: 10000 // 10 seconds
+    ORB_LIFETIME_MS: 30000 // 10 seconds
   },
 
   // Game settings

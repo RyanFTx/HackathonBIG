@@ -608,7 +608,9 @@ export class GameScene {
       'Match Chinese ↔ English orbs',
       'Move with mouse',
       'Left click = Speed boost',
-      'Wrong match = -1 life'
+      'Wrong match = -1 life',
+      'Press D for Demo mode',
+      'Press P to pause the game'
     ];
 
     // Position in top right

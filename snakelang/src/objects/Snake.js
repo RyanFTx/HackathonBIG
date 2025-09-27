@@ -13,6 +13,18 @@ export class Snake {
     this.texturePattern = null;
     this.textureCanvas = null;
     this.isGrowing = false;
+
+    const referenceWidth = 1920; // Design reference width
+    const referenceHeight = 1080; // Design reference height
+    let scale = 1;
+    if (typeof window !== 'undefined' && window.snakeLangGame && window.snakeLangGame.ctx && window.snakeLangGame.ctx.canvas) {
+      const canvas = window.snakeLangGame.ctx.canvas;
+      const geomMean = Math.sqrt(canvas.width * canvas.height);
+      const referenceGeomMean = Math.sqrt(referenceWidth * referenceHeight);
+      scale = geomMean / referenceGeomMean;
+    }
+    this.actualSpeed = this.speed * scale;
+
   }
 
   reset() {
@@ -30,15 +42,9 @@ export class Snake {
     const referenceWidth = 1280; // Design reference width
     const referenceHeight = 700; // Design reference height
     let scale = 1;
-    if (typeof window !== 'undefined' && window.snakeLangGame && window.snakeLangGame.ctx && window.snakeLangGame.ctx.canvas) {
-      const canvas = window.snakeLangGame.ctx.canvas;
-      const geomMean = Math.sqrt(canvas.width * canvas.height);
-      const referenceGeomMean = Math.sqrt(referenceWidth * referenceHeight);
-      scale = geomMean / referenceGeomMean;
-    }
-    const actualSpeed = this.speed * scale;
-    const newX = head.x + Math.cos(this.angle) * actualSpeed;
-    const newY = head.y + Math.sin(this.angle) * actualSpeed;
+
+    const newX = head.x + Math.cos(this.angle) * this.actualSpeed;
+    const newY = head.y + Math.sin(this.angle) * this.actualSpeed;
 
     // Check if new head is outside the world circle
     const dx = newX - worldCenterX;

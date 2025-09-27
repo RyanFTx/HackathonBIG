@@ -205,7 +205,7 @@ export class GameScene {
     if (this.mousePressed) {
       this.snake.speedBoost();
     } else {
-      this.snake.normalSpeed();
+      this.snake.move();
     }
 
     // Keep keyboard controls as backup

@@ -8,7 +8,7 @@
 import { CONFIG } from '../config.js';
 
 export class Snake {
-  constructor() {
+  constructor(canvas) {
     this.reset();
     this.texturePattern = null;
     this.textureCanvas = null;
@@ -17,12 +17,10 @@ export class Snake {
     const referenceWidth = 1920; // Design reference width
     const referenceHeight = 1080; // Design reference height
     let scale = 1;
-    if (typeof window !== 'undefined' && window.snakeLangGame && window.snakeLangGame.ctx && window.snakeLangGame.ctx.canvas) {
-      const canvas = window.snakeLangGame.ctx.canvas;
       const geomMean = Math.sqrt(canvas.width * canvas.height);
       const referenceGeomMean = Math.sqrt(referenceWidth * referenceHeight);
       scale = geomMean / referenceGeomMean;
-    }
+    
     this.actualSpeed = this.speed * scale;
     console.log('Initialized snake with speed scale:', scale, 'actualSpeed:', this.actualSpeed);
 

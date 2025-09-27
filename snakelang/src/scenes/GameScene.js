@@ -20,7 +20,7 @@ export class GameScene {
     this.mode = { difficulty: 'easy' };
 
     // Game objects
-    this.snake = new Snake();
+    this.snake = new Snake(canvas);
     this.orbs = [];
 
     // Systems

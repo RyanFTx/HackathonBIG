@@ -6,7 +6,7 @@
 import { Orb } from './Orb.js';
 
 export class OrbSpeed extends Orb {
-  constructor(x, y, word, translation) {
+  constructor(x, y, word, translation, mode = 'normal') {
     super(x, y, word, translation, '#128aedff'); // blue
     this.type = 'speed';
   }

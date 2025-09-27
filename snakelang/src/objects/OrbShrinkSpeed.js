@@ -1,8 +1,12 @@
 import { Orb } from './Orb.js';
 
 export class OrbShrinkSpeed extends Orb {
-  constructor(x, y, word, translation, difficulty) {
-    super(x, y, word, translation, '#99d1e3ff'); // blue for speed shrink
+  constructor(x, y, word, translation, difficulty, mode = 'normal') {
+    if (mode === 'normal') {
+      super(x, y, word, translation, '#128aedff'); // pink
+    } else {
+      super(x, y, word, translation, '#6dbdffff'); // deep pink for hard mode
+    }
     this.type = 'shrink_speed';
     this.difficulty = difficulty;
   }

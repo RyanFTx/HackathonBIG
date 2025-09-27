@@ -12,6 +12,7 @@ import { UIScene } from './scenes/UIScene.js';
 import { StartPopupMenu } from './ui/StartPopupMenu.js';
 import { GameOverPopup } from './ui/GameOverPopup.js';
 import { GameController } from './GameController.js';
+import { AudioManager } from './systems/AudioManager.js';
 
 class SnakeLangGame {
   constructor() {
@@ -19,6 +20,7 @@ class SnakeLangGame {
     this.currentScene = null;
     this.canvas = null;
     this.ctx = null;
+    this.audioManager = new AudioManager();
     this.popupMenu = new StartPopupMenu();
     window.snakeLangPopupMenu = this.popupMenu;
     this.popupMenu.onStart = ({ language, orbPercentages, difficulty }) => {
@@ -68,12 +70,16 @@ class SnakeLangGame {
   this.scenes.menu = new MenuScene();
   this.scenes.game = new GameScene(this.canvas, this.ctx);
   this.gameController = new GameController(this, this.canvas, this.ctx);
+  this.gameController.audioManager = this.audioManager; // Expose audioManager
   window.gameController = this.gameController;
     // Start with popup menu
     this.currentScene = null;
     // Listen for key events for popup
     document.addEventListener('keydown', (event) => this.handleKeyDown(event));
     this.popupMenu.attach(this.canvas); // Attach mouse events to canvas
+
+    // Add user interaction listeners to start BGM
+    this.addUserInteractionListeners();
 
     console.log('✅ SnakeLang initialized successfully!');
     console.log('🎮 Press SPACE to start, use A/D to steer, W for boost');
@@ -82,7 +88,25 @@ class SnakeLangGame {
     this.gameLoop();
   }
 
+  addUserInteractionListeners() {
+    // Add listeners for user interactions to start BGM (required by autoplay policy)
+    const startBGM = () => {
+      this.audioManager.resumeAfterUserInteraction();
+      // Remove listeners after first interaction
+      document.removeEventListener('click', startBGM);
+      document.removeEventListener('keydown', startBGM);
+      document.removeEventListener('touchstart', startBGM);
+    };
+
+    document.addEventListener('click', startBGM);
+    document.addEventListener('keydown', startBGM);
+    document.addEventListener('touchstart', startBGM);
+  }
+
   handleKeyDown(event) {
+    // Try to start BGM on any key press
+    this.audioManager.resumeAfterUserInteraction();
+    
     if (this.popupMenu.isActive()) {
       if (event.code === 'ArrowUp') {
         this.popupMenu.handleInput({ type: 'language', value: 'characters' });
@@ -102,6 +126,9 @@ class SnakeLangGame {
   }
 
   startGame() {
+    // Start background music when game starts
+    this.audioManager.playBGM();
+    
     // Calculate orbCounts from orbPercentages
     const totalOrbs = 10; // You can make this dynamic or configurable
     const orbCounts = {};

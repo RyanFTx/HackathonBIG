@@ -27,7 +27,6 @@ export class Orb {
     this.dyingOffset = Math.random() * 0.7 + 0.3; // between 0.3 and 1.0 (fraction of lifetime)
     this.isDead = false;
     // For debugging
-    console.log('Created orb with word:', word, translation, 'color:', color);
   }
 
   draw(ctx) {

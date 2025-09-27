@@ -24,6 +24,7 @@ export class Snake {
       scale = geomMean / referenceGeomMean;
     }
     this.actualSpeed = this.speed * scale;
+    console.log('Initialized snake with speed scale:', scale, 'actualSpeed:', this.actualSpeed);
 
   }
 

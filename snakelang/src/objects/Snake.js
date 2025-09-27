@@ -41,20 +41,20 @@ export class Snake {
 
   move() {
     const head = this.body[0];
-  
+
     // Precompute speed step and angle
     const stepX = Math.cos(this.angle) * this.actualSpeed;
     const stepY = Math.sin(this.angle) * this.actualSpeed;
-  
+
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;
     const worldRadius  = CONFIG.WORLD.RADIUS;
     const worldR2      = worldRadius * worldRadius;
-  
+
     // Candidate new head
     let newX = head.x + stepX;
     let newY = head.y + stepY;
-  
+
     // Circle bound check: use squared distance, avoid atan2/cos/sin
     const ddx = newX - worldCenterX;
     const ddy = newY - worldCenterY;
@@ -65,7 +65,7 @@ export class Snake {
       newX = worldCenterX + ddx * k;
       newY = worldCenterY + ddy * k;
     }
-  
+
     // Reuse tail segment as the new head to reduce allocations
     let newHead;
     if (this.isGrowing) {
@@ -78,11 +78,11 @@ export class Snake {
       newHead.y = newY;
     }
     this.body.unshift(newHead); // NOTE: still O(n); ring buffer removes this
-  
+
     // Follow: do sqrt only when we must move a segment
     const segDist = CONFIG.SNAKE.SEGMENT_DISTANCE;
     const segDist2 = segDist * segDist;
-  
+
     for (let i = 1; i < this.body.length; i++) {
       const current = this.body[i];
       const target  = this.body[i - 1];
@@ -96,7 +96,7 @@ export class Snake {
         current.y += dy * r;
       }
     }
-  
+
     // Cap length if needed
     while (this.body.length > CONFIG.SNAKE.MAX_LENGTH) this.body.pop();
   }
@@ -233,7 +233,7 @@ export class Snake {
       ctx.restore();
     }
   }
-  
+
   // --- Helpers ---
   static wrap(v, size) {
     // why: stable wrap into [0, size)

@@ -54,9 +54,25 @@ export class GameOverPopup {
     const p = this._getMouse(e);
     const id = this._hitTest(p.x, p.y);
     if (id && id === this.pressedId) {
-      if (id === 'tryagain' && this.onTryAgain) this.onTryAgain();
-      if (id === 'exit' && this.onExit) this.onExit();
-      this.hide();
+      if (id === 'tryagain' && this.onTryAgain) {
+        this.onTryAgain();
+        this.hide();
+      }
+      if (id === 'exit' && this.onExit) {
+        this.onExit();
+        this.hide();
+      }
+      if (id && id.startsWith('pronounce_')) {
+        const idx = parseInt(id.split('_')[1]);
+        const wa = this.wrongAnswers[idx];
+        if (wa) {
+          import('../systems/PronunciationPlayer.js').then(mod => {
+            mod.PronunciationPlayer.play(wa.correct, null, wa.chinese);
+          });
+        }
+        // Do NOT hide the popup for pronunciation
+        return;
+      }
     }
     this.pressedId = null;
   }
@@ -161,12 +177,40 @@ export class GameOverPopup {
 
       const boxX = PX + PAD;
       const boxW = PW - PAD * 2;
+      // Table metrics
+      const colPad = 20;
+      const colW = (boxW - colPad * 2) / 2;
+      const tableRows = this.wrongAnswers.slice(0, maxRows);
+      let ry = y + hdrH; // after header
+      // Draw header
       this._modernTable(ctx, boxX, y, boxW, tableH, 16, {
         header: { labels: ['Chinese', 'Correct'], height: hdrH, font: `700 ${tableHdrFS}px 'Segoe UI', Inter, Arial` },
-        rows: this.wrongAnswers.slice(0, maxRows).map(r => [r.chinese ?? '', r.correct ?? '']),
+        rows: tableRows.map(r => [r.chinese ?? '', r.correct ?? '']),
         rowH,
         font: `500 ${tableFS}px 'Segoe UI', Inter, Arial`,
       });
+      // Draw speaker buttons for each row (centered between table edge and first column)
+      for (let i = 0; i < tableRows.length; i++) {
+        // Center between left edge and first column
+        const btnX = (boxX-33) + colPad / 2; // halfway between table edge and first column
+        const btnY = y + hdrH + i * rowH + rowH / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(btnX, btnY, 14, 0, 2 * Math.PI);
+        ctx.fillStyle = '#FFD700';
+        ctx.fill();
+        ctx.restore();
+        // Store rect for hit-testing
+        this._rects[`pronounce_${i}`] = { x: btnX - 14, y: btnY - 14, w: 28, h: 28 };
+        // Draw speaker glyph
+        ctx.save();
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#232a49';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('🔊', btnX, btnY);
+        ctx.restore();
+      }
       y += tableH + 32;
     }
 

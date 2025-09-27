@@ -31,6 +31,7 @@ export class StartPopupMenu {
     this.pressedId = null;
     this._rects = {};
     this.onStart = null;
+    this.isMuted = false;
 
     this.step = 5;
 
@@ -133,6 +134,14 @@ export class StartPopupMenu {
         orbPercentages: { ...this.difficultyLevels[this.difficultyIndex].orbPercentages },
         difficulty: this.difficultyLevels[this.difficultyIndex].key
       });
+      return;
+    }
+    if (id === 'mute') {
+      this.isMuted = !this.isMuted;
+      // Notify the main game about mute state change
+      if (window.gameController && window.gameController.audioManager) {
+        window.gameController.audioManager.toggleMute();
+      }
       return;
     }
   }
@@ -260,7 +269,7 @@ export class StartPopupMenu {
     y += Math.round(22 * fontScale);
 
   const langBtnW = Math.floor((PW - PAD*2 - gap*(langPerRow - 1)) / langPerRow);
-  let x = PX + PAD;
+    let x = PX + PAD;
 
     this._rects = {};
 
@@ -289,9 +298,9 @@ export class StartPopupMenu {
       for (let col = 0; col < itemsInRow; col++) {
         const i = row * perRow + col;
         const level = this.difficultyLevels[i];
-        const id = `diff:${i}`;
-        const selected = (this.difficultyIndex === i);
-        const hover = (this.hoverId === id);
+      const id = `diff:${i}`;
+      const selected = (this.difficultyIndex === i);
+      const hover = (this.hoverId === id);
         const isEndless = level.key === 'endless';
         this._buttonFancy(ctx, id, xStart, y, diffBtnW, btnH, {
           label: level.label,
@@ -319,6 +328,18 @@ export class StartPopupMenu {
     const startY = y
     this._buttonFancy(ctx, 'start', startX, startY, startW, startH, {
       label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary', font: btnFont
+    });
+
+    // Mute/Unmute button
+    const muteW = Math.round(60 * fontScale), muteH = Math.round(36 * fontScale);
+    const muteX = startX + startW + Math.round(16 * fontScale);
+    const muteY = startY + (startH - muteH) / 2;
+    this._buttonFancy(ctx, 'mute', muteX, muteY, muteW, muteH, {
+      label: this.isMuted ? '🔇' : '🔊', 
+      selected: false, 
+      hover: this.hoverId === 'mute', 
+      theme: 'base', 
+      font: btnFont
     });
   }
 

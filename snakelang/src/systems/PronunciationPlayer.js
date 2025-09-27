@@ -22,7 +22,7 @@ export class PronunciationPlayer {
 
   static playFailSound() {
     const audio = new window.Audio('/assets/error.mp3');
-    audio.volume = 1.3;
-    audio.play();
+    audio.volume = 1.0;
+    audio.play().catch(e => console.error('Audio play error:', e));
   }
 }

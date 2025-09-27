@@ -141,8 +141,10 @@ export class GameScene {
 
   stop() {
     this.isPlaying = false;
-    // Update high score when game ends
-    this.scoreboard.updateHighScore();
+    // Update high score when game ends (except in endless mode)
+    if (this.mode && this.mode.difficulty !== 'endless') {
+      this.scoreboard.updateHighScore();
+    }
     const isHighScore = this.scoreboard.getScore() === this.scoreboard.getHighScore();
     // Pass wrongAnswers to GameOverPopup
     if (window.gameController) {
@@ -510,6 +512,9 @@ export class GameScene {
 
     // Draw boost bar
     this.renderBoostBar();
+
+    // Draw instruction text in top right
+    this.renderInstructions();
   // End of render method
 }
 
@@ -573,6 +578,43 @@ export class GameScene {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.fillText(`Boost: ${Math.round(this.boostBar.current)}/${this.boostBar.max}`, barX + barWidth + 10, barY + barHeight / 2);
+    
+    ctx.restore();
+  }
+
+  /**
+   * Render instruction text in top right corner
+   */
+  renderInstructions() {
+    const ctx = this.ctx;
+    const canvas = this.canvas;
+    
+    // Instruction text
+    const instructions = [
+      'Match Chinese ↔ English orbs',
+      'Move with mouse',
+      'Left click = Speed boost',
+      'Wrong match = -1 life'
+    ];
+    
+    // Position in top right
+    const margin = 20;
+    const lineHeight = 16;
+    const fontSize = 12;
+    const startX = canvas.width - 200; // 200px from right edge
+    const startY = 120; // Further below the boost bar
+    
+    ctx.save();
+    ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; // Grey with transparency
+    ctx.font = `${fontSize}px Inter, Arial`;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    
+    // Draw each instruction line
+    instructions.forEach((instruction, index) => {
+      const y = startY + (index * lineHeight);
+      ctx.fillText(instruction, startX, y);
+    });
     
     ctx.restore();
   }

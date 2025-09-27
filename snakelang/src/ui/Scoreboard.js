@@ -14,6 +14,10 @@ export class Scoreboard {
 
   updateScore(points) {
     this.score += points;
+    // Prevent negative scores - keep at 0 minimum
+    if (this.score < 0) {
+      this.score = 0;
+    }
     this.render();
   }
 

@@ -150,7 +150,7 @@ export class GameOverPopup {
 
     // Modern score badge
     this._modernBadge(ctx, PX + PW / 2, y + scoreFS / 2, `Score: ${this.score}`, scoreFS);
-    y += scoreFS + 16;
+    y += scoreFS + 32; // Increased spacing from 16 to 32
     
     // High score display with better formatting
     if (this.highScore > 0) {

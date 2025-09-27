@@ -270,12 +270,12 @@ export class StartPopupMenu {
     y += this._drawOrbDistribution(ctx, PX + PAD, y, PW - PAD * 2, orbP, orbFont);
   // Add extra vertical gap below distribution bars (reduce gap so button is higher)
   y += Math.round(16 * fontScale); // smaller gap below bars
-  y += Math.round(64 * fontScale); // larger gap above start button
+  //y += Math.round(64 * fontScale); // larger gap above start button
 
     const startW = Math.round(200 * fontScale), startH = Math.round(48 * fontScale);
     const startX = W/2 - startW/2;
     // Move button up by half its height
-    const startY = y - Math.round(startH / 2);
+    const startY = y
     this._buttonFancy(ctx, 'start', startX, startY, startW, startH, {
       label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary', font: btnFont
     });

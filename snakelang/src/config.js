@@ -8,22 +8,22 @@ export const CONFIG = {
   SNAKE: {
     INITIAL_X: 750, // Center of canvas
     INITIAL_Y: 350, // Center of canvas
-    SIZE: 12,
+    SIZE: 20,
     SEGMENT_DISTANCE: 8,
     BASE_SPEED: 3,
     MAX_LENGTH: 100,
     GROWTH_SEGMENTS: 3,
     TURN_SPEED: 0.07,
-    MAX_SPEED: 6
+    MAX_SPEED: 15
   },
 
   WORLD: {
-    RADIUS: 1000, // Smaller radius to fit inside canvas
+    RADIUS: 5000, // Smaller radius to fit inside canvas
     CENTER_X: 750, // Center of canvas
     CENTER_Y: 350,  // Center of canvas
-    STARS: 120,
-    PARALLAX_FACTOR: 0.02, //lower = slower movement
-    MIN_ORB_COUNT: 20
+    STARS: 500,
+    PARALLAX_FACTOR: 0.2, //lower = slower movement
+    MIN_ORB_COUNT: 500
   },
 
   CANVAS: {
@@ -39,7 +39,7 @@ export const CONFIG = {
     SPAWN_MARGIN: 25,
     SCORE_VALUE: 10,
     MIN_NORMAL_ORBS: 3,
-    ORB_LIFETIME_MS: 10000 // 10 seconds
+    ORB_LIFETIME_MS: 30000 // 10 seconds
   },
 
   // Game settings

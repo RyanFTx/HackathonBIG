@@ -10,6 +10,7 @@ import { OrbSpawner } from '../systems/OrbSpawner.js';
 import { Scoreboard } from '../ui/Scoreboard.js';
 import { EffectUI } from '../ui/EffectUI.js';
 import { CONFIG } from '../config.js';
+import { PronunciationPlayer } from '../systems/PronunciationPlayer.js';
 
 export class GameScene {
   constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }, language = 'characters') {
@@ -20,7 +21,7 @@ export class GameScene {
     this.mode = { difficulty: 'easy' };
 
     // Game objects
-    this.snake = new Snake();
+    this.snake = new Snake(canvas);
     this.orbs = [];
 
     // Systems
@@ -203,9 +204,10 @@ export class GameScene {
 
     // Speed boost on mouse click
     if (this.mousePressed) {
-      this.snake.speedBoost();
+      this.snake.move();
+      this.snake.move();
     } else {
-      this.snake.normalSpeed();
+      this.snake.move();
     }
 
     // Keep keyboard controls as backup
@@ -261,6 +263,11 @@ export class GameScene {
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
 
+      // Play pronunciation audio for correct orbs only
+      if (points > 0 && orb.word) {
+        PronunciationPlayer.play(orb.word, orb.translation, orb.chinese || orb.word);
+      }
+
       const totalScore = Math.max(0, this.scoreboard.getScore()); // floor at 0
 
       // Proportional mapping: length = base + k * score
@@ -295,6 +302,7 @@ export class GameScene {
             wrong: orb.wrongTranslation || '?',
             correct
           });
+          PronunciationPlayer.playFailSound();
           const isDead = this.scoreboard.loseLife();
           if (isDead) {
             this.stop();
@@ -407,10 +415,12 @@ export class GameScene {
       const PARALLAX = CONFIG.WORLD.PARALLAX_FACTOR;
       if (!this.stars || this.stars.length !== STAR_COUNT) {
         this.stars = [];
+        const starFieldWidth = this.canvas.width * 2;
+        const starFieldHeight = this.canvas.height * 2;
         for (let i = 0; i < STAR_COUNT; i++) {
           this.stars.push({
-            x: Math.random() * 4000, // Large area for parallax
-            y: Math.random() * 4000,
+            x: Math.random() * starFieldWidth,
+            y: Math.random() * starFieldHeight,
             radius: Math.random() * 1.2 + 0.3,
             alpha: Math.random() * 0.5 + 0.5
           });
@@ -473,5 +483,19 @@ export class GameScene {
 
   isActive() {
     return true; // Game scene is always active when created
+  }
+
+  // Add pronunciation audio method
+  playPronunciationAudio(word, translation) {
+    // Use browser SpeechSynthesis API for demo
+    if ('speechSynthesis' in window) {
+      const utter = new window.SpeechSynthesisUtterance(word);
+      utter.lang = 'zh-CN'; // Mandarin Chinese
+      utter.rate = 0.9;
+      window.speechSynthesis.speak(utter);
+    } else {
+      // Could add fallback to play a pre-recorded audio file
+      console.warn('Speech synthesis not supported');
+    }
   }
 }

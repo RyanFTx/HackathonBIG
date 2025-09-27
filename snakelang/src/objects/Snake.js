@@ -8,11 +8,28 @@
 import { CONFIG } from '../config.js';
 
 export class Snake {
-  constructor() {
+  constructor(canvas) {
     this.reset();
     this.texturePattern = null;
     this.textureCanvas = null;
     this.isGrowing = false;
+
+    // Virtual scaling based on canvas diagonal for better consistency
+    const referenceWidth = 1920; // Design reference width
+    const referenceHeight = 1080; // Design reference height
+    let scale = 1;
+    if (canvas && canvas.width && canvas.height) {
+      const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+      const referenceDiagonal = Math.sqrt(referenceWidth * referenceWidth + referenceHeight * referenceHeight);
+      scale = diagonal / referenceDiagonal;
+    }
+    // Scale all relevant gameplay parameters
+    this.actualSpeed = CONFIG.SNAKE.BASE_SPEED * scale;
+    this.actualTurnSpeed = CONFIG.SNAKE.TURN_SPEED * scale;
+    this.actualBoostSpeed = (CONFIG.SNAKE.MAX_SPEED - CONFIG.SNAKE.BASE_SPEED) * scale;
+    this.actualNormalSpeed = CONFIG.SNAKE.BASE_SPEED * scale;
+    this.actualSize = CONFIG.SNAKE.SIZE * scale;
+    this.scale = scale;
   }
 
   reset() {
@@ -26,8 +43,9 @@ export class Snake {
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;
     const worldRadius = CONFIG.WORLD.RADIUS;
-    const newX = head.x + Math.cos(this.angle) * this.speed;
-    const newY = head.y + Math.sin(this.angle) * this.speed;
+    // Use actualSpeed calculated in constructor
+  const newX = head.x + Math.cos(this.angle) * this.actualSpeed;
+  const newY = head.y + Math.sin(this.angle) * this.actualSpeed;
 
     // Check if new head is outside the world circle
     const dx = newX - worldCenterX;
@@ -102,10 +120,10 @@ export class Snake {
     if (delta !== 0) this.adjustLengthBy(delta);
   }
 
-  turnLeft()  { this.angle -= CONFIG.SNAKE.TURN_SPEED; }
-  turnRight() { this.angle += CONFIG.SNAKE.TURN_SPEED; }
-  speedBoost() { this.speed = Math.min(this.speed + 0.1, CONFIG.SNAKE.MAX_SPEED); }
-  normalSpeed() { this.speed = Math.max(this.speed - 0.05, CONFIG.SNAKE.BASE_SPEED); }
+  turnLeft()  { this.angle -= this.actualTurnSpeed; }
+  turnRight() { this.angle += this.actualTurnSpeed; }
+  //speedBoost() { this.speed = Math.min(this.speed + this.actualBoostSpeed, CONFIG.SNAKE.MAX_SPEED * this.scale); }
+  //normalSpeed() { this.speed = Math.max(this.speed - 0.05 * this.scale, this.actualNormalSpeed); }
   getHead() { return this.body[0]; }
 
   // --- Rendering with scale texture (unchanged) ---
@@ -152,7 +170,7 @@ export class Snake {
     const scalePattern = this.generateScaleTexture();
 
     this.body.forEach((segment, index) => {
-      const radius = index === 0 ? CONFIG.SNAKE.SIZE + 2 : CONFIG.SNAKE.SIZE;
+      const radius = index === 0 ? this.actualSize + 2 * this.scale : this.actualSize;
 
       ctx.save();
       ctx.beginPath();

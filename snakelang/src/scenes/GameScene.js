@@ -444,13 +444,14 @@ export class GameScene {
       }
     });
 
-  // Set camera scale for consistent FOV across all screens (CSS pixels only)
+  // Set camera scale for consistent FOV across all screens, zoom in on high-DPI screens
   // FOV_WORLD_UNITS is the width of the world you want visible on the shortest CSS screen dimension
   const FOV_WORLD_UNITS = 1000; // You can adjust this value for zoom level
-  // Use canvas.clientWidth/clientHeight for CSS pixel size, not devicePixelRatio
   const cssWidth = this.canvas.clientWidth || this.canvas.width;
   const cssHeight = this.canvas.clientHeight || this.canvas.height;
-  this.camera.scale = Math.min(cssWidth, cssHeight) / FOV_WORLD_UNITS;
+  const dpr = window.devicePixelRatio || 1;
+  // Zoom in by multiplying scale by devicePixelRatio (show less world area on high-DPI)
+  this.camera.scale = Math.min(cssWidth, cssHeight) / FOV_WORLD_UNITS * dpr;
   // Draw snake (all segments)
   this.snake.draw(this.ctx, this.camera, this.canvas);
 

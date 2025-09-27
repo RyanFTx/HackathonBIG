@@ -13,7 +13,7 @@ export class PronunciationPlayer {
     if ('speechSynthesis' in window) {
       const utter = new window.SpeechSynthesisUtterance(toSpeak);
       utter.lang = 'zh-CN'; // Mandarin Chinese
-      utter.rate = 0.2; // slower than default
+      utter.rate = 1.0
       window.speechSynthesis.speak(utter);
     } else {
       console.warn('Speech synthesis not supported');
@@ -22,7 +22,7 @@ export class PronunciationPlayer {
 
   static playFailSound() {
     const audio = new window.Audio('/assets/error.mp3');
-    audio.volume = 0.7;
+    audio.volume = 1.3;
     audio.play();
   }
 }

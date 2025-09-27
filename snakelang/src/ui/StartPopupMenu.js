@@ -176,24 +176,50 @@ export class StartPopupMenu {
     ctx.fillRect(0, 0, W, H);
     ctx.restore();
 
-    // panel
-    const ph = 440; // slightly taller to fit bars cleanly
-    this._roundRect(ctx, PX, PY, PW, ph, 16, '#1e2442');
+  // --- Dynamic font sizes and layout variables based on canvas height ---
+ const minDimension = Math.min(W, H);
+  const fontScale = Math.max(0.7, Math.min(1.5, minDimension / 700));
+  const titleFont = `bold ${Math.round(26 * fontScale)}px Inter, Arial`;
+  const labelFont = `600 ${Math.round(16 * fontScale)}px Inter, Arial`;
+  const smallFont = `600 ${Math.round(14 * fontScale)}px Inter, Arial`;
+  const btnFont = `700 ${Math.round(18 * fontScale)}px Inter, Arial`;
+  const orbFont = `700 ${Math.round(16 * fontScale)}px Inter, Arial`;
+  const gap = Math.round(16 * fontScale);
+  const btnH = Math.round(40 * fontScale);
+  const langPerRow = 3;
+  const diffCount = this.difficultyLevels.length;
+  const perRow = Math.min(3, diffCount);
+  const rowCount = Math.ceil(diffCount / perRow);
+
+    // --- Calculate dynamic panel height to fit all content ---
+    let panelHeight = 0;
+    // Title + languages + difficulties
+    panelHeight += Math.round(36 * fontScale) + Math.round(22 * fontScale) + btnH + Math.round(24 * fontScale);
+    // Difficulty rows
+    panelHeight += rowCount * (btnH + Math.round(16 * fontScale)) + Math.round(8 * fontScale);
+    // Orb distribution title + bars
+    panelHeight += Math.round(18 * fontScale);
+    // Estimate distribution bar height
+    const orbBarCount = Object.keys(this.difficultyLevels[this.difficultyIndex].orbPercentages).length;
+    panelHeight += orbBarCount * (Math.round(16 * fontScale) + 10 + 14); // fontPx + barH + rowGap
+  // Gap below bars + start button (reduce gap below bars, increase gap above button)
+  panelHeight += Math.round(16 * fontScale); // smaller gap below bars
+  panelHeight += Math.round(64 * fontScale); // larger gap above start button
+  panelHeight += Math.round(48 * fontScale); // start button height
+
+    this._roundRect(ctx, PX, PY, PW, panelHeight, 16, '#1e2442');
 
     // title
-    this._text(ctx, 'Game Setup', W/2, PY + PAD, 'bold 26px Inter, Arial', '#FFFFFF', 'center');
+    this._text(ctx, 'Game Setup', W/2, PY + PAD, titleFont, '#FFFFFF', 'center');
 
-    let y = PY + PAD + 36;
+    let y = PY + PAD + Math.round(36 * fontScale);
 
     // languages
-    this._text(ctx, 'Choose Language', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
-    y += 22;
+    this._text(ctx, 'Choose Language', W/2, y, labelFont, '#A9B3D1', 'center');
+    y += Math.round(22 * fontScale);
 
-    const gap = 16;
-    const btnH = 40;
-    const langPerRow = 3;
-    const langBtnW = Math.floor((PW - PAD*2 - gap*(langPerRow - 1)) / langPerRow);
-    let x = PX + PAD;
+  const langBtnW = Math.floor((PW - PAD*2 - gap*(langPerRow - 1)) / langPerRow);
+  let x = PX + PAD;
 
     this._rects = {};
 
@@ -202,21 +228,18 @@ export class StartPopupMenu {
       const selected = (this.languageIndex === i);
       const hover = (this.hoverId === id);
       this._buttonFancy(ctx, id, x, y, langBtnW, btnH, {
-        label: opt.label, selected, hover, theme: 'base', selBorder: true
+        label: opt.label, selected, hover, theme: 'base', selBorder: true, font: btnFont
       });
       x += langBtnW + gap;
     });
 
-    y += btnH + 24;
+    y += btnH + Math.round(24 * fontScale);
 
     // difficulties
-    this._text(ctx, 'Select Difficulty', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
-    y += 22;
+    this._text(ctx, 'Select Difficulty', W/2, y, labelFont, '#A9B3D1', 'center');
+    y += Math.round(22 * fontScale);
 
-    const perRow = Math.min(3, this.difficultyLevels.length);
-    const diffCount = this.difficultyLevels.length;
-    const diffBtnW = Math.floor((PW - PAD*2 - gap*(perRow - 1)) / perRow);
-    const rowCount = Math.ceil(diffCount / perRow);
+  const diffBtnW = Math.floor((PW - PAD*2 - gap*(perRow - 1)) / perRow);
 
     for (let row = 0; row < rowCount; row++) {
       const itemsInRow = Math.min(perRow, diffCount - row * perRow);
@@ -233,25 +256,28 @@ export class StartPopupMenu {
           label: level.label,
           // subtitle: isEndless ? 'No limits. Just flow.' : undefined,
           icon: isEndless ? '∞' : undefined,
-          selected, hover, theme: 'base', selBorder: true
+          selected, hover, theme: 'base', selBorder: true, font: btnFont
         });
         xStart += diffBtnW + gap;
       }
-      y += btnH + 16;
+      y += btnH + Math.round(16 * fontScale);
     }
-    y += 8;
+    y += Math.round(8 * fontScale);
 
     // orb distribution (new, formatted)
     const orbP = this.difficultyLevels[this.difficultyIndex].orbPercentages;
-    this._text(ctx, 'Orb Distribution (%)', W/2, y, '600 16px Inter, Arial', '#A9B3D1', 'center');
-    y += 18;
-    y += this._drawOrbDistribution(ctx, PX + PAD, y, PW - PAD * 2, orbP) + 20;
+    this._text(ctx, 'Orb Distribution (%)', W/2, y, labelFont, '#A9B3D1', 'center');
+    y += Math.round(18 * fontScale);
+    y += this._drawOrbDistribution(ctx, PX + PAD, y, PW - PAD * 2, orbP, orbFont);
+  // Add extra vertical gap below distribution bars (reduce gap so button is higher)
+  y += Math.round(16 * fontScale); // smaller gap below bars
 
-    const startW = 200, startH = 48;
+    const startW = Math.round(200 * fontScale), startH = Math.round(48 * fontScale);
     const startX = W/2 - startW/2;
-    const startY = PY + 440 - startH + 70 ;
+    // Move button up by half its height
+    const startY = y
     this._buttonFancy(ctx, 'start', startX, startY, startW, startH, {
-      label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary'
+      label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary', font: btnFont
     });
   }
 
@@ -262,36 +288,50 @@ export class StartPopupMenu {
     const barH = 10;
     let used = 0;
 
+    const font = arguments[4] || '700 16px Inter, Arial';
+    // Extract font size from string (e.g., '700 16px Inter, Arial')
+    let fontPx = 16;
+    if (typeof font === 'string') {
+      const match = font.match(/(\d+)px/);
+      if (match) fontPx = parseInt(match[1], 10);
+    }
     order.forEach((key, idx) => {
       if (!(key in orbP)) return;
       const pct = Math.max(0, Math.min(100, orbP[key] | 0));
       const vis = this.orbVisual[key] || { label: key, icon: '•', colorA: '#666', colorB: '#777', text: '#ddd' };
 
       // Left: icon + label
-      this._text(ctx, `${vis.icon}  ${vis.label}`, x, y + used, '700 16px Inter, Arial', '#DCE3FF', 'left', 'middle');
+      this._text(ctx, `${vis.icon}  ${vis.label}`, x, y + used, font, '#DCE3FF', 'left', 'middle');
       // Right: percentage
-      this._text(ctx, `${pct}%`, x + w, y + used, '700 16px Inter, Arial', '#FFFFFF', 'right', 'middle');
+      this._text(ctx, `${pct}%`, x + w, y + used, font, '#FFFFFF', 'right', 'middle');
 
-      // Bar under the row
-      const barY = y + used + 12;
+      // Bar under the row (place directly below text, offset by half font size)
+      const barY = y + used + Math.round(fontPx * 0.5);
       this._progressBar(ctx, x, barY, w, barH, pct / 100, vis.colorA, vis.colorB);
 
-      used += 16 + barH + rowGap;
+      used += fontPx + barH + rowGap;
     });
 
     return used;
   }
 
   _progressBar(ctx, x, y, w, h, p, cA, cB) {
-    const r = Math.floor(h / 2);
-    // Track
-    this._roundRect(ctx, x, y, w, h, r, 'rgba(255,255,255,0.08)');
-    // Fill (why: visual emphasis)
-    const fillW = Math.max(r * 2, Math.round(w * Math.max(0, Math.min(1, p))));
-    const grad = ctx.createLinearGradient(x, y, x + fillW, y);
-    grad.addColorStop(0, cA);
-    grad.addColorStop(1, cB);
-    this._roundRect(ctx, x, y, fillW, h, r, grad);
+  // Defensive: ensure w, h, and fillW are finite and positive
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return;
+  const r = Math.max(1, Math.floor(h / 2));
+  // Track
+  this._roundRect(ctx, x, y, w, h, r, 'rgba(255,255,255,0.08)');
+  // Fill (why: visual emphasis)
+  let fillW = Math.max(r * 2, Math.round(w * Math.max(0, Math.min(1, p))));
+  if (!Number.isFinite(fillW) || fillW <= 0 || fillW > w) fillW = Math.max(r * 2, Math.min(w, w * 0.1));
+  // Clamp x, y, fillW to finite values
+  if (!Number.isFinite(x)) x = 0;
+  if (!Number.isFinite(y)) y = 0;
+  if (!Number.isFinite(fillW)) fillW = r * 2;
+  const grad = ctx.createLinearGradient(x, y, x + fillW, y);
+  grad.addColorStop(0, cA);
+  grad.addColorStop(1, cB);
+  this._roundRect(ctx, x, y, fillW, h, r, grad);
   }
 
   // ---------- Hit test / primitives / button ----------

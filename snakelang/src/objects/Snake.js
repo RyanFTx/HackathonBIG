@@ -138,151 +138,87 @@ export class Snake {
   //normalSpeed() { this.speed = Math.max(this.speed - 0.05 * this.scale, this.actualNormalSpeed); }
   getHead() { return this.body[0]; }
 
-  // --- Rendering with cosmic nebula texture ---
+  // --- Optimized solid color texture ---
   generateScaleTexture() {
     if (this.texturePattern) return this.texturePattern;
 
+    // Use a simple 16x16 canvas for better performance
     this.textureCanvas = document.createElement('canvas');
-    this.textureCanvas.width = 64;
-    this.textureCanvas.height = 64;
+    this.textureCanvas.width = 16;
+    this.textureCanvas.height = 16;
     const textureCtx = this.textureCanvas.getContext('2d');
 
-    // Create cosmic nebula background
-    const gradient = textureCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    gradient.addColorStop(0, '#4A148C'); // Deep purple center
-    gradient.addColorStop(0.3, '#6A1B9A'); // Medium purple
-    gradient.addColorStop(0.6, '#8E24AA'); // Lighter purple
-    gradient.addColorStop(0.8, '#AB47BC'); // Lavender
-    gradient.addColorStop(1, '#1A237E'); // Deep blue edge
-
-    textureCtx.fillStyle = gradient;
-    textureCtx.fillRect(0, 0, 64, 64);
-
-    // Add swirling nebula clouds
-    for (let i = 0; i < 8; i++) {
-      const x = Math.random() * 64;
-      const y = Math.random() * 64;
-      const radius = Math.random() * 20 + 10;
-      
-      const cloudGradient = textureCtx.createRadialGradient(x, y, 0, x, y, radius);
-      cloudGradient.addColorStop(0, `rgba(156, 39, 176, ${Math.random() * 0.3 + 0.1})`);
-      cloudGradient.addColorStop(0.5, `rgba(103, 58, 183, ${Math.random() * 0.2 + 0.05})`);
-      cloudGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-      
-      textureCtx.fillStyle = cloudGradient;
-      textureCtx.beginPath();
-      textureCtx.arc(x, y, radius, 0, Math.PI * 2);
-      textureCtx.fill();
-    }
-
-    // Add stars and cosmic dust
-    textureCtx.fillStyle = '#FFFFFF';
-    for (let i = 0; i < 50; i++) {
-      const x = Math.random() * 64;
-      const y = Math.random() * 64;
-      const size = Math.random() * 2 + 0.5;
-      
-      textureCtx.beginPath();
-      textureCtx.arc(x, y, size, 0, Math.PI * 2);
-      textureCtx.fill();
-    }
-
-    // Add some golden stars
-    textureCtx.fillStyle = '#FFD700';
-    for (let i = 0; i < 8; i++) {
-      const x = Math.random() * 64;
-      const y = Math.random() * 64;
-      const size = Math.random() * 1.5 + 0.8;
-      
-      // Draw 4-pointed star
-      textureCtx.save();
-      textureCtx.translate(x, y);
-      textureCtx.rotate(Math.random() * Math.PI * 2);
-      textureCtx.beginPath();
-      for (let j = 0; j < 4; j++) {
-        textureCtx.rotate(Math.PI / 2);
-        textureCtx.moveTo(0, -size);
-        textureCtx.lineTo(-size * 0.3, -size * 0.3);
-        textureCtx.lineTo(-size, 0);
-        textureCtx.lineTo(-size * 0.3, size * 0.3);
-        textureCtx.lineTo(0, size);
-      }
-      textureCtx.fill();
-      textureCtx.restore();
-    }
-
-    // Add some blue cosmic dust
-    textureCtx.fillStyle = '#64B5F6';
-    for (let i = 0; i < 20; i++) {
-      const x = Math.random() * 64;
-      const y = Math.random() * 64;
-      const size = Math.random() * 1 + 0.3;
-      
-      textureCtx.beginPath();
-      textureCtx.arc(x, y, size, 0, Math.PI * 2);
-      textureCtx.fill();
-    }
+    // Simple solid dark purple - no complex gradients or effects
+    textureCtx.fillStyle = '#4A148C'; // Dark purple
+    textureCtx.fillRect(0, 0, 16, 16);
 
     this.texturePattern = textureCtx.createPattern(this.textureCanvas, 'repeat');
     return this.texturePattern;
   }
 
   draw(ctx) {
-    const pattern = this.generateScaleTexture();
     const len = this.body.length;
+    
+    // Optimized drawing - use direct color instead of patterns
     for (let i = 0; i < len; i++) {
       const segment = this.body[i];
       const radius = i === 0 ? this.actualSize + 2 * this.scale : this.actualSize;
-  
-      // Fill the arc directly with the pattern (no clip + rect)
+
+      // Add glowing effect to each segment
+      ctx.save();
+      ctx.shadowColor = '#AB47BC'; // Purple glow
+      ctx.shadowBlur = 12;
+      
+      // Fill with solid dark purple
       ctx.beginPath();
       ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
-      ctx.closePath();
-      ctx.save();
-      ctx.fillStyle = pattern;
-      ctx.fill();            // cheaper than clip+fillRect for each segment
-  
+      ctx.fillStyle = '#4A148C'; // Dark purple
+      ctx.fill();
+
+      // Add extra glow for head
       if (i === 0) {
-        // Head shading
-        const g = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
-        g.addColorStop(0, 'rgba(102,187,106,0.30)');
-        g.addColorStop(1, 'rgba(76,175,80,0.10)');
-        ctx.globalCompositeOperation = 'source-atop';
-        ctx.fillStyle = g;
-        ctx.fill();
-      } else {
-        // Subtle darkening toward tail
-        const alpha = Math.max(0.06, 0.25 - i * 0.008);
-        ctx.globalCompositeOperation = 'source-atop';
-        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
-        ctx.fill();
-      }
-      ctx.restore();
-  
-      // Stroke: skip some to reduce overdraw on long snakes
-      if (i % 2 === 0 || i === 0) {
-        ctx.strokeStyle = CONFIG.COLORS.SNAKE_BORDER;
-        ctx.lineWidth = 1;
+        ctx.shadowColor = '#E1BEE7'; // Lighter purple glow for head
+        ctx.shadowBlur = 16;
         ctx.beginPath();
         ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
-        ctx.stroke();
+        ctx.fill();
+      }
+      
+      ctx.restore();
+
+      // Add subtle head highlight
+      if (i === 0) {
+        const headGradient = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
+        headGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+        headGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = headGradient;
+        ctx.fill();
       }
     }
-  
-    // Eyes
+
+    // Draw glowing eyes
     if (len > 0) {
       const head = this.body[0];
-      const eyeDistance = 6 * this.scale;
-      const eyeSize     = 2 * this.scale;
-  
-      const leftEyeX  = head.x + Math.cos(this.angle - 0.5) * eyeDistance;
-      const leftEyeY  = head.y + Math.sin(this.angle - 0.5) * eyeDistance;
+      const eyeDistance = 10 * this.scale; // Increased from 6 to 10
+      const eyeSize = 4 * this.scale; // Increased from 2 to 4
+
+      const leftEyeX = head.x + Math.cos(this.angle - 0.5) * eyeDistance;
+      const leftEyeY = head.y + Math.sin(this.angle - 0.5) * eyeDistance;
       const rightEyeX = head.x + Math.cos(this.angle + 0.5) * eyeDistance;
       const rightEyeY = head.y + Math.sin(this.angle + 0.5) * eyeDistance;
-  
-      ctx.fillStyle = CONFIG.COLORS.SNAKE_EYES;
-      ctx.beginPath(); ctx.arc(leftEyeX,  leftEyeY,  eyeSize, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(rightEyeX, rightEyeY, eyeSize, 0, Math.PI * 2); ctx.fill();
+
+      // Glowing purple eyes
+      ctx.save();
+      ctx.shadowColor = '#E1BEE7';
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = '#E1BEE7';
+      ctx.beginPath();
+      ctx.arc(leftEyeX, leftEyeY, eyeSize, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(rightEyeX, rightEyeY, eyeSize, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
   }
   

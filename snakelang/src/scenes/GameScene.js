@@ -79,10 +79,10 @@ export class GameScene {
       if (event.code === 'KeyD') {
         if (this.orbSpawner.mode !== 'demo') {
           this.orbSpawner.setMode('demo');
-          console.log("Demo mode ON");
+          console.warn("Demo mode ON");
         }else{
           this.orbSpawner.setMode('normal');
-          console.log("Demo mode OFF");
+          console.warn("Demo mode OFF");
         }
       }
     });
@@ -109,7 +109,6 @@ export class GameScene {
           // Only start the game if popup menu is NOT active
           if (!this.isPlaying && !(window.snakeLangPopupMenu && window.snakeLangPopupMenu.isActive && window.snakeLangPopupMenu.isActive())) {
             this.start();
-            console.log ("2");
           }
       }
     });
@@ -183,11 +182,10 @@ export class GameScene {
         if (orb) this.orbs.push(orb);
         if (shrinkOrb && Math.random() < 1) {
           this.orbs.push(shrinkOrb);
-          console.log(`🎮 Spawned shrink orb: ${type}`);
         }
       }
       });
-      console.log(`🎮 Game ready with user-defined orb percentages and shrink variants`, this.orbs.length);
+      this.words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
     }
   }
 
@@ -305,9 +303,8 @@ export class GameScene {
       if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
         // Lookup correct translation
         let correct = orb.translation;
-        const words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
-        if (words.length > 0) {
-          const found = words.flat().find(w => w.chinese == orb.word || w.pinyin == orb.word);
+        if (this.words.length > 0) {
+          const found = this.words.flat().find(w => w.chinese == orb.word || w.pinyin == orb.word);
           if (found) correct = found.english;
         }
 
@@ -348,40 +345,6 @@ export class GameScene {
     this.orbs = this.orbs.filter(orb => !orb.isDead);
 
   }
-
-  // Weighted random selection based on orbPercentages
-  // _pickOrbTypeWeighted() {
-  //   const percentages = this.orbPercentages || { normal: 60, speed: 20, explosive: 20 };
-  //   const types = Object.keys(percentages);
-  //   const weights = Object.values(percentages);
-  //   const total = weights.reduce((a, b) => a + b, 0);
-  //   const r = Math.random() * total;
-  //   let sum = 0;
-  //   for (let i = 0; i < types.length; i++) {
-  //     sum += weights[i];
-  //     if (r < sum) return types[i];
-  //   }
-  //   return types[0]; // fallback
-  // }
-
-  // _generateOrbWeighted(){
-  //   const rand = Math.random();
-  //     const orbType = this._pickOrbTypeWeighted();
-  //     // 70% chance normal, 30% chance shrink
-  //     if(rand < .7){
-  //       let newOrb = this.orbSpawner.spawnOrb(orbType);
-  //       if (newOrb) {
-  //         this.orbs.push(newOrb);
-  //       }
-
-  //     }else{
-  //       let newOrb = this.orbSpawner.spawnShrinkOrb(orbType);
-  //       if (newOrb) {
-  //         this.orbs.push(newOrb);
-  //       }
-
-  //     }
-  // }
 
   render() {
     // Clear canvas

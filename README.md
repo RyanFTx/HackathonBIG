@@ -1,6 +1,6 @@
-## ⚠️ Text-to-Speech Platform Warning
+## ⚠️ Text-to-Speech Browser Warning
 
-Text-to-speech functionality is only guaranteed to work as expected on Windows. Other platforms may have limited or inconsistent support.
+Text-to-speech functionality is only guaranteed to work reliably in Google Chrome. Other browsers may have limited or inconsistent support.
 
 # HackathonBIG
 

@@ -302,6 +302,7 @@ export class GameScene {
             wrong: orb.wrongTranslation || '?',
             correct
           });
+          PronunciationPlayer.playFailSound();
           const isDead = this.scoreboard.loseLife();
           if (isDead) {
             this.stop();

@@ -19,4 +19,10 @@ export class PronunciationPlayer {
       console.warn('Speech synthesis not supported');
     }
   }
+
+  static playFailSound() {
+    const audio = new window.Audio('/assets/error.mp3');
+    audio.volume = 0.7;
+    audio.play();
+  }
 }

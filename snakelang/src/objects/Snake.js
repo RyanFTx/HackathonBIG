@@ -14,16 +14,16 @@ export class Snake {
     this.textureCanvas = null;
     this.isGrowing = false;
 
-    const referenceWidth = 1920; // Design reference width
-    const referenceHeight = 1080; // Design reference height
+    // Virtual speed scaling based on canvas diagonal for better consistency
+    const referenceWidth = 1280; // Design reference width
+    const referenceHeight = 700; // Design reference height
     let scale = 1;
-      const geomMean = Math.sqrt(canvas.width * canvas.height);
-      const referenceGeomMean = Math.sqrt(referenceWidth * referenceHeight);
-      scale = geomMean / referenceGeomMean;
-    
-    this.actualSpeed = this.speed * scale;
-    console.log('Initialized snake with speed scale:', scale, 'actualSpeed:', this.actualSpeed);
-
+    if (canvas && canvas.width && canvas.height) {
+      const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+      const referenceDiagonal = Math.sqrt(referenceWidth * referenceWidth + referenceHeight * referenceHeight);
+      scale = diagonal / referenceDiagonal;
+    }
+    this.actualSpeed = CONFIG.SNAKE.BASE_SPEED * scale;
   }
 
   reset() {
@@ -37,11 +37,7 @@ export class Snake {
     const worldCenterX = CONFIG.WORLD.CENTER_X;
     const worldCenterY = CONFIG.WORLD.CENTER_Y;
     const worldRadius = CONFIG.WORLD.RADIUS;
-    // Virtual speed scaling based on geometric mean of canvas width and height
-    const referenceWidth = 1280; // Design reference width
-    const referenceHeight = 700; // Design reference height
-    let scale = 1;
-
+    // Use actualSpeed calculated in constructor
     const newX = head.x + Math.cos(this.angle) * this.actualSpeed;
     const newY = head.y + Math.sin(this.angle) * this.actualSpeed;
 

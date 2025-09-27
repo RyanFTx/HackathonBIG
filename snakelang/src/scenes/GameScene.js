@@ -182,7 +182,6 @@ export class GameScene {
         }
       }
       });
-      this.words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
     }
   }
 
@@ -300,6 +299,8 @@ export class GameScene {
       if (orb.type === 'shrink' || orb.type === 'shrink_speed' || orb.type === 'shrink_explosive') {
         // Lookup correct translation
         let correct = orb.translation;
+        this.words  = [this.orbSpawner.wordsLevel1, this.orbSpawner.wordsLevel2, this.orbSpawner.wordsLevel3, this.orbSpawner.wordsLevel4];
+
         if (this.words.length > 0) {
           const found = this.words.flat().find(w => w.chinese == orb.word || w.pinyin == orb.word);
           if (found) correct = found.english;

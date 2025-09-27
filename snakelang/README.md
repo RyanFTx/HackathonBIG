@@ -1,4 +1,4 @@
-# SnakeLang - Slither.io Style Language Learning Game
+# SlitherLang - Slither.io Style Language Learning Game
 
 A Slither.io-inspired game for learning Chinese vocabulary through interactive gameplay.
 

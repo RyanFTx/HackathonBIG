@@ -44,12 +44,12 @@ export class GameScene {
   this._lastScreenX = null;
   this._lastScreenY = null;
   
-  // Fuel bar system
-  this.fuelBar = {
-    current: 0,        // Current fuel (0-100)
-    max: 100,          // Maximum fuel capacity
-    consumptionRate: 2, // Fuel consumed per frame when accelerating
-    fillAmount: 25     // Fuel gained per speed orb
+  // Boost bar system
+  this.boostBar = {
+    current: 0,        // Current boost (0-100)
+    max: 100,          // Maximum boost capacity
+    consumptionRate: 2, // Boost consumed per frame when accelerating
+    fillAmount: 25     // Boost gained per correct speed orb
   };
   
   // Camera
@@ -161,39 +161,39 @@ export class GameScene {
     this.scoreboard.reset();
     this.effectManager.clear();
     this.wrongAnswers = [];
-    this.fuelBar.current = 0; // Reset fuel bar
+    this.boostBar.current = 0; // Reset boost bar
 
     // Wait for translations to load before spawning orbs
     this.initializeOrbs();
   }
 
   /**
-   * Add fuel to the fuel bar
-   * @param {number} amount - Amount of fuel to add
+   * Add boost to the boost bar
+   * @param {number} amount - Amount of boost to add
    */
-  addFuel(amount) {
-    this.fuelBar.current = Math.min(this.fuelBar.max, this.fuelBar.current + amount);
+  addBoost(amount) {
+    this.boostBar.current = Math.min(this.boostBar.max, this.boostBar.current + amount);
   }
 
   /**
-   * Consume fuel from the fuel bar
-   * @param {number} amount - Amount of fuel to consume
-   * @returns {boolean} - True if fuel was consumed successfully
+   * Consume boost from the boost bar
+   * @param {number} amount - Amount of boost to consume
+   * @returns {boolean} - True if boost was consumed successfully
    */
-  consumeFuel(amount) {
-    if (this.fuelBar.current >= amount) {
-      this.fuelBar.current = Math.max(0, this.fuelBar.current - amount);
+  consumeBoost(amount) {
+    if (this.boostBar.current >= amount) {
+      this.boostBar.current = Math.max(0, this.boostBar.current - amount);
       return true;
     }
     return false;
   }
 
   /**
-   * Check if there's enough fuel for acceleration
-   * @returns {boolean} - True if fuel is available
+   * Check if there's enough boost for acceleration
+   * @returns {boolean} - True if boost is available
    */
-  hasFuel() {
-    return this.fuelBar.current > 0;
+  hasBoost() {
+    return this.boostBar.current > 0;
   }
 
   async initializeOrbs() {
@@ -258,10 +258,10 @@ export class GameScene {
       }
     }
 
-    // Speed boost on mouse click (requires fuel)
-    if (this.mousePressed && this.hasFuel()) {
-      // Consume fuel for acceleration
-      if (this.consumeFuel(this.fuelBar.consumptionRate)) {
+    // Speed boost on mouse click (requires boost)
+    if (this.mousePressed && this.hasBoost()) {
+      // Consume boost for acceleration
+      if (this.consumeBoost(this.boostBar.consumptionRate)) {
         this.snake.move();
         this.snake.move();
       } else {
@@ -324,10 +324,10 @@ export class GameScene {
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
 
-      // Add fuel for speed orbs
-      if (orb.type === 'speed' || orb.type === 'shrink_speed') {
-        this.addFuel(this.fuelBar.fillAmount);
-        this.effectUI.showEffect('fuel', `+${this.fuelBar.fillAmount} Fuel`);
+      // Add boost for correct speed orbs only
+      if ((orb.type === 'speed' || orb.type === 'shrink_speed') && points > 0) {
+        this.addBoost(this.boostBar.fillAmount);
+        this.effectUI.showEffect('boost', `+${this.boostBar.fillAmount} Boost`);
       }
 
       // Play pronunciation audio for correct orbs only
@@ -508,27 +508,27 @@ export class GameScene {
     const snakeSize = this.snake.size || 24;
     this.effectUI.render(this.ctx, head, snakeSize, this.camera);
 
-    // Draw fuel bar
-    this.renderFuelBar();
+    // Draw boost bar
+    this.renderBoostBar();
   // End of render method
 }
 
   /**
-   * Render the fuel bar UI
+   * Render the boost bar UI
    */
-  renderFuelBar() {
+  renderBoostBar() {
     const ctx = this.ctx;
     const canvas = this.canvas;
     
-    // Fuel bar dimensions and position
+    // Boost bar dimensions and position
     const barWidth = 200;
     const barHeight = 20;
     const barX = 20;
     const barY = 20;
     const borderRadius = 10;
     
-    // Calculate fuel percentage
-    const fuelPercentage = this.fuelBar.current / this.fuelBar.max;
+    // Calculate boost percentage
+    const boostPercentage = this.boostBar.current / this.boostBar.max;
     
     // Draw background
     ctx.save();
@@ -542,14 +542,14 @@ export class GameScene {
     this._roundRect(ctx, barX, barY, barWidth, barHeight, borderRadius);
     ctx.stroke();
     
-    // Draw fuel fill
-    if (fuelPercentage > 0) {
-      const fillWidth = (barWidth - 4) * fuelPercentage;
+    // Draw boost fill
+    if (boostPercentage > 0) {
+      const fillWidth = (barWidth - 4) * boostPercentage;
       const fillX = barX + 2;
       const fillY = barY + 2;
       const fillHeight = barHeight - 4;
       
-      // Create gradient for fuel bar
+      // Create gradient for boost bar
       const gradient = ctx.createLinearGradient(fillX, fillY, fillX + fillWidth, fillY);
       gradient.addColorStop(0, '#FF6B6B'); // Red when low
       gradient.addColorStop(0.5, '#FFD93D'); // Yellow when medium
@@ -567,12 +567,12 @@ export class GameScene {
       ctx.shadowBlur = 0;
     }
     
-    // Draw fuel text
+    // Draw boost text
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 14px Inter, Arial';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
-    ctx.fillText(`Fuel: ${Math.round(this.fuelBar.current)}/${this.fuelBar.max}`, barX + barWidth + 10, barY + barHeight / 2);
+    ctx.fillText(`Boost: ${Math.round(this.boostBar.current)}/${this.boostBar.max}`, barX + barWidth + 10, barY + barHeight / 2);
     
     ctx.restore();
   }

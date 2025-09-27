@@ -164,7 +164,7 @@ export class GameOverPopup {
       let ry = y + hdrH; // after header
       // Draw header
       this._modernTable(ctx, boxX, y, boxW, tableH, 16, {
-        header: { labels: ['Chinese', 'Correct', ''], height: hdrH, font: `700 ${tableHdrFS}px 'Segoe UI', Inter, Arial` },
+        header: { labels: ['Chinese', 'Correct'], height: hdrH, font: `700 ${tableHdrFS}px 'Segoe UI', Inter, Arial` },
         rows: tableRows.map(r => [r.chinese ?? '', r.correct ?? '']),
         rowH,
         font: `500 ${tableFS}px 'Segoe UI', Inter, Arial`,

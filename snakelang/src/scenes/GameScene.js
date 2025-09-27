@@ -27,7 +27,7 @@ export class GameScene {
     // Systems
     this.collisionManager = new CollisionManager();
     this.effectManager = new EffectManager();
-    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height, language, this.mode.difficulty);
+    this.orbSpawner = new OrbSpawner(canvas.width, canvas.height, language, this.mode.difficulty, );
 
     // UI
     this.scoreboard = new Scoreboard();
@@ -70,6 +70,20 @@ export class GameScene {
 
       if (!this.isPlaying && event.code === CONFIG.CONTROLS.START_GAME) {
         this.start();
+      }
+      // Show game over screen when ESC is pressed
+      if (event.code === 'Escape') {
+        this.stop();
+      }
+
+      if (event.code === 'KeyD') {
+        if (this.orbSpawner.mode !== 'demo') {
+          this.orbSpawner.setMode('demo');
+          console.log("Demo mode ON");
+        }else{
+          this.orbSpawner.setMode('normal');
+          console.log("Demo mode OFF");
+        }
       }
     });
 
@@ -125,8 +139,12 @@ export class GameScene {
     // Pass wrongAnswers to GameOverPopup
     if (window.gameController) {
       window.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
+    } else if (this.gameController) {
+      this.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
     } else {
-      this.effectUI.showGameOver(this.scoreboard.getScore(), isHighScore);
+      // Fallback: show effectUI notification (not full popup)
+      this.effectUI.showGameOver(this.scoreboard.getScore(), true);
+      this.effectUI.render(this.ctx);
     }
   }
 

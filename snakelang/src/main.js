@@ -65,9 +65,10 @@ class SnakeLangGame {
     resizeCanvas();
 
     // Initialize scenes
-    this.scenes.menu = new MenuScene();
-    this.scenes.game = new GameScene(this.canvas, this.ctx);
-    this.gameController = new GameController(this, this.canvas, this.ctx);
+  this.scenes.menu = new MenuScene();
+  this.scenes.game = new GameScene(this.canvas, this.ctx);
+  this.gameController = new GameController(this, this.canvas, this.ctx);
+  window.gameController = this.gameController;
     // Start with popup menu
     this.currentScene = null;
     // Listen for key events for popup

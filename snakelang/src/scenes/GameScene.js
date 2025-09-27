@@ -470,7 +470,9 @@ export class GameScene {
     this.ctx.restore();
 
     // Draw UI effects (screen space)
-    this.effectUI.render(this.ctx);
+    const head = this.snake.getHead();
+    const snakeSize = this.snake.size || 24;
+    this.effectUI.render(this.ctx, head, snakeSize, this.camera);
   // End of render method
 }
 

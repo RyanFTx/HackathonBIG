@@ -59,21 +59,25 @@ export class EffectUI {
     this.notifications = this.notifications.filter(n => (currentTime - n.startTime) < n.duration);
   }
 
-  render(ctx) {
-    // Simple stacked toasts top-left with vertical float and fade
-    const padding = 10;
-    const lineHeight = 24;
+  render(ctx, snakeHead = {x: 0, y: 0}, snakeSize = 24, camera = {x: 0, y: 0}) {
+    // Position notifications above the snake's head
+    const baseFontSize = Math.max(20, Math.round(snakeSize * 1.3));
+    const lineHeight = Math.round(baseFontSize * 1.2);
     ctx.save();
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
-    ctx.font = 'bold 18px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.font = `bold ${baseFontSize}px Arial`;
+
+    // Calculate screen position for snake head
+    const screenX = ctx.canvas.width / 2 - camera.x + snakeHead.x;
+    const screenY = ctx.canvas.height / 2 - camera.y + snakeHead.y - snakeSize - 8;
 
     this.notifications.forEach((n, i) => {
       const elapsed = Date.now() - n.startTime;
       const t = Math.max(0, Math.min(1, 1 - elapsed / n.duration));
       // Float up slightly as it fades
-      const floatUp = (1 - t) * 6;
-      const y = padding + i * lineHeight - floatUp;
+      const floatUp = (1 - t) * 6 + i * lineHeight;
+      const y = screenY - floatUp;
 
       // Color by type
       let color = '#ffffff';
@@ -84,12 +88,12 @@ export class EffectUI {
       ctx.globalAlpha = 0.2 + 0.8 * t; // fade out
       ctx.fillStyle = 'rgba(0,0,0,0.4)';
       const textWidth = ctx.measureText(n.message).width;
-      ctx.fillRect(padding - 6, y - 2, textWidth + 12, lineHeight - 4);
+      ctx.fillRect(screenX - textWidth / 2 - 6, y - lineHeight + 2, textWidth + 12, lineHeight - 4);
 
       ctx.fillStyle = color;
       ctx.shadowBlur = 8;
       ctx.shadowColor = color;
-      ctx.fillText(n.message, padding, y);
+      ctx.fillText(n.message, screenX, y);
 
       ctx.shadowBlur = 0;
       ctx.globalAlpha = 1;

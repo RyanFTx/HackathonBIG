@@ -14,13 +14,14 @@ export class Snake {
     this.textureCanvas = null;
     this.isGrowing = false;
 
-    // Use fixed world units for gameplay parameters
-    this.actualSpeed = CONFIG.SNAKE.BASE_SPEED;
-    this.actualTurnSpeed = CONFIG.SNAKE.TURN_SPEED;
-    this.actualBoostSpeed = CONFIG.SNAKE.MAX_SPEED - CONFIG.SNAKE.BASE_SPEED;
-    this.actualNormalSpeed = CONFIG.SNAKE.BASE_SPEED;
-    this.actualSize = CONFIG.SNAKE.SIZE;
-    this.scale = 1; // No longer used for gameplay, only for rendering
+  // Use fixed world units for gameplay parameters
+  this.actualSpeed = CONFIG.SNAKE.BASE_SPEED;
+  this.actualTurnSpeed = CONFIG.SNAKE.TURN_SPEED;
+  this.actualBoostSpeed = CONFIG.SNAKE.MAX_SPEED - CONFIG.SNAKE.BASE_SPEED;
+  this.actualNormalSpeed = CONFIG.SNAKE.BASE_SPEED;
+  this.actualSize = CONFIG.SNAKE.SIZE;
+  // Camera scale is set in GameScene.js for rendering only, based on CSS pixel size, not devicePixelRatio
+  this.scale = 1; // Only used for rendering, not gameplay
   }
 
   reset() {

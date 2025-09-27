@@ -203,7 +203,7 @@ export class GameScene {
 
     // Speed boost on mouse click
     if (this.mousePressed) {
-      this.snake.speedBoost();
+      this.snake.move();
     } else {
       this.snake.move();
     }

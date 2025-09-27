@@ -320,7 +320,24 @@ export class StartPopupMenu {
     this._buttonFancy(ctx, 'start', startX, startY, startW, startH, {
       label: 'Start Game', icon: '▶', selected: false, hover: this.hoverId === 'start', theme: 'primary', font: btnFont
     });
+
+    // instructional text
+    y += Math.round(160 * fontScale); // smaller gap below bars
+    this._text(ctx, 'How to Play', W/2, y, titleFont, '#f2f4faff', 'center');
+    y += Math.round(48 * fontScale);
+    this._text(ctx, 'Match Chinese ↔ English orbs → +points', W/2, y, labelFont, '#cfdafaff', 'center');
+    y += Math.round(32 * fontScale);
+        this._text(ctx, 'Move with your mouse', W/2, y, labelFont, '#cfdafaff', 'center');
+
+    y += Math.round(32 * fontScale); // smaller gap below bars
+        this._text(ctx, 'Wrong match → –points & –1 life (you’ve got 3!)', W/2, y, labelFont, '#cfdafaff', 'center');
+
+    y += Math.round(32 * fontScale); // smaller gap below bars
+    this._text(ctx, 'Move Blue orb → fills speed bar → Left Click = Boost your mouse', W/2, y, labelFont, '#cfdafaff', 'center');
+    y += Math.round(32 * fontScale); // smaller gap below bars
+    this._text(ctx, 'Red orb → Bonus points!', W/2, y, labelFont, '#cfdafaff', 'center');
   }
+  
 
   // ----- Orb distribution helpers -----
   _drawOrbDistribution(ctx, x, y, w, orbP) {

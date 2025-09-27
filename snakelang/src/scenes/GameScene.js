@@ -43,6 +43,15 @@ export class GameScene {
   this.mousePressed = false;
   this._lastScreenX = null;
   this._lastScreenY = null;
+  
+  // Fuel bar system
+  this.fuelBar = {
+    current: 0,        // Current fuel (0-100)
+    max: 100,          // Maximum fuel capacity
+    consumptionRate: 2, // Fuel consumed per frame when accelerating
+    fillAmount: 25     // Fuel gained per speed orb
+  };
+  
   // Camera
   this.camera = { x: 0, y: 0, width: this.canvas.width, height: this.canvas.height };
 
@@ -152,9 +161,39 @@ export class GameScene {
     this.scoreboard.reset();
     this.effectManager.clear();
     this.wrongAnswers = [];
+    this.fuelBar.current = 0; // Reset fuel bar
 
     // Wait for translations to load before spawning orbs
     this.initializeOrbs();
+  }
+
+  /**
+   * Add fuel to the fuel bar
+   * @param {number} amount - Amount of fuel to add
+   */
+  addFuel(amount) {
+    this.fuelBar.current = Math.min(this.fuelBar.max, this.fuelBar.current + amount);
+  }
+
+  /**
+   * Consume fuel from the fuel bar
+   * @param {number} amount - Amount of fuel to consume
+   * @returns {boolean} - True if fuel was consumed successfully
+   */
+  consumeFuel(amount) {
+    if (this.fuelBar.current >= amount) {
+      this.fuelBar.current = Math.max(0, this.fuelBar.current - amount);
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Check if there's enough fuel for acceleration
+   * @returns {boolean} - True if fuel is available
+   */
+  hasFuel() {
+    return this.fuelBar.current > 0;
   }
 
   async initializeOrbs() {
@@ -219,10 +258,15 @@ export class GameScene {
       }
     }
 
-    // Speed boost on mouse click
-    if (this.mousePressed) {
-      this.snake.move();
-      this.snake.move();
+    // Speed boost on mouse click (requires fuel)
+    if (this.mousePressed && this.hasFuel()) {
+      // Consume fuel for acceleration
+      if (this.consumeFuel(this.fuelBar.consumptionRate)) {
+        this.snake.move();
+        this.snake.move();
+      } else {
+        this.snake.move();
+      }
     } else {
       this.snake.move();
     }
@@ -279,6 +323,12 @@ export class GameScene {
       // Update score and set snake length proportional to total score
       const points = orb.onCollect();
       this.scoreboard.updateScore(points);
+
+      // Add fuel for speed orbs
+      if (orb.type === 'speed' || orb.type === 'shrink_speed') {
+        this.addFuel(this.fuelBar.fillAmount);
+        this.effectUI.showEffect('fuel', `+${this.fuelBar.fillAmount} Fuel`);
+      }
 
       // Play pronunciation audio for correct orbs only
       if (points > 0 && orb.word) {
@@ -457,8 +507,92 @@ export class GameScene {
     const head = this.snake.getHead();
     const snakeSize = this.snake.size || 24;
     this.effectUI.render(this.ctx, head, snakeSize, this.camera);
+
+    // Draw fuel bar
+    this.renderFuelBar();
   // End of render method
 }
+
+  /**
+   * Render the fuel bar UI
+   */
+  renderFuelBar() {
+    const ctx = this.ctx;
+    const canvas = this.canvas;
+    
+    // Fuel bar dimensions and position
+    const barWidth = 200;
+    const barHeight = 20;
+    const barX = 20;
+    const barY = 20;
+    const borderRadius = 10;
+    
+    // Calculate fuel percentage
+    const fuelPercentage = this.fuelBar.current / this.fuelBar.max;
+    
+    // Draw background
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    this._roundRect(ctx, barX, barY, barWidth, barHeight, borderRadius);
+    ctx.fill();
+    
+    // Draw border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.lineWidth = 2;
+    this._roundRect(ctx, barX, barY, barWidth, barHeight, borderRadius);
+    ctx.stroke();
+    
+    // Draw fuel fill
+    if (fuelPercentage > 0) {
+      const fillWidth = (barWidth - 4) * fuelPercentage;
+      const fillX = barX + 2;
+      const fillY = barY + 2;
+      const fillHeight = barHeight - 4;
+      
+      // Create gradient for fuel bar
+      const gradient = ctx.createLinearGradient(fillX, fillY, fillX + fillWidth, fillY);
+      gradient.addColorStop(0, '#FF6B6B'); // Red when low
+      gradient.addColorStop(0.5, '#FFD93D'); // Yellow when medium
+      gradient.addColorStop(1, '#6BCF7F'); // Green when full
+      
+      ctx.fillStyle = gradient;
+      this._roundRect(ctx, fillX, fillY, fillWidth, fillHeight, borderRadius - 2);
+      ctx.fill();
+      
+      // Add glow effect
+      ctx.shadowColor = gradient;
+      ctx.shadowBlur = 8;
+      this._roundRect(ctx, fillX, fillY, fillWidth, fillHeight, borderRadius - 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    
+    // Draw fuel text
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 14px Inter, Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(`Fuel: ${Math.round(this.fuelBar.current)}/${this.fuelBar.max}`, barX + barWidth + 10, barY + barHeight / 2);
+    
+    ctx.restore();
+  }
+
+  /**
+   * Helper method to draw rounded rectangles
+   */
+  _roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
 
   // After updating objects/orbs, tick effects each frame
   // Ensure toasts fade out even when no new orbs are spawned

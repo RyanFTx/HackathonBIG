@@ -9,6 +9,8 @@ A Slither.io-inspired game for learning Chinese vocabulary through interactive g
 - **Progressive Growth**: Snake grows when collecting vocabulary orbs
 - **Score System**: Track progress with persistent high scores
 - **Responsive Design**: Works on desktop and mobile devices
+- **Difficulty Selection** : 3 levels of difficulty, with different orbs representing the difficulty of the translation
+- **Different modes**: A choice of only chinese characters or their romanized word version, or a mix of both
 
 ## 🏗️ Project Structure
 
@@ -65,20 +67,18 @@ snakelang/
 
 3. **Play the Game**
    - Press **SPACE** to start
-   - Use **A/D** or **← →** to steer
-   - Use **W/↑** for speed boost
-   - Collect golden orbs with Chinese characters to grow!
+   - Use your mouse cursor to control the snake
+   - In medium and hard difficulties, speed orbs gives you fuel. Left click to use that fuel for a boost in speed!
+   - Collect orbs with corrrect translations to grow!
 
 ## 🎯 Game Controls
 
-- **A / ← (Left Arrow)**: Steer left
-- **D / → (Right Arrow)**: Steer right
-- **W / ↑ (Up Arrow)**: Speed boost
+- **Left-Click**: Accelerate 
 - **Space**: Start/Restart game
 
 ## 📚 Learning System
 
-- **Vocabulary Orbs**: Golden orbs display Chinese characters with English translations
+- **Vocabulary Orbs**: orbs display Chinese characters with English translations
 - **Interactive Learning**: Learn through gameplay rather than traditional study
 - **Visual Association**: Connect Chinese characters with their meanings
 - **Progress Tracking**: Score system encourages continued learning
@@ -122,12 +122,10 @@ Update colors and styling in:
 
 ## 🔮 Future Enhancements
 
-- **Multiple Choice System**: Choose correct translation from options
-- **Special Orb Types**: Speed boosts, penalties, explosive bonuses
-- **Difficulty Levels**: Progressive vocabulary complexity
-- **Sound Effects**: Audio feedback for actions
 - **Particle Effects**: Visual polish and juice
 - **Multiplayer**: Compete with friends online
+- **Multiplayer Battles**: When two snakes hit each other, there will be a battle in which you compete based on your knowledge of your language with a timer. The bigger snake has a longer timer to keep it fair.
+- **More languaages**: We aim to have at least 5 languages to choose from.
 
 ## 🧑‍💻 Development
 

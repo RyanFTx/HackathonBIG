@@ -133,7 +133,10 @@ export class GameScene {
 
   stop() {
     this.isPlaying = false;
-    // Always show the full game over popup, regardless of lives or wrong answers
+    // Update high score when game ends
+    this.scoreboard.updateHighScore();
+    const isHighScore = this.scoreboard.getScore() === this.scoreboard.getHighScore();
+    // Pass wrongAnswers to GameOverPopup
     if (window.gameController) {
       window.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
     } else if (this.gameController) {

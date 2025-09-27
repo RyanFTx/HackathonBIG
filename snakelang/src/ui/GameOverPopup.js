@@ -3,6 +3,7 @@ export class GameOverPopup {
   constructor() {
     this.active = false;
     this.score = 0;
+    this.highScore = 0;
     this.wrongAnswers = [];
     this.onTryAgain = null;
     this.onExit = null;
@@ -11,9 +12,10 @@ export class GameOverPopup {
     this._rects = {};
   }
 
-  show(score, wrongAnswers = []) {
+  show(score, wrongAnswers = [], highScore = 0) {
     this.active = true;
     this.score = score;
+    this.highScore = highScore;
     this.wrongAnswers = wrongAnswers || [];
   }
   hide() { this.active = false; }
@@ -132,7 +134,25 @@ export class GameOverPopup {
 
     // Modern score badge
     this._modernBadge(ctx, PX + PW / 2, y + scoreFS / 2, `Score: ${this.score}`, scoreFS);
-    y += scoreFS + 32;
+    y += scoreFS + 16;
+    
+    // High score display with better formatting
+    if (this.highScore > 0) {
+      const isNewHighScore = this.score >= this.highScore;
+      if (isNewHighScore) {
+        // New high score celebration
+        this._text(ctx, '🎉 NEW HIGH SCORE! 🎉', PX + PW / 2, y, `700 ${Math.round(scoreFS * 0.7)}px 'Segoe UI', Inter, Arial`, '#FFD700', 'center', 'middle');
+        y += scoreFS * 0.7 + 8;
+        this._text(ctx, `${this.score}`, PX + PW / 2, y, `800 ${Math.round(scoreFS * 1.2)}px 'Segoe UI', Inter, Arial`, '#FFD700', 'center', 'middle');
+        y += scoreFS * 1.2 + 16;
+      } else {
+        // Regular high score display
+        this._text(ctx, 'High Score', PX + PW / 2, y, `500 ${Math.round(scoreFS * 0.6)}px 'Segoe UI', Inter, Arial`, '#B0BEC5', 'center', 'middle');
+        y += scoreFS * 0.6 + 4;
+        this._text(ctx, `${this.highScore}`, PX + PW / 2, y, `700 ${Math.round(scoreFS * 0.9)}px 'Segoe UI', Inter, Arial`, '#E8F4FD', 'center', 'middle');
+        y += scoreFS * 0.9 + 16;
+      }
+    }
 
     // Review section
     if (hasRows) {

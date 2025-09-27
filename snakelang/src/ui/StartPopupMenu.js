@@ -2,6 +2,7 @@
 export class StartPopupMenu {
   constructor(options = {}) {
     this.active = true;
+    this.highScore = this.loadHighScore();
 
     this.languages = [
       { key: 'characters', label: 'Characters (汉字)'},
@@ -45,6 +46,30 @@ export class StartPopupMenu {
   show() { this.active = true; }
   hide() { this.active = false; }
   isActive() { return this.active; }
+
+  /**
+   * Load high score from localStorage
+   * @returns {number} - The high score (0 if not found or error)
+   */
+  loadHighScore() {
+    try {
+      const stored = localStorage.getItem('snakeLangHighScore');
+      if (stored === null) return 0;
+      
+      const parsed = parseInt(stored, 10);
+      return isNaN(parsed) ? 0 : Math.max(0, parsed);
+    } catch (error) {
+      console.warn('Failed to load high score from localStorage:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Update high score (called when returning from game)
+   */
+  updateHighScore() {
+    this.highScore = this.loadHighScore();
+  }
 
   attach(canvas) {
     this._canvas = canvas;
@@ -193,8 +218,14 @@ export class StartPopupMenu {
 
     // --- Calculate dynamic panel height to fit all content ---
     let panelHeight = 0;
-    // Title + languages + difficulties
-    panelHeight += Math.round(36 * fontScale) + Math.round(22 * fontScale) + btnH + Math.round(24 * fontScale);
+    // Title + high score + languages + difficulties
+    panelHeight += Math.round(36 * fontScale); // title
+    if (this.highScore > 0) {
+      panelHeight += Math.round(16 * fontScale) + Math.round(20 * fontScale) + Math.round(24 * fontScale); // high score
+    } else {
+      panelHeight += Math.round(20 * fontScale); // spacing
+    }
+    panelHeight += Math.round(22 * fontScale) + btnH + Math.round(24 * fontScale); // languages
     // Difficulty rows
     panelHeight += rowCount * (btnH + Math.round(16 * fontScale)) + Math.round(8 * fontScale);
     // Orb distribution title + bars
@@ -213,6 +244,16 @@ export class StartPopupMenu {
     this._text(ctx, 'Game Setup', W/2, PY + PAD, titleFont, '#FFFFFF', 'center');
 
     let y = PY + PAD + Math.round(36 * fontScale);
+
+    // High score display
+    if (this.highScore > 0) {
+      this._text(ctx, '🏆 High Score', W/2, y, `600 ${Math.round(14 * fontScale)}px Inter, Arial`, '#B0BEC5', 'center');
+      y += Math.round(16 * fontScale);
+      this._text(ctx, `${this.highScore}`, W/2, y, `700 ${Math.round(20 * fontScale)}px Inter, Arial`, '#FFD700', 'center');
+      y += Math.round(24 * fontScale);
+    } else {
+      y += Math.round(20 * fontScale);
+    }
 
     // languages
     this._text(ctx, 'Choose Language', W/2, y, labelFont, '#A9B3D1', 'center');

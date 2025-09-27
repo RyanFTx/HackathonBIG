@@ -9,15 +9,11 @@ export class Scoreboard {
   constructor() {
     this.score = CONFIG.GAME.INITIAL_SCORE;
     this.lives = CONFIG.GAME.INITIAL_LIVES;
-    this.highScore = parseInt(localStorage.getItem('snakeLangHighScore') || '0');
+    this.highScore = this.loadHighScore();
   }
 
   updateScore(points) {
     this.score += points;
-    if (this.score > this.highScore) {
-      this.highScore = this.score;
-      localStorage.setItem('snakeLangHighScore', this.highScore.toString());
-    }
     this.render();
   }
 
@@ -63,5 +59,52 @@ export class Scoreboard {
 
   getHighScore() {
     return this.highScore;
+  }
+
+  /**
+   * Load high score from localStorage with error handling
+   * @returns {number} - The high score (0 if not found or error)
+   */
+  loadHighScore() {
+    try {
+      const stored = localStorage.getItem('snakeLangHighScore');
+      if (stored === null) return 0;
+      
+      const parsed = parseInt(stored, 10);
+      return isNaN(parsed) ? 0 : Math.max(0, parsed);
+    } catch (error) {
+      console.warn('Failed to load high score from localStorage:', error);
+      return 0;
+    }
+  }
+
+  /**
+   * Save high score to localStorage with error handling
+   */
+  saveHighScore() {
+    try {
+      localStorage.setItem('snakeLangHighScore', this.highScore.toString());
+    } catch (error) {
+      console.warn('Failed to save high score to localStorage:', error);
+    }
+  }
+
+  /**
+   * Update high score if current score is higher (called when game ends)
+   */
+  updateHighScore() {
+    if (this.score > this.highScore) {
+      this.highScore = this.score;
+      this.saveHighScore();
+    }
+  }
+
+  /**
+   * Reset high score (useful for testing or admin functions)
+   */
+  resetHighScore() {
+    this.highScore = 0;
+    this.saveHighScore();
+    this.render();
   }
 }

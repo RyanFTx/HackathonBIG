@@ -9,9 +9,9 @@ export const CONFIG = {
     INITIAL_X: 750, // Center of canvas
     INITIAL_Y: 350, // Center of canvas
     SIZE: 20,
-    SEGMENT_DISTANCE: 8,
+  SEGMENT_DISTANCE: 8,
     BASE_SPEED: 3,
-    MAX_LENGTH: 100,
+    MAX_LENGTH: 1000,
     GROWTH_SEGMENTS: 3,
     TURN_SPEED: 0.07,
     MAX_SPEED: 15

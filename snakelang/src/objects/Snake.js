@@ -14,28 +14,29 @@ export class Snake {
     this.textureCanvas = null;
     this.isGrowing = false;
 
-    // Virtual scaling based on canvas diagonal for better consistency
-    const referenceWidth = 1920; // Design reference width
-    const referenceHeight = 1080; // Design reference height
-    let scale = 1;
-    if (canvas && canvas.width && canvas.height) {
-      const diagonal = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
-      const referenceDiagonal = Math.sqrt(referenceWidth * referenceWidth + referenceHeight * referenceHeight);
-      scale = diagonal / referenceDiagonal;
-    }
-    // Scale all relevant gameplay parameters
-    this.actualSpeed = CONFIG.SNAKE.BASE_SPEED * scale;
-    this.actualTurnSpeed = CONFIG.SNAKE.TURN_SPEED * scale;
-    this.actualBoostSpeed = (CONFIG.SNAKE.MAX_SPEED - CONFIG.SNAKE.BASE_SPEED) * scale;
-    this.actualNormalSpeed = CONFIG.SNAKE.BASE_SPEED * scale;
-    this.actualSize = CONFIG.SNAKE.SIZE * scale;
-    this.scale = scale;
+    // Use fixed world units for gameplay parameters
+    this.actualSpeed = CONFIG.SNAKE.BASE_SPEED;
+    this.actualTurnSpeed = CONFIG.SNAKE.TURN_SPEED;
+    this.actualBoostSpeed = CONFIG.SNAKE.MAX_SPEED - CONFIG.SNAKE.BASE_SPEED;
+    this.actualNormalSpeed = CONFIG.SNAKE.BASE_SPEED;
+    this.actualSize = CONFIG.SNAKE.SIZE;
+    this.scale = 1; // No longer used for gameplay, only for rendering
   }
 
   reset() {
-    this.body = [{ x: CONFIG.SNAKE.INITIAL_X, y: CONFIG.SNAKE.INITIAL_Y }];
+    // Start with a default length of 5 segments, spaced by SEGMENT_DISTANCE
     this.angle = 0;
     this.speed = CONFIG.SNAKE.BASE_SPEED;
+    const len = 5;
+    const segDist = CONFIG.SNAKE.SEGMENT_DISTANCE;
+    const body = [];
+    for (let i = 0; i < len; i++) {
+      body.push({
+        x: CONFIG.SNAKE.INITIAL_X - Math.cos(this.angle) * segDist * i,
+        y: CONFIG.SNAKE.INITIAL_Y - Math.sin(this.angle) * segDist * i
+      });
+    }
+    this.body = body;
   }
 
   move() {
@@ -109,7 +110,15 @@ export class Snake {
     if (segmentsDelta > 0) {
       for (let i = 0; i < segmentsDelta; i++) {
         const tail = this.body[this.body.length - 1];
-        this.body.push({ x: tail.x, y: tail.y });
+        const prev = this.body.length > 1 ? this.body[this.body.length - 2] : tail;
+        // Calculate direction from previous to tail
+        const dx = tail.x - prev.x;
+        const dy = tail.y - prev.y;
+        const d = Math.sqrt(dx * dx + dy * dy) || 1;
+        // Place new segment at SEGMENT_DISTANCE behind tail
+        const newX = tail.x + (dx / d) * CONFIG.SNAKE.SEGMENT_DISTANCE;
+        const newY = tail.y + (dy / d) * CONFIG.SNAKE.SEGMENT_DISTANCE;
+        this.body.push({ x: newX, y: newY });
       }
       // Mark growing for the next move frame so we don't immediately remove the tail
       this.isGrowing = true;
@@ -156,42 +165,45 @@ export class Snake {
     return this.texturePattern;
   }
 
-  draw(ctx) {
+  draw(ctx, camera, canvas) {
     const len = this.body.length;
-    
-    // Optimized drawing - use direct color instead of patterns
+    // Utility: world to screen conversion
+    function worldToScreen(x, y) {
+      return {
+        screenX: (x - camera.x) * camera.scale + canvas.width / 2,
+        screenY: (y - camera.y) * camera.scale + canvas.height / 2
+      };
+    }
+
     for (let i = 0; i < len; i++) {
       const segment = this.body[i];
-      const radius = i === 0 ? this.actualSize + 2 * this.scale : this.actualSize;
+      const { screenX, screenY } = worldToScreen(segment.x, segment.y);
+      const radius = (i === 0 ? this.actualSize + 2 : this.actualSize); // Use world size only
 
-      // Add glowing effect to each segment
       ctx.save();
-      ctx.shadowColor = '#AB47BC'; // Purple glow
+      ctx.shadowColor = '#AB47BC';
       ctx.shadowBlur = 12;
-      
-      // Fill with solid dark purple
       ctx.beginPath();
-      ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
-      ctx.fillStyle = '#4A148C'; // Dark purple
+      ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
+      ctx.fillStyle = '#4A148C';
       ctx.fill();
 
-      // Add extra glow for head
       if (i === 0) {
-        ctx.shadowColor = '#E1BEE7'; // Lighter purple glow for head
+        ctx.shadowColor = '#E1BEE7';
         ctx.shadowBlur = 16;
         ctx.beginPath();
-        ctx.arc(segment.x, segment.y, radius, 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
         ctx.fill();
       }
-      
       ctx.restore();
 
-      // Add subtle head highlight
-      if (i === 0) {
-        const headGradient = ctx.createRadialGradient(segment.x, segment.y, 0, segment.x, segment.y, radius);
+      if (i === 0 && isFinite(screenX) && isFinite(screenY) && isFinite(radius) && radius > 0) {
+        const headGradient = ctx.createRadialGradient(screenX, screenY, 0, screenX, screenY, radius);
         headGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
         headGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx.fillStyle = headGradient;
+        ctx.beginPath();
+        ctx.arc(screenX, screenY, radius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
@@ -199,15 +211,15 @@ export class Snake {
     // Draw glowing eyes
     if (len > 0) {
       const head = this.body[0];
-      const eyeDistance = 10 * this.scale; // Increased from 6 to 10
-      const eyeSize = 4 * this.scale; // Increased from 2 to 4
+      const { screenX, screenY } = worldToScreen(head.x, head.y);
+      const eyeDistance = 10; // Use world units
+      const eyeSize = 4;      // Use world units
 
-      const leftEyeX = head.x + Math.cos(this.angle - 0.5) * eyeDistance;
-      const leftEyeY = head.y + Math.sin(this.angle - 0.5) * eyeDistance;
-      const rightEyeX = head.x + Math.cos(this.angle + 0.5) * eyeDistance;
-      const rightEyeY = head.y + Math.sin(this.angle + 0.5) * eyeDistance;
+      const leftEyeX = screenX + Math.cos(this.angle - 0.5) * eyeDistance;
+      const leftEyeY = screenY + Math.sin(this.angle - 0.5) * eyeDistance;
+      const rightEyeX = screenX + Math.cos(this.angle + 0.5) * eyeDistance;
+      const rightEyeY = screenY + Math.sin(this.angle + 0.5) * eyeDistance;
 
-      // Glowing purple eyes
       ctx.save();
       ctx.shadowColor = '#E1BEE7';
       ctx.shadowBlur = 8;

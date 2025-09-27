@@ -444,14 +444,10 @@ export class GameScene {
       }
     });
 
-    // Draw snake (all segments)
-    this.ctx.save();
-    this.ctx.translate(
-      this.canvas.width / 2 - this.camera.x,
-      this.canvas.height / 2 - this.camera.y
-    );
-    this.snake.draw(this.ctx);
-    this.ctx.restore();
+  // Set camera scale for resolution independence
+  this.camera.scale = Math.min(this.canvas.width, this.canvas.height) / 1000;
+  // Draw snake (all segments)
+  this.snake.draw(this.ctx, this.camera, this.canvas);
 
     // Draw UI effects (screen space)
     const head = this.snake.getHead();

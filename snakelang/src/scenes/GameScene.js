@@ -14,6 +14,8 @@ import { PronunciationPlayer } from '../systems/PronunciationPlayer.js';
 
 export class GameScene {
   constructor(canvas, ctx, orbPercentages = { normal: 60, speed: 20, explosive: 0 }, language = 'characters') {
+  // Pause state
+  this.isPaused = false;
     this.canvas = canvas;
     this.ctx = ctx;
 
@@ -94,6 +96,16 @@ export class GameScene {
           this.orbSpawner.setMode('normal');
           console.warn("Demo mode OFF");
           this.orbs = []; // Clear existing orbs
+        }
+      }
+
+      // Pause/unpause with 'P'
+      if (event.code === 'KeyP') {
+        this.isPaused = !this.isPaused;
+        if (this.isPaused) {
+          console.warn('Game paused');
+        } else {
+          console.warn('Game resumed');
         }
       }
     });
@@ -285,7 +297,7 @@ export class GameScene {
   }
 
   update() {
-    if (!this.isPlaying) return;
+  if (!this.isPlaying || this.isPaused) return;
 
     // Recalculate mouse position in world coordinates if mouse has moved or camera has moved
     if (this._lastScreenX !== null && this._lastScreenY !== null) {

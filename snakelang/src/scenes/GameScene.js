@@ -71,6 +71,10 @@ export class GameScene {
       if (!this.isPlaying && event.code === CONFIG.CONTROLS.START_GAME) {
         this.start();
       }
+      // Show game over screen when ESC is pressed
+      if (event.code === 'Escape') {
+        this.stop();
+      }
     });
 
     document.addEventListener('keyup', (event) => {
@@ -119,12 +123,15 @@ export class GameScene {
 
   stop() {
     this.isPlaying = false;
-    const isHighScore = this.scoreboard.getScore() === this.scoreboard.getHighScore();
-    // Pass wrongAnswers to GameOverPopup
+    // Always show the full game over popup, regardless of lives or wrong answers
     if (window.gameController) {
       window.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
+    } else if (this.gameController) {
+      this.gameController.showGameOver(this.scoreboard.getScore(), this.wrongAnswers);
     } else {
-      this.effectUI.showGameOver(this.scoreboard.getScore(), isHighScore);
+      // Fallback: show effectUI notification (not full popup)
+      this.effectUI.showGameOver(this.scoreboard.getScore(), true);
+      this.effectUI.render(this.ctx);
     }
   }
 
